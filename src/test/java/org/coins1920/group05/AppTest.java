@@ -6,14 +6,14 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 
 /**
- * Unit test for simple App.
+ * Test for ticket board fetching.
  */
 public class AppTest {
 
     /**
-     * Rigourous Test :-)
+     * Test fetching a board.
      */
-    public void testApp() {
+    public void testBoardFetching() {
         final boolean b = true;
         assertThat(b, is(true));
         assertThat(b, is(not(nullValue())));

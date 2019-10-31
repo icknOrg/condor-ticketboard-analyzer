@@ -13,6 +13,14 @@
     </properties>
 
     <dependencies>
+        <!-- Lombok (should remain the very first dep.!): -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.10</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Spring stuff (e.g. for RestTemplate) -->
         <dependency>
             <groupId>org.springframework</groupId>

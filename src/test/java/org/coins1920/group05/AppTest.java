@@ -1,9 +1,14 @@
 package org.coins1920.group05;
 
+import org.coins1920.group05.fetcher.TicketBoardFetcher;
+import org.coins1920.group05.fetcher.TicketBoardFetcherImpl;
+import org.coins1920.group05.fetcher.model.trello.Board;
+import org.junit.Test;
+
+import java.util.List;
+
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 /**
  * Test for ticket board fetching.
@@ -13,10 +18,16 @@ public class AppTest {
     /**
      * Test fetching a board.
      */
+    @Test
     public void testBoardFetching() {
-        final boolean b = true;
-        assertThat(b, is(true));
-        assertThat(b, is(not(nullValue())));
+        final TicketBoardFetcher f = new TicketBoardFetcherImpl("", ""); // TODO: load API credentials from application.yml
+        final List<Board> boards = f.fetchBoards();
+        assertThat(boards, is(not(nullValue())));
+        assertThat(boards.size(), is(not(0)));
+        System.out.println("There are " + boards.size() + "boards");
+
+        final Board firstBoard = boards.get(0);
+        System.out.println("boards[0]" + firstBoard.toString());
     }
 
 }

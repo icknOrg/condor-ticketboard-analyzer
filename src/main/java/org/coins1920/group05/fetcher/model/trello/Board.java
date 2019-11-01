@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class Board {
+
     private String id;
     private String name;
     private String desc;
@@ -19,4 +20,5 @@ public class Board {
 //    private String[] limits; // TODO: model the object
 //    private String[] memberships;
     private boolean enterpriseOwned;
+
 }

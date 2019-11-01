@@ -4,6 +4,7 @@ import org.coins1920.group05.fetcher.TicketBoard;
 import org.coins1920.group05.fetcher.TicketBoardFetcher;
 import org.coins1920.group05.fetcher.TicketBoardFetcherImpl;
 import org.coins1920.group05.fetcher.model.trello.Board;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.List;
@@ -12,7 +13,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 /**
- * Test for ticket board fetching.
+ * Tests for the ticket board fetching app itself.
  */
 public class AppTest {
 
@@ -20,9 +21,10 @@ public class AppTest {
      * Test fetching a board.
      */
     @Test
+    @Ignore
     public void testBoardFetching() {
         final String key = "..."; // TODO: load API credentials from environment variable
-        final String token = ".."; // TODO: load API credentials from environment variable
+        final String token = "..."; // TODO: load API credentials from environment variable
         final TicketBoardFetcher f = new TicketBoardFetcherImpl(TicketBoard.TRELLO, key, token);
 
         final List<Board> boards = f.fetchBoards();

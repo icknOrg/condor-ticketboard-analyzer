@@ -1,0 +1,4 @@
+Name, UUID, Source, Target, Starttime, Endtime, Planned_Duration, Real_Duration, Status, Count_Subtasks, Count_Comments
+Ticket 13, 1312, 1, 2, 2012-09-12T04:00:00+00:00, 2012-09-20T04:00:00+00:00, 15, 8, closed, 3, 7
+Ticket 13, 1313, 1, 3, 2012-09-12T04:00:00+00:00, 2012-09-20T04:00:00+00:00, 15, 8, closed, 3, 7
+Ticket 15, 1521, 2, 4, 2012-10-12T04:00:00+00:00, 2012-10-20T04:00:00+00:00, 15, 8, closed, 1, 0

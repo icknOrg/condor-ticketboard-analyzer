@@ -10,19 +10,27 @@ import org.coins1920.group05.fetcher.TicketBoardFetcherImpl;
 public class TicketBoardFetcherApp {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
-        if (args.length < 1) {
+        if (args.length < 3) {
             throw new IllegalArgumentException("Not enough arguments given!");
         }
+        final String ticketBoardString = args[0];
+        final String apiKey = args[1];
+        final String oauthToken = args[2];
 
         final TicketBoard tbt;
-        switch (args[0].toLowerCase()) {
-            case "trello": tbt = TicketBoard.TRELLO; break;
-            case "jira": tbt = TicketBoard.JIRA; break;
-            default: throw new IllegalArgumentException("Could not recognize ticket board type!");
+        switch (ticketBoardString.toLowerCase()) {
+            case "trello":
+                tbt = TicketBoard.TRELLO;
+                break;
+            case "jira":
+                tbt = TicketBoard.JIRA;
+                break;
+            default:
+                throw new IllegalArgumentException("Could not recognize ticket board type!");
         }
 
-        final TicketBoardFetcher f = new TicketBoardFetcherImpl("", ""); // TODO: load from application.yml
+        System.out.println(" API key = " + apiKey + " , OAuth token = " + oauthToken);
+        final TicketBoardFetcher f = new TicketBoardFetcherImpl(tbt, apiKey, oauthToken);
         f.fetchBoards();
     }
 

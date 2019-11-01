@@ -1,10 +1,8 @@
 package org.coins1920.group05.fetcher.model.trello;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
-@Getter
 public class Board {
     private String id;
     private String name;

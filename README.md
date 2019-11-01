@@ -7,3 +7,9 @@ as [Apache Maven](https://maven.apache.org/). Clone or download this repository,
 ```bash
 $ mvn install
 ```
+
+## How to run it
+With your API key and OAuth token string at hand run:
+```bash
+$ java -jar target/condor-ticketboard-fetcher.jar trello myApiKey myOauthToken
+```

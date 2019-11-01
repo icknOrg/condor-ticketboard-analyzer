@@ -13,7 +13,8 @@ public class TicketBoardFetcherImpl implements TicketBoardFetcher {
     private final String key;
     private final String token;
 
-    public TicketBoardFetcherImpl(String key, String token) {
+    public TicketBoardFetcherImpl(TicketBoard tbt, String key, String token) {
+        // TODO: distinguish between Trello, Jira, ... implementations (via "tbt")!
         this.key = key;
         this.token = token;
     }

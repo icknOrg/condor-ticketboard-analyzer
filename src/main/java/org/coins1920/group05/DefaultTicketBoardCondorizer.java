@@ -53,7 +53,7 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         // the final data set should be "rectangular", i.e. a ticket/card tuple is duplicated
         // for _every_ member that changed it, wrote a comment, etc.:
         final List<Card> trelloCardsForAllAuthors = trelloCards
-                .map(c -> duplicateCardForAllAuthors(c, toList(c.getMembers()))) // for a separate call, use: ..., fetcher.fetchMembersForTicket(c.getId()))) instead!
+                .map(c -> duplicateCardForAllAuthors(c, fetcher.fetchMembersForTicket(c.getId())))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
         final List<Ticket> tickets = trelloCardsToCondorTickets(trelloCardsForAllAuthors);
@@ -75,6 +75,7 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
     }
 
     private List<Card> duplicateCardForAllAuthors(Card card, List<Member> members) {
+        // TODO: always add an (n+1)th card with authoer := creator ??
         if (members.isEmpty()) {
             final List<Card> l = new LinkedList<>();
             l.add(card);
@@ -85,6 +86,7 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                         final Member[] ma = {m};
                         final Card cardClone = SerializationUtils.clone(card);
                         cardClone.setMembers(ma);
+                        cardClone.setAuthor(m.getFullName());
                         return cardClone;
                     })
                     .collect(Collectors.toList());
@@ -113,10 +115,9 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         }
     }
 
-    private Function<Card, Ticket> cardToTicket = c -> {
-        return new Ticket(c.getName(), c.getId(), c.getCreator(), "",
-                "", "", "", "", // TODO: map other stuff as well!
-                "", "", "");
-    };
+    private Function<Card, Ticket> cardToTicket = c ->
+            new Ticket(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
+                    "", "", "", "", // TODO: map other stuff as well!
+                    "", "", "");
 
 }

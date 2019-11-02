@@ -17,9 +17,7 @@ import static org.hamcrest.Matchers.*;
  */
 public class AppTest {
 
-    /**
-     * Test fetching a board.
-     */
+    // TODO: test the app class instead!
     @Test
     @Ignore
     public void testBoardFetching() {

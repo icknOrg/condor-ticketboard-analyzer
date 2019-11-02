@@ -4,6 +4,7 @@ import org.coins1920.group05.fetcher.CondorCsvMarshaller;
 import org.coins1920.group05.fetcher.DefaultCondorCsvMarshaller;
 import org.coins1920.group05.fetcher.model.condor.Person;
 import org.coins1920.group05.fetcher.model.condor.Ticket;
+import org.coins1920.group05.fetcher.util.Pair;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -32,8 +33,14 @@ public class CondorCsvMarshallerTest {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final CondorCsvMarshaller condorCsvMarshaller = new DefaultCondorCsvMarshaller();
 
-        condorCsvMarshaller.write(testPersons(), testTickets(), testFolder.getAbsolutePath());
-        assertThat(condorCsvMarshaller, is(not(nullValue())));
+        final Pair<File, File> csvFiles = condorCsvMarshaller.write(
+                testPersons(),
+                testTickets(),
+                testFolder.getAbsolutePath()
+        );
+        assertThat(csvFiles, is(not(nullValue())));
+        assertThat(csvFiles.getFirst(), is(not(nullValue())));
+        assertThat(csvFiles.getSecond(), is(not(nullValue())));
     }
 
     private List<Person> testPersons() {

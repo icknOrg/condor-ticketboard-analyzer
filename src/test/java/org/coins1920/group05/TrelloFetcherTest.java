@@ -1,9 +1,8 @@
 package org.coins1920.group05;
 
-import org.coins1920.group05.fetcher.TicketBoard;
-import org.coins1920.group05.fetcher.TicketBoardFetcher;
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
 import org.coins1920.group05.fetcher.model.trello.Board;
+import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
@@ -20,13 +19,13 @@ public class TrelloFetcherTest {
 
     private Logger logger = LoggerFactory.getLogger(TrelloFetcherTest.class);
 
-    private static TicketBoardFetcher fetcher;
+    private static TrelloBoardFetcher fetcher;
 
     @BeforeClass
     public static void setUp() {
         final String key = System.getenv("TRELLO_API_KEY");
         final String token = System.getenv("TRELLO_OAUTH_KEY");
-        fetcher = new TrelloBoardFetcher(TicketBoard.TRELLO, key, token);
+        fetcher = new TrelloBoardFetcher(key, token);
     }
 
     @Test
@@ -43,13 +42,28 @@ public class TrelloFetcherTest {
         assertThat(members, is(not(nullValue())));
         assertThat(members.size(), is(not(0)));
         logger.info("There are " + members.size() + " members!");
-        logger.info(members.get(0).toString());
+        logger.info(" the first one is: " + members.get(0));
 
         final long membersCalledBugs = members
                 .stream()
                 .filter(m -> m.getFullName().equals("Bugs"))
                 .count();
         assertThat(membersCalledBugs, is(1L));
+    }
+
+    @Test
+    public void testFetchCards() {
+        final List<Card> cards = fetcher.fetchTickets("lgaJQMYA");
+        assertThat(cards, is(not(nullValue())));
+        assertThat(cards.size(), is(not(0)));
+        logger.info("There are " + cards.size() + " cards!");
+        logger.info(" the first one is: " + cards.get(0));
+
+        final long cardsNamedRCsvStructure = cards
+                .stream()
+                .filter(m -> m.getName().equals("CSV structure"))
+                .count();
+        assertThat(cardsNamedRCsvStructure, is(1L));
     }
 
     @Test

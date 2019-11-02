@@ -5,7 +5,7 @@
     <groupId>org.coins1920.group05</groupId>
     <artifactId>condor-ticketboard-fetcher</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <name>condor-ticketboard-fetcher</name>
 
     <parent>
@@ -40,7 +40,7 @@
             </exclusions>
         </dependency>
 
-        <!-- for JSON/CSV marshalling/unmarshalling, mapping etc.: -->
+        <!-- for JSON/CSV marshalling/unmarshalling: -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -55,11 +55,6 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-csv</artifactId>
             <version>1.7</version>
-        </dependency>
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.3.1.Final</version>
         </dependency>
 
         <!-- for tests: -->

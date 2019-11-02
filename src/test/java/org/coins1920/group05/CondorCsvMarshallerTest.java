@@ -8,6 +8,8 @@ import org.coins1920.group05.fetcher.util.Pair;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +23,8 @@ import static org.hamcrest.Matchers.*;
  * Tests for the Condor CSV marshaller.
  */
 public class CondorCsvMarshallerTest {
+
+    private Logger logger = LoggerFactory.getLogger(CondorCsvMarshallerTest.class);
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();

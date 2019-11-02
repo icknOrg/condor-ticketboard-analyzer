@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Ticket {
-
     private String Name;
     private String UUID;
     private String Source;
@@ -18,5 +17,4 @@ public class Ticket {
     private String Status;
     private String CountSubtasks;
     private String CountComments;
-
 }

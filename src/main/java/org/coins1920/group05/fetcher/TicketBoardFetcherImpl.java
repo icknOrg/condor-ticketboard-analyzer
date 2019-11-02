@@ -1,14 +1,22 @@
 package org.coins1920.group05.fetcher;
 
 import org.coins1920.group05.fetcher.model.trello.Board;
+import org.coins1920.group05.fetcher.model.trello.Member;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class TicketBoardFetcherImpl implements TicketBoardFetcher {
+
+    private Logger logger = LoggerFactory.getLogger(TicketBoardFetcherImpl.class);
 
     private final RestTemplate rt;
     private final String key;
@@ -25,10 +33,33 @@ public class TicketBoardFetcherImpl implements TicketBoardFetcher {
 
     @Override
     public List<Board> fetchBoards() {
-        final String url = "1/members/me/boards?key={key}&token={token}"; // TODO: hide root URL in RestTemplateBuilder
+        final String url = assembleUrl("members/me/boards");
         final ResponseEntity<Board[]> response = rt.getForEntity(url, Board[].class, key, token);
-        System.out.println("Status code: " + response.getStatusCodeValue()); // TODO: slf4j and a logger impl for test
+        logger.info("HTTP status code waa: " + response.getStatusCodeValue());
+        return nonNullResponseEntities(response);
+    }
 
+    @Override
+    public Board fetchBoard(String boardId) {
+        final String url = assembleUrl("boards/{id}");
+        final ResponseEntity<Board> response = rt.getForEntity(url, Board.class, boardId, key, token);
+        logger.info("HTTP status code was: " + response.getStatusCodeValue());
+        return response.getBody();
+    }
+
+    @Override
+    public List<Member> fetchBoardMembers(String boardId) {
+        final String url = assembleUrl("boards/{id}/members");
+        final ResponseEntity<Member[]> response = rt.getForEntity(url, Member[].class, boardId, key, token);
+        logger.info("HTTP status codewas : " + response.getStatusCodeValue());
+        return nonNullResponseEntities(response);
+    }
+
+    private String assembleUrl(String resourcePart) {
+        return "/1/" + resourcePart + "?key={key}&token={token}";
+    }
+
+    private <T> List<T> nonNullResponseEntities(ResponseEntity<T[]> response) {
         if (response.getBody() == null) {
             return new LinkedList<>();
         } else {
@@ -37,26 +68,6 @@ public class TicketBoardFetcherImpl implements TicketBoardFetcher {
                     .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         }
-    }
-
-    @Override
-    public Board fetchBoard(String boardId) {
-        final String url = assembleUrl("boards/{id}");
-        final ResponseEntity<Board> response = rt.getForEntity(url, Board.class, boardId, key, token);
-        return response.getBody();
-    }
-
-    @Override
-    public List<String> fetchBoardMembers(String boardId) {
-        final String url = assembleUrl("boards/{id}/member");
-        final ResponseEntity<Board> response = rt.getForEntity(url, Board.class, boardId, key, token);
-        System.out.println("\n\n --> " + response.getStatusCodeValue());
-        System.out.println("\n\n --> " + response.getBody());
-        return null;
-    }
-
-    private String assembleUrl(String resourcePart) {
-        return "/1/" + resourcePart + "?key={key}&token={token}";
     }
 
 }

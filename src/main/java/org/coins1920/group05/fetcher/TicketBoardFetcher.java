@@ -36,4 +36,6 @@ public interface TicketBoardFetcher {
     List<? extends AbstractTicket> fetchTickets(String boardId);
 
     List<? extends AbstractAction> fetchActionsForTicket(String ticketId);
+
+    List<Member> fetchMembersForTicket(String ticketId);
 }

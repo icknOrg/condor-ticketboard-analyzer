@@ -6,12 +6,14 @@ import org.coins1920.group05.fetcher.TicketBoard;
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
 import org.coins1920.group05.fetcher.model.condor.Person;
 import org.coins1920.group05.fetcher.model.condor.Ticket;
+import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
 import org.coins1920.group05.fetcher.util.Pair;
 
 import java.io.File;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
@@ -38,11 +40,39 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         final List<Member> trelloBoardMembers = fetcher.fetchBoardMembers(boardId);
         final List<Person> persons = trelloMembersToCondorPersons(trelloBoardMembers);
 
-        final List<Card> trelloCards = fetcher.fetchTickets(boardId);
+        // fetch all cards for the given board:
+        final List<Card> trelloCards = fetcher.fetchTickets(boardId)
+                .stream()
+                .map(c -> addAuthor(c, fetcher.fetchActionsForTicket(c.getId())))
+                .collect(Collectors.toList());
+
+        // the final data set should be "rectangular", i.e. a ticket/card tupel is duplicated
+        // for _every_ member that changed it, wrote a comment, etc.:
+        final List<List<Card>> trelloCardsForAllAuthors = trelloCards
+                .stream()
+                .map(c -> duplicateCardForAllAuthors(c, fetcher.fetchMembersForTicket(c.getId())))
+                .collect(Collectors.toList());
+        // TODO: flatMap!
+
         final List<Ticket> tickets = trelloCardsToCondorTickets(trelloCards);
 
         final CondorCsvMarshaller condorCsvMarshaller = new DefaultCondorCsvMarshaller();
         return condorCsvMarshaller.write(persons, tickets, outputDir);
+    }
+
+    private Card addAuthor(Card card, List<Action> trelloActions) {
+        final String cardCreatedTypeString = "createCard";
+        final Action createCardAction = trelloActions
+                .stream()
+                .filter(a -> a.getType().equalsIgnoreCase(cardCreatedTypeString))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("No action with type '" + cardCreatedTypeString + "' found!"));
+        card.setCreator(createCardAction.getMemberCreator().getFullName());
+        return card;
+    }
+
+    private List<Card> duplicateCardForAllAuthors(Card card, List<Member> members) {
+        return null;
     }
 
     private List<Person> trelloMembersToCondorPersons(List<Member> members) {
@@ -55,10 +85,14 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
     private List<Ticket> trelloCardsToCondorTickets(List<Card> cards) {
         return cards
                 .stream()
-                .map(c -> new Ticket(c.getName(), c.getId(), "", "",
-                        "", "", "", "", // TODO: map other stuff as well!
-                        "", "", ""))
+                .map(cardToTicket)
                 .collect(Collectors.toList());
     }
+
+    private Function<Card, Ticket> cardToTicket = c -> {
+        return new Ticket(c.getName(), c.getId(), c.getCreator(), "",
+                "", "", "", "", // TODO: map other stuff as well!
+                "", "", "");
+    };
 
 }

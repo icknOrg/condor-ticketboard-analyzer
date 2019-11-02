@@ -30,7 +30,11 @@ public class TicketBoardFetcherApp {
         }
 
         final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();
-        condorizer.ticketBoardToCsvFiles(tbt, boardId, outputDir);
+        condorizer.ticketBoardToCsvFiles(
+                tbt,
+                boardId,
+                outputDir
+        );
     }
 
 }

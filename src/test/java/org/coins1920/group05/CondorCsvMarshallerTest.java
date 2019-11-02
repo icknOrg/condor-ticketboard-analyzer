@@ -49,10 +49,10 @@ public class CondorCsvMarshallerTest {
 
     private List<Person> testPersons() {
         final List<Person> persons = new LinkedList<>();
-        persons.add(new Person(1L, "ralf", "2010-09-12T04:00:00+00:00"));
-        persons.add(new Person(2L, "mike", "2010-09-12T04:00:00+00:00"));
-        persons.add(new Person(3L, "meike", "2010-09-12T04:00:00+00:00"));
-        persons.add(new Person(4L, "anna", "2010-09-12T04:00:00+00:00"));
+        persons.add(new Person("1", "ralf", "2010-09-12T04:00:00+00:00"));
+        persons.add(new Person("2", "mike", "2010-09-12T04:00:00+00:00"));
+        persons.add(new Person("3", "meike", "2010-09-12T04:00:00+00:00"));
+        persons.add(new Person("4", "anna", "2010-09-12T04:00:00+00:00"));
         return persons;
     }
 

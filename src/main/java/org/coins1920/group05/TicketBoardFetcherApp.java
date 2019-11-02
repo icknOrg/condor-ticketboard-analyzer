@@ -1,6 +1,6 @@
 package org.coins1920.group05;
 
-import org.coins1920.group05.fetcher.*;
+import org.coins1920.group05.fetcher.TicketBoard;
 
 import java.io.IOException;
 
@@ -10,14 +10,15 @@ import java.io.IOException;
 public class TicketBoardFetcherApp {
 
     public static void main(String[] args) throws IOException {
-        if (args.length < 2) {
+        if (args.length < 3) {
             throw new IllegalArgumentException("Not enough arguments given!");
         }
-        final String ticketBoardString = args[0];
+        final String ticketBoardTypeString = args[0];
         final String boardId = args[1];
+        final String outputDir = args[2];
 
         final TicketBoard tbt;
-        switch (ticketBoardString.toLowerCase()) {
+        switch (ticketBoardTypeString.toLowerCase()) {
             case "trello":
                 tbt = TicketBoard.TRELLO;
                 break;
@@ -28,14 +29,8 @@ public class TicketBoardFetcherApp {
                 throw new IllegalArgumentException("Could not recognize ticket board type!");
         }
 
-        final String apiKey = System.getenv("TRELLO_API_KEY");
-        final String oauthToken = System.getenv("TRELLO_OAUTH_KEY");
-
-        final TicketBoardFetcher fetcher = new TicketBoardFetcherImpl(tbt, apiKey, oauthToken);
-        fetcher.fetchBoardMembers(boardId);
-
-        final CondorCsvMarshaller condorCsvMarshaller = new DefaultCondorCsvMarshaller();
-        // TODO: condorCsvMarshaller.write(...);
+        final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();
+        condorizer.ticketBoardToCsvFiles(tbt, boardId, outputDir);
     }
 
 }

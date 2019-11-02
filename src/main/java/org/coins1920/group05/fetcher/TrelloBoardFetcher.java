@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TicketBoardFetcherImpl implements TicketBoardFetcher {
+public class TrelloBoardFetcher implements TicketBoardFetcher {
 
-    private Logger logger = LoggerFactory.getLogger(TicketBoardFetcherImpl.class);
+    private Logger logger = LoggerFactory.getLogger(TrelloBoardFetcher.class);
 
     private final RestTemplate rt;
     private final String key;
     private final String token;
 
-    public TicketBoardFetcherImpl(TicketBoard tbt, String key, String token) {
+    public TrelloBoardFetcher(TicketBoard tbt, String key, String token) {
         // TODO: distinguish between Trello, Jira, ... implementations (via "tbt")!
         this.key = key;
         this.token = token;

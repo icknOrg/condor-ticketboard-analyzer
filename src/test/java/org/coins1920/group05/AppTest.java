@@ -1,5 +1,6 @@
 package org.coins1920.group05;
 
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -16,10 +17,11 @@ public class AppTest {
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
+    @Ignore
     public void testBoardFetching() throws IOException {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final String boardId = "lgaJQMYA";
-        final String[] args = {"trello", boardId, "/tmp/"}; // TODO: use testFolder.getAbsolutePath() for Windows builds!
+        final String[] args = {"trello", boardId, testFolder.getAbsolutePath()};
         TicketBoardFetcherApp.main(args);
     }
 

@@ -1,6 +1,7 @@
 package org.coins1920.group05;
 
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
+import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Board;
 import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
@@ -41,7 +42,7 @@ public class TrelloFetcherTest {
         final List<Member> members = fetcher.fetchBoardMembers("lgaJQMYA");
         assertThat(members, is(not(nullValue())));
         assertThat(members.size(), is(not(0)));
-        logger.info("There are " + members.size() + " members!");
+        logger.info("There is/are " + members.size() + " member(s)!");
         logger.info(" the first one is: " + members.get(0));
 
         final long membersCalledBugs = members
@@ -56,7 +57,7 @@ public class TrelloFetcherTest {
         final List<Card> cards = fetcher.fetchTickets("lgaJQMYA");
         assertThat(cards, is(not(nullValue())));
         assertThat(cards.size(), is(not(0)));
-        logger.info("There are " + cards.size() + " cards!");
+        logger.info("There is/are " + cards.size() + " card(s)!");
         logger.info(" the first one is: " + cards.get(0));
 
         final long cardsNamedRCsvStructure = cards
@@ -64,6 +65,21 @@ public class TrelloFetcherTest {
                 .filter(m -> m.getName().equals("CSV structure"))
                 .count();
         assertThat(cardsNamedRCsvStructure, is(1L));
+    }
+
+    @Test
+    public void testFetchActionsForCard() {
+        final List<Action> actions = fetcher.fetchActionsForTicket("5db19ed82bd7cd5b26346bd7");
+        assertThat(actions, is(not(nullValue())));
+        assertThat(actions.size(), is(not(0)));
+        logger.info("There is/are " + actions.size() + " action(s)!");
+        logger.info(" the first one is: " + actions.get(0));
+
+        final long actionsWithCreateCardType = actions
+                .stream()
+                .filter(a -> a.getType().equals("createCard"))
+                .count();
+        assertThat(actionsWithCreateCardType, is(1L));
     }
 
     @Test

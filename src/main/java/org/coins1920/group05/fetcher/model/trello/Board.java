@@ -1,10 +1,13 @@
 package org.coins1920.group05.fetcher.model.trello;
 
 import lombok.Getter;
+import lombok.ToString;
 import org.coins1920.group05.fetcher.model.general.AbstractBoard;
 
 @Getter
+@ToString(callSuper = true)
 public class Board extends AbstractBoard {
+    private String name;
     private String desc;
     private String descData;
     private boolean closed;

@@ -1,5 +1,6 @@
 package org.coins1920.group05.fetcher;
 
+import org.coins1920.group05.fetcher.model.general.AbstractAction;
 import org.coins1920.group05.fetcher.model.general.AbstractTicket;
 import org.coins1920.group05.fetcher.model.trello.Board;
 import org.coins1920.group05.fetcher.model.trello.Member;
@@ -33,4 +34,6 @@ public interface TicketBoardFetcher {
     List<Member> fetchBoardMembers(String boardId);
 
     List<? extends AbstractTicket> fetchTickets(String boardId);
+
+    List<? extends AbstractAction> fetchActionsForTicket(String ticketId);
 }

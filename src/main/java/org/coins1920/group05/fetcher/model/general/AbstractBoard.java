@@ -5,5 +5,4 @@ import lombok.Getter;
 @Getter
 public class AbstractBoard {
     private String id;
-    private String name;
 }

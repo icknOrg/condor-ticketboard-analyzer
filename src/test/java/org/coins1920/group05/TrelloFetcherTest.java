@@ -83,6 +83,21 @@ public class TrelloFetcherTest {
     }
 
     @Test
+    public void testFetchMembersForCard() {
+        final List<Member> members = fetcher.fetchMembersForTicket("5db19ed8256e14829baf66e0");
+        assertThat(members, is(not(nullValue())));
+        assertThat(members.size(), is(not(0)));
+        logger.info("There is/are " + members.size() + " member(s)!");
+        logger.info(" the first one is: " + members.get(0));
+
+        final long membersWithUsernamePp89 = members
+                .stream()
+                .filter(a -> a.getUsername().equals("patrickp89"))
+                .count();
+        assertThat(membersWithUsernamePp89, is(1L));
+    }
+
+    @Test
     @Ignore
     public void testFetchAllBoardsOfMember() {
         final List<Board> boards = fetcher.fetchBoards();

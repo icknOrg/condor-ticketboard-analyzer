@@ -69,7 +69,9 @@ public class TrelloBoardFetcher implements TicketBoardFetcher {
 
     @Override
     public List<Member> fetchMembersForTicket(String ticketId) {
-        return null;
+        final String url = assembleUrl("cards/{ticketId}/members", null);
+        final ResponseEntity<Member[]> response = rt.getForEntity(url, Member[].class, ticketId, key, token);
+        return nonNullResponseEntities(response);
     }
 
     private String assembleUrl(String resourcePart, String urlParameters) {

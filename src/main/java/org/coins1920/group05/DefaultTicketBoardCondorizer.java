@@ -70,13 +70,18 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                 .filter(a -> a.getType().equalsIgnoreCase(cardCreatedTypeString))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("No action with type '" + cardCreatedTypeString + "' found!"));
-        card.setCreator(createCardAction.getMemberCreator().getFullName());
+        card.setCreator(createCardAction.getMemberCreator().getId());
         return card;
     }
 
     private List<Card> duplicateCardForAllAuthors(Card card, List<Member> members) {
-        // TODO: always add an (n+1)th card with authoer := creator ??
         if (members.isEmpty()) {
+            // TODO: this is NOT correct! it will only generate an edge for the creation (from the creator
+            // TODO: to himself) if there are no other authors!
+            // TODO: ALWAYS add an (n+1)th card with author := creator !
+            final Member[] ma = {};
+            card.setMembers(ma);
+            card.setAuthor(card.getCreator());
             final List<Card> l = new LinkedList<>();
             l.add(card);
             return l;
@@ -86,7 +91,7 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                         final Member[] ma = {m};
                         final Card cardClone = SerializationUtils.clone(card);
                         cardClone.setMembers(ma);
-                        cardClone.setAuthor(m.getFullName());
+                        cardClone.setAuthor(m.getId());
                         return cardClone;
                     })
                     .collect(Collectors.toList());
@@ -94,9 +99,10 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
     }
 
     private List<Person> trelloMembersToCondorPersons(List<Member> members) {
+        final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: calculate "starttime"!
         return members
                 .stream()
-                .map(m -> new Person(m.getId(), m.getFullName(), "")) // TODO: calculate "starttime"!
+                .map(m -> new Person(m.getId(), m.getFullName(), fakeStartDate))
                 .collect(Collectors.toList());
     }
 
@@ -115,9 +121,11 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         }
     }
 
-    private Function<Card, Ticket> cardToTicket = c ->
-            new Ticket(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
-                    "", "", "", "", // TODO: map other stuff as well!
-                    "", "", "");
+    private Function<Card, Ticket> cardToTicket = c -> {
+        final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: map other stuff as well!
+        return new Ticket(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
+                fakeStartDate, fakeStartDate, "", "",
+                "", "", "");
+    };
 
 }

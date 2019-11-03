@@ -24,7 +24,7 @@ public class CondorizerTest {
         final Pair<File, File> csvFiles = condorizer.ticketBoardToCsvFiles(
                 TicketBoard.TRELLO,
                 "lgaJQMYA",
-                "/tmp/" // TODO: use -> testFolder.getAbsolutePath()
+                testFolder.getAbsolutePath()
         );
 
         assertThat(csvFiles, is(not(nullValue())));

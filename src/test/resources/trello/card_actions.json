@@ -1,0 +1,83 @@
+[
+  {
+    "id": "5dbe9a809e13f2051cbfc60e",
+    "idMemberCreator": "5db19e5a24cbf6213309977c",
+    "data": {
+      "old": {
+        "idList": "5db19ed8565ba36f432309be"
+      },
+      "card": {
+        "idList": "5db19ed87283f81044ad0de8",
+        "id": "5db19ed82bd7cd5b26346bd7",
+        "name": "Research Papers",
+        "idShort": 2,
+        "shortLink": "lgG0lW7M"
+      },
+      "board": {
+        "id": "5db19ed8f8b54324663c159c",
+        "name": "Team5Coin",
+        "shortLink": "lgaJQMYA"
+      },
+      "listBefore": {
+        "id": "5db19ed8565ba36f432309be",
+        "name": "Things To Do"
+      },
+      "listAfter": {
+        "id": "5db19ed87283f81044ad0de8",
+        "name": "Done"
+      }
+    },
+    "type": "updateCard",
+    "date": "2019-11-03T09:14:40.080Z",
+    "limits": {},
+    "memberCreator": {
+      "id": "5db19e5a24cbf6213309977c",
+      "activityBlocked": false,
+      "avatarHash": null,
+      "avatarUrl": null,
+      "fullName": "Bugs",
+      "idMemberReferrer": null,
+      "initials": "B",
+      "nonPublic": {},
+      "nonPublicAvailable": false,
+      "username": "bugs161"
+    }
+  },
+  {
+    "id": "5db19ed82bd7cd5b26346bd8",
+    "idMemberCreator": "5db19e5a24cbf6213309977c",
+    "data": {
+      "creationMethod": "assisted",
+      "card": {
+        "id": "5db19ed82bd7cd5b26346bd7",
+        "name": "Research Papers",
+        "idShort": 2,
+        "shortLink": "lgG0lW7M"
+      },
+      "list": {
+        "id": "5db19ed8565ba36f432309be",
+        "name": "Things To Do"
+      },
+      "board": {
+        "id": "5db19ed8f8b54324663c159c",
+        "name": "Team5Coin",
+        "shortLink": "lgaJQMYA"
+      }
+    },
+    "type": "createCard",
+    "date": "2019-10-24T12:53:44.832Z",
+    "limits": {},
+    "memberCreator": {
+      "id": "5db19e5a24cbf6213309977c",
+      "activityBlocked": false,
+      "avatarHash": null,
+      "avatarUrl": null,
+      "fullName": "Bugs",
+      "idMemberReferrer": null,
+      "initials": "B",
+      "nonPublic": {},
+      "nonPublicAvailable": false,
+      "username": "bugs161"
+    }
+  }
+]

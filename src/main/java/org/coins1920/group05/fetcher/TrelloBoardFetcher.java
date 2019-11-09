@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class TrelloBoardFetcher implements TicketBoardFetcher {
+public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Card, Action> {
 
     private Logger logger = LoggerFactory.getLogger(TrelloBoardFetcher.class);
 
@@ -29,6 +29,14 @@ public class TrelloBoardFetcher implements TicketBoardFetcher {
         this.token = token;
         this.rt = new RestTemplateBuilder()
                 .rootUri("https://api.trello.com/")
+                .build();
+    }
+
+    public TrelloBoardFetcher(String key, String token, String url) {
+        this.key = key;
+        this.token = token;
+        this.rt = new RestTemplateBuilder()
+                .rootUri(url)
                 .build();
     }
 

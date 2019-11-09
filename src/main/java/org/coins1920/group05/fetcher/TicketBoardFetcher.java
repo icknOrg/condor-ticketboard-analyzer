@@ -4,8 +4,6 @@ import org.coins1920.group05.fetcher.model.general.AbstractAction;
 import org.coins1920.group05.fetcher.model.general.AbstractBoard;
 import org.coins1920.group05.fetcher.model.general.AbstractMember;
 import org.coins1920.group05.fetcher.model.general.AbstractTicket;
-import org.coins1920.group05.fetcher.model.trello.Board;
-import org.coins1920.group05.fetcher.model.trello.Member;
 
 import java.util.List;
 
@@ -13,9 +11,12 @@ import java.util.List;
  * A generic ticket board fetcher interface. Abstracts from the actual ticket board
  * product (Trello, Jira, ...).
  */
-public interface TicketBoardFetcher {
+public interface TicketBoardFetcher<B extends AbstractBoard,
+        M extends AbstractMember,
+        T extends AbstractTicket,
+        A extends AbstractAction> {
 
-    List<? extends AbstractBoard> fetchBoards();
+    List<B> fetchBoards();
 
     /**
      * Fetches a single board for a given boardId.
@@ -24,7 +25,7 @@ public interface TicketBoardFetcher {
      *                website URLs (e.g. "lgaJQMYA" in "https://trello.com/b/lgaJQMYA/team5coin")
      * @return a board POJO containing all info needed for a Condor import
      */
-    <T extends AbstractBoard> T fetchBoard(String boardId);
+    B fetchBoard(String boardId);
 
     /**
      * Fetches all members that have access to a given board.
@@ -33,11 +34,11 @@ public interface TicketBoardFetcher {
      *                website URLs (e.g. "lgaJQMYA" in "https://trello.com/b/lgaJQMYA/team5coin")
      * @return the board's members
      */
-    List<? extends AbstractMember> fetchBoardMembers(String boardId);
+    List<M> fetchBoardMembers(String boardId);
 
-    List<? extends AbstractTicket> fetchTickets(String boardId);
+    List<T> fetchTickets(String boardId);
 
-    List<? extends AbstractAction> fetchActionsForTicket(String ticketId);
+    List<A> fetchActionsForTicket(String ticketId);
 
-    List<? extends AbstractMember> fetchMembersForTicket(String ticketId);
+    List<M> fetchMembersForTicket(String ticketId);
 }

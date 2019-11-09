@@ -1,0 +1,22 @@
+[
+  {
+    "id": "5db19ed82bd7cd5b26346bd7",
+    "name": "Research Papers",
+    "members": []
+  },
+  {
+    "id": "5db19ed8c756ad2113cfc830",
+    "name": "CSV structure",
+    "members": []
+  },
+  {
+    "id": "5db19ed8256e14829baf66e0",
+    "name": "Java Fetcher",
+    "members": [
+      {
+        "id": "55411045800f0e8c3caf669c",
+        "fullName": "Patrick P"
+      }
+    ]
+  }
+]

@@ -49,7 +49,10 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<User> fetchBoardMembers(String owner, String board) {
-        return null;
+        final String url = "/repos/{owner}/{board}/contributors";
+        final ResponseEntity<User[]> response = rt.getForEntity(url, User[].class, owner, board);
+        // TODO: pagination! Consecutively add '...?page=2&per_page=100' to the URL!
+        return RestClientHelper.nonNullResponseEntities(response);
     }
 
     @Override

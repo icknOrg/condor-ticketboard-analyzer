@@ -2,6 +2,7 @@ package org.coins1920.group05;
 
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
 import org.coins1920.group05.fetcher.model.github.Issue;
+import org.coins1920.group05.fetcher.model.github.User;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -26,11 +27,20 @@ public class GitHubFetcherTest {
     }
 
     @Test
-    public void testFetchCards() {
+    public void testFetchIssues() {
         final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME);
         assertThat(issues, is(not(nullValue())));
         assertThat(issues.size(), is(not(0)));
         logger.info("There is/are " + issues.size() + " issue(s)!");
         logger.info(" the first one is: " + issues.get(0));
+    }
+
+    @Test
+    public void testFetchContributors() {
+        final List<User> contributors = fetcher.fetchBoardMembers(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME);
+        assertThat(contributors, is(not(nullValue())));
+        assertThat(contributors.size(), is(not(0)));
+        logger.info("There is/are " + contributors.size() + " issue(s)!");
+        logger.info(" the first one is: " + contributors.get(0));
     }
 }

@@ -22,16 +22,16 @@ import java.util.stream.Stream;
 public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
 
     @Override
-    public Pair<File, File> ticketBoardToCsvFiles(TicketBoard ticketBoardType, String boardId, String outputDir) {
+    public Pair<File, File> ticketBoardToCsvFiles(TicketBoard ticketBoardType, String owner, String board, String outputDir) {
         switch (ticketBoardType) {
             case TRELLO:
-                return fetchTrelloBoard(boardId, outputDir);
+                return fetchTrelloBoard(board, outputDir);
 
             case JIRA:
                 throw new UnsupportedOperationException();
 
             case GITHUB:
-                return fetchGitHubBoard(boardId, outputDir);
+                return fetchGitHubIssues(owner, board, outputDir);
 
             default:
                 throw new IllegalArgumentException("Ticket board type wasn't recognized!");
@@ -129,12 +129,12 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                 "", "", "");
     };
 
-    private Pair<File, File> fetchGitHubBoard(String boardId, String outputDir) {
+    private Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
         final String apiKey = System.getenv("GITHUB_API_KEY");
         final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
         final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(apiKey, oauthToken);
 
-        final List<User> githubRepoUsers = fetcher.fetchBoardMembers("", boardId); // TODO: we need the owner!
+        final List<User> githubRepoUsers = fetcher.fetchBoardMembers(owner, board);
         throw new UnsupportedOperationException();
 
         // TODO: ...

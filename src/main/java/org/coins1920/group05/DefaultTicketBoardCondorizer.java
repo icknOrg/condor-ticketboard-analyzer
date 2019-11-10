@@ -1,12 +1,10 @@
 package org.coins1920.group05;
 
 import org.apache.commons.lang3.SerializationUtils;
-import org.coins1920.group05.fetcher.CondorCsvMarshaller;
-import org.coins1920.group05.fetcher.DefaultCondorCsvMarshaller;
-import org.coins1920.group05.fetcher.TicketBoard;
-import org.coins1920.group05.fetcher.TrelloBoardFetcher;
+import org.coins1920.group05.fetcher.*;
 import org.coins1920.group05.fetcher.model.condor.Person;
 import org.coins1920.group05.fetcher.model.condor.Ticket;
+import org.coins1920.group05.fetcher.model.github.User;
 import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
@@ -32,6 +30,9 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
             case JIRA:
                 throw new UnsupportedOperationException();
 
+            case GITHUB:
+                return fetchGitHubBoard(boardId, outputDir);
+
             default:
                 throw new IllegalArgumentException("Ticket board type wasn't recognized!");
         }
@@ -42,11 +43,11 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         final String oauthToken = System.getenv("TRELLO_OAUTH_KEY");
         final TrelloBoardFetcher fetcher = new TrelloBoardFetcher(apiKey, oauthToken);
 
-        final List<Member> trelloBoardMembers = fetcher.fetchBoardMembers(boardId);
+        final List<Member> trelloBoardMembers = fetcher.fetchBoardMembers(null, boardId);
         final List<Person> persons = trelloMembersToCondorPersons(trelloBoardMembers);
 
         // fetch all cards for the given board:
-        final Stream<Card> trelloCards = fetcher.fetchTickets(boardId)
+        final Stream<Card> trelloCards = fetcher.fetchTickets(null, boardId)
                 .stream()
                 .map(c -> addAuthor(c, fetcher.fetchActionsForTicket(c.getId())));
 
@@ -127,5 +128,16 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                 fakeStartDate, fakeStartDate, "", "",
                 "", "", "");
     };
+
+    private Pair<File, File> fetchGitHubBoard(String boardId, String outputDir) {
+        final String apiKey = System.getenv("GITHUB_API_KEY");
+        final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
+        final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(apiKey, oauthToken);
+
+        final List<User> githubRepoUsers = fetcher.fetchBoardMembers("", boardId); // TODO: we need the owner!
+        throw new UnsupportedOperationException();
+
+        // TODO: ...
+    }
 
 }

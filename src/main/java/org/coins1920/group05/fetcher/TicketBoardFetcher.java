@@ -21,22 +21,24 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
     /**
      * Fetches a single board for a given boardId.
      *
-     * @param boardId the board's ID. For Trello boards this is the ID found in Trello's
+     * @param owner the board/repo owner's name
+     * @param board the board name or ID. For Trello boards this is the ID found in Trello's
      *                website URLs (e.g. "lgaJQMYA" in "https://trello.com/b/lgaJQMYA/team5coin")
      * @return a board POJO containing all info needed for a Condor import
      */
-    B fetchBoard(String boardId);
+    B fetchBoard(String owner, String board);
 
     /**
      * Fetches all members that have access to a given board.
      *
-     * @param boardId the board's ID. For Trello boards this is the ID found in Trello's
+     * @param owner the board/repo owner's name
+     * @param board the board name or ID. For Trello boards this is the ID found in Trello's
      *                website URLs (e.g. "lgaJQMYA" in "https://trello.com/b/lgaJQMYA/team5coin")
      * @return the board's members
      */
-    List<M> fetchBoardMembers(String boardId);
+    List<M> fetchBoardMembers(String owner, String board);
 
-    List<T> fetchTickets(String boardId);
+    List<T> fetchTickets(String owner, String board);
 
     List<A> fetchActionsForTicket(String ticketId);
 

@@ -84,7 +84,7 @@ public class TrelloFetcherTest {
 
     @Test
     public void testFetchSingleBoard() {
-        final Board board = fetcher.fetchBoard(SAMPLE_BOARD_SHORTLINK);
+        final Board board = fetcher.fetchBoard(null, SAMPLE_BOARD_SHORTLINK);
         assertThat(board, is(not(nullValue())));
         assertThat(board.getId(), is("5db19ed8f8b54324663c159c"));
         assertThat(board.getName(), is("Team5Coin"));
@@ -92,7 +92,7 @@ public class TrelloFetcherTest {
 
     @Test
     public void testFetchBoardMembers() {
-        final List<Member> members = fetcher.fetchBoardMembers(SAMPLE_BOARD_SHORTLINK);
+        final List<Member> members = fetcher.fetchBoardMembers(null, SAMPLE_BOARD_SHORTLINK);
         assertThat(members, is(not(nullValue())));
         assertThat(members.size(), is(not(0)));
         logger.info("There is/are " + members.size() + " member(s)!");
@@ -107,7 +107,7 @@ public class TrelloFetcherTest {
 
     @Test
     public void testFetchCards() {
-        final List<Card> cards = fetcher.fetchTickets(SAMPLE_BOARD_SHORTLINK);
+        final List<Card> cards = fetcher.fetchTickets(null, SAMPLE_BOARD_SHORTLINK);
         assertThat(cards, is(not(nullValue())));
         assertThat(cards.size(), is(not(0)));
         logger.info("There is/are " + cards.size() + " card(s)!");

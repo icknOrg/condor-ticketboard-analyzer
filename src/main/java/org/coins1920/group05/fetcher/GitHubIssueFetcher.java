@@ -65,6 +65,9 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<Interaction> fetchActionsForTicket(String ticketId) {
+        // TODO: curl 'https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/198/events'
+        // TODO: and
+        // TODO: curl 'https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/220/comments'
         return null;
     }
 

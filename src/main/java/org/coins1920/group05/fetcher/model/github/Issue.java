@@ -13,4 +13,6 @@ public class Issue extends AbstractTicket {
     private String title;
     private String state;
     private String created_at;
+    private User user; // the ticket author
+    private String events_url; // a technical property that points to all events linked to this issue
 }

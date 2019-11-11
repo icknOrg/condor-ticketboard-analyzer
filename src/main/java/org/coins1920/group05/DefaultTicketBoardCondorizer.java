@@ -4,6 +4,9 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.coins1920.group05.fetcher.*;
 import org.coins1920.group05.fetcher.model.condor.Person;
 import org.coins1920.group05.fetcher.model.condor.Ticket;
+import org.coins1920.group05.fetcher.model.general.AbstractMember;
+import org.coins1920.group05.fetcher.model.general.AbstractTicket;
+import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
 import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Card;
@@ -11,7 +14,6 @@ import org.coins1920.group05.fetcher.model.trello.Member;
 import org.coins1920.group05.fetcher.util.Pair;
 
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,11 +45,12 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         final String oauthToken = System.getenv("TRELLO_OAUTH_KEY");
         final TrelloBoardFetcher fetcher = new TrelloBoardFetcher(apiKey, oauthToken);
 
+        // fetch all board members:
         final List<Member> trelloBoardMembers = fetcher.fetchBoardMembers(null, boardId);
-        final List<Person> persons = trelloMembersToCondorPersons(trelloBoardMembers);
 
         // fetch all cards for the given board:
-        final Stream<Card> trelloCards = fetcher.fetchTickets(null, boardId)
+        final Stream<Card> trelloCards = fetcher
+                .fetchTickets(null, boardId)
                 .stream()
                 .map(c -> addAuthor(c, fetcher.fetchActionsForTicket(c.getId())));
 
@@ -57,11 +60,44 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                 .map(c -> duplicateCardForAllAuthors(c, fetcher.fetchMembersForTicket(c.getId())))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-        final List<Ticket> tickets = trelloCardsToCondorTickets(trelloCardsForAllAuthors);
 
-        // write the CSV files to disc:
-        final CondorCsvMarshaller condorCsvMarshaller = new DefaultCondorCsvMarshaller();
-        return condorCsvMarshaller.write(persons, tickets, outputDir);
+        // map to edges (tickets) and persons (nodes), then write to CSV files:
+        return mapAndWriteToCsvFiles(
+                trelloBoardMembers,
+                trelloCardsForAllAuthors,
+                this::trelloMembersToCondorPersons,
+                this::trelloCardsToCondorTickets,
+                outputDir
+        );
+    }
+
+    private Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
+        final String apiKey = System.getenv("GITHUB_API_KEY");
+        final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
+        final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(apiKey, oauthToken);
+
+        // fetch all repo contributors:
+        final List<User> githubRepoContributors = fetcher.fetchBoardMembers(owner, board);
+
+        // fetch all issues of the given repo:
+        final Stream<Issue> githubIssues = fetcher.fetchTickets(owner, board)
+                .stream();
+
+        // the final data set should be "rectangular", i.e. a ticket/card tuple is duplicated
+        // for _every_ member that changed it, wrote a comment, etc.:
+        final List<Issue> githubIssuesForAllAuthors = githubIssues
+                .map(i -> duplicateIssueForAllContributors(i, fetcher.fetchMembersForTicket(i.getId())))
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        // map to edges (tickets) and persons (nodes), then write to CSV files:
+        return mapAndWriteToCsvFiles(
+                githubRepoContributors,
+                githubIssuesForAllAuthors,
+                this::githubContributorsToCondorPersons,
+                this::githubIssuesToCondorTickets,
+                outputDir
+        );
     }
 
     private Card addAuthor(Card card, List<Action> trelloActions) {
@@ -99,6 +135,10 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         }
     }
 
+    private List<Issue> duplicateIssueForAllContributors(Issue issue, List<User> contributors) {
+        return new LinkedList<>(); // TODO: ...
+    }
+
     private List<Person> trelloMembersToCondorPersons(List<Member> members) {
         final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: calculate "starttime"!
         return members
@@ -108,36 +148,39 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
     }
 
     private List<Ticket> trelloCardsToCondorTickets(List<Card> cards) {
+        Function<Card, Ticket> cardToTicket = c -> {
+            final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: map other stuff as well!
+            return new Ticket(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
+                    fakeStartDate, fakeStartDate, "", "",
+                    "", "", "");
+        };
+
         return cards
                 .stream()
                 .map(cardToTicket)
                 .collect(Collectors.toList());
     }
 
-    private <V> List<V> toList(V[] a) {
-        if (a == null) {
-            return new LinkedList<V>();
-        } else {
-            return Arrays.asList(a);
-        }
+    private List<Person> githubContributorsToCondorPersons(List<User> githubRepoUsers) {
+        return new LinkedList<>(); // TODO: ...
     }
 
-    private Function<Card, Ticket> cardToTicket = c -> {
-        final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: map other stuff as well!
-        return new Ticket(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
-                fakeStartDate, fakeStartDate, "", "",
-                "", "", "");
-    };
+    private List<Ticket> githubIssuesToCondorTickets(List<Issue> issues) {
+        return new LinkedList<>(); // TODO: ...
+    }
 
-    private Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
-        final String apiKey = System.getenv("GITHUB_API_KEY");
-        final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
-        final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(apiKey, oauthToken);
+    private <M extends AbstractMember, T extends AbstractTicket> Pair<File, File> mapAndWriteToCsvFiles(
+            List<M> trelloBoardMembers,
+            List<T> trelloCardsForAllAuthors,
+            Function<List<M>, List<Person>> toPersons,
+            Function<List<T>, List<Ticket>> toTickets, String outputDir) {
+        // map to persons and tickets:
+        final List<Person> persons = toPersons.apply(trelloBoardMembers);
+        final List<Ticket> tickets = toTickets.apply(trelloCardsForAllAuthors);
 
-        final List<User> githubRepoUsers = fetcher.fetchBoardMembers(owner, board);
-        throw new UnsupportedOperationException();
-
-        // TODO: ...
+        // write the CSV files to disc:
+        final CondorCsvMarshaller condorCsvMarshaller = new DefaultCondorCsvMarshaller();
+        return condorCsvMarshaller.write(persons, tickets, outputDir);
     }
 
 }

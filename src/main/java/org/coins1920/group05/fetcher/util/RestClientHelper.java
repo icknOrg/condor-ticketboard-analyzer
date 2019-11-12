@@ -14,7 +14,7 @@ public class RestClientHelper {
     private static Logger logger = LoggerFactory.getLogger(RestClientHelper.class);
 
     public static <T> List<T> nonNullResponseEntities(ResponseEntity<T[]> response) {
-        if (response.getBody() == null) {
+        if (response == null || response.getBody() == null) {
             return new LinkedList<>();
         } else {
             logger.info("I got " + response.getBody().length + " item(s)!");

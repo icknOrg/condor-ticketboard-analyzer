@@ -11,6 +11,8 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Interaction> {
@@ -66,14 +68,27 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     @Override
     public List<Interaction> fetchActionsForTicket(String ticketId) {
         // TODO: curl 'https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/198/events'
-        // TODO: and
-        // TODO: curl 'https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/220/comments'
         return null;
     }
 
     @Override
-    public List<User> fetchMembersForTicket(String ticketId) {
-        return null;
+    public List<User> fetchMembersForTicket(String owner, String board, String ticketId) {
+        final List<User> contributors = new LinkedList<>();
+
+        // to get ALL GitHub users that participated in an issue, we first get all its assignees:
+        final String url = "/repos/{owner}/{board}/issues/{ticketId}";
+        final ResponseEntity<Issue> response = rt.getForEntity(url, Issue.class, owner, board, ticketId);
+        if (response.getBody() != null) {
+            contributors.addAll(Arrays.asList(response.getBody().getAssignees()));
+        }
+
+        // ...then all those users who wrote a comment:
+        // TODO: curl 'https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/220/comments'
+
+        // and finally everyone who reacted (e.g. by emoji-liking a comment:
+        // TODO: fetchActionsForTicket().getUsers()
+
+        return contributors;
     }
 
 }

@@ -7,11 +7,11 @@
 
     <logger name="org.apache.http" level="WARN" />
     <logger name="org.apache.http.client.protocol" level="ERROR" />
-    <logger name="org.springframework.web.client" level="INFO" />
+    <logger name="org.springframework.web.client" level="DEBUG" />
     <logger name="org.springframework.web.HttpLogging" level="INFO" />
     <logger name="org.eclipse.jetty" level="WARN" />
 
-    <root level="debug">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT" />
     </root>
 </configuration>

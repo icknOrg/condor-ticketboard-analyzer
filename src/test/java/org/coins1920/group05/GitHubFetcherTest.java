@@ -18,7 +18,8 @@ public class GitHubFetcherTest {
     private Logger logger = LoggerFactory.getLogger(GitHubFetcherTest.class);
 
     private static final String SAMPLE_BOARD_OWNER = "linuxmint";
-    private static final String SAMPLE_BOARD_NAME = "cinnamon-spices-extensions";
+    private static final String SAMPLE_BOARD_NAME1 = "cinnamon-spices-extensions";
+    private static final String SAMPLE_BOARD_NAME2 = "cinnamon";
     private static GitHubIssueFetcher fetcher;
 
     @BeforeClass
@@ -28,7 +29,7 @@ public class GitHubFetcherTest {
 
     @Test
     public void testFetchIssues() {
-        final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME);
+        final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1);
         assertThat(issues, is(not(nullValue())));
         assertThat(issues.size(), is(not(0)));
         logger.info("There is/are " + issues.size() + " issue(s)!");
@@ -36,11 +37,30 @@ public class GitHubFetcherTest {
     }
 
     @Test
-    public void testFetchContributors() {
-        final List<User> contributors = fetcher.fetchBoardMembers(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME);
+    public void testFetchRepoContributors() {
+        final List<User> contributors = fetcher.fetchBoardMembers(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1);
         assertThat(contributors, is(not(nullValue())));
         assertThat(contributors.size(), is(not(0)));
-        logger.info("There is/are " + contributors.size() + " issue(s)!");
+        logger.info("There is/are " + contributors.size() + " contributor(s)!");
         logger.info(" the first one is: " + contributors.get(0));
+    }
+
+    @Test
+    public void testFetchIssueContributors() {
+        final List<User> contributors = fetcher.fetchMembersForTicket(
+                SAMPLE_BOARD_OWNER,
+                SAMPLE_BOARD_NAME2,
+                "7168"
+        );
+        assertThat(contributors, is(not(nullValue())));
+        assertThat(contributors.size(), is(not(0)));
+        logger.info("There is/are " + contributors.size() + " contributor(s)!");
+        logger.info(" the first one is: " + contributors.get(0));
+
+        final long contributorsCalledClefebvre = contributors
+                .stream()
+                .filter(a -> a.getLogin().equals("clefebvre"))
+                .count();
+        assertThat(contributorsCalledClefebvre, is(1L));
     }
 }

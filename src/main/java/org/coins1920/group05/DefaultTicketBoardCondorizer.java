@@ -57,7 +57,7 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         // the final data set should be "rectangular", i.e. a ticket/card tuple is duplicated
         // for _every_ member that changed it, wrote a comment, etc.:
         final List<Card> trelloCardsForAllAuthors = trelloCards
-                .map(c -> duplicateCardForAllAuthors(c, fetcher.fetchMembersForTicket(c.getId())))
+                .map(c -> duplicateCardForAllAuthors(c, fetcher.fetchMembersForTicket(null, null, c.getId())))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
@@ -80,13 +80,14 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
         final List<User> githubRepoContributors = fetcher.fetchBoardMembers(owner, board);
 
         // fetch all issues of the given repo:
-        final Stream<Issue> githubIssues = fetcher.fetchTickets(owner, board)
+        final Stream<Issue> githubIssues = fetcher
+                .fetchTickets(owner, board)
                 .stream();
 
         // the final data set should be "rectangular", i.e. a ticket/card tuple is duplicated
         // for _every_ member that changed it, wrote a comment, etc.:
         final List<Issue> githubIssuesForAllAuthors = githubIssues
-                .map(i -> duplicateIssueForAllContributors(i, fetcher.fetchMembersForTicket(i.getId())))
+                .map(i -> duplicateIssueForAllContributors(i, fetcher.fetchMembersForTicket(owner, board, i.getId())))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 

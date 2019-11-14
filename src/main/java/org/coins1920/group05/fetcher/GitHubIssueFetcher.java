@@ -1,9 +1,6 @@
 package org.coins1920.group05.fetcher;
 
-import org.coins1920.group05.fetcher.model.github.Interaction;
-import org.coins1920.group05.fetcher.model.github.Issue;
-import org.coins1920.group05.fetcher.model.github.Repo;
-import org.coins1920.group05.fetcher.model.github.User;
+import org.coins1920.group05.fetcher.model.github.*;
 import org.coins1920.group05.fetcher.util.RestClientHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +11,9 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Interaction> {
+public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event> {
 
     private static final String GITHUB_ROOT_URI = "https://api.github.com/";
 
@@ -66,7 +64,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     @Override
-    public List<Interaction> fetchActionsForTicket(String ticketId) {
+    public List<Event> fetchActionsForTicket(String ticketId) {
         // TODO: curl 'https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/198/events'
         return null;
     }
@@ -76,14 +74,21 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         final List<User> contributors = new LinkedList<>();
 
         // to get ALL GitHub users that participated in an issue, we first get all its assignees:
-        final String url = "/repos/{owner}/{board}/issues/{ticketId}";
-        final ResponseEntity<Issue> response = rt.getForEntity(url, Issue.class, owner, board, ticketId);
+        final String singelIssueUrl = "/repos/{owner}/{board}/issues/{ticketId}";
+        final ResponseEntity<Issue> response = rt.getForEntity(singelIssueUrl, Issue.class, owner, board, ticketId);
         if (response.getBody() != null) {
             contributors.addAll(Arrays.asList(response.getBody().getAssignees()));
         }
 
         // ...then all those users who wrote a comment:
-        // TODO: curl 'https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/220/comments'
+        final String commentsUrl = "/repos/{owner}/{board}/issues/{ticketId}/comments";
+        final ResponseEntity<Comment[]> commentsResponse = rt.getForEntity(commentsUrl, Comment[].class, owner, board, ticketId);
+        final List<Comment> comments = RestClientHelper.nonNullResponseEntities(commentsResponse);
+        final List<User> commentators = comments
+                .stream()
+                .map(Comment::getUser) // TODO: this is a bad idea, as the "created-at" timestamp info is lost!
+                .collect(Collectors.toList());
+        contributors.addAll(commentators);
 
         // and finally everyone who reacted (e.g. by emoji-liking a comment:
         // TODO: fetchActionsForTicket().getUsers()

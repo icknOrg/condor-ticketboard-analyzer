@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Ticket {
+public class Edge {
     private String Name;
     private String UUID;
     private String Source;

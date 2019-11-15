@@ -2,8 +2,8 @@ package org.coins1920.group05;
 
 import org.coins1920.group05.fetcher.CondorCsvMarshaller;
 import org.coins1920.group05.fetcher.DefaultCondorCsvMarshaller;
-import org.coins1920.group05.fetcher.model.condor.Person;
-import org.coins1920.group05.fetcher.model.condor.Ticket;
+import org.coins1920.group05.fetcher.model.condor.Actor;
+import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.util.Pair;
 import org.junit.Rule;
 import org.junit.Test;
@@ -38,8 +38,8 @@ public class CondorCsvMarshallerTest {
         final CondorCsvMarshaller condorCsvMarshaller = new DefaultCondorCsvMarshaller();
 
         final Pair<File, File> csvFiles = condorCsvMarshaller.write(
-                testPersons(),
-                testTickets(),
+                testActors(),
+                testEdges(),
                 testFolder.getAbsolutePath()
         );
         assertThat(csvFiles, is(not(nullValue())));
@@ -47,30 +47,30 @@ public class CondorCsvMarshallerTest {
         assertThat(csvFiles.getSecond(), is(not(nullValue())));
     }
 
-    private List<Person> testPersons() {
-        final List<Person> persons = new LinkedList<>();
-        persons.add(new Person("1", "ralf", "2010-09-12T04:00:00+00:00"));
-        persons.add(new Person("2", "mike", "2010-09-12T04:00:00+00:00"));
-        persons.add(new Person("3", "meike", "2010-09-12T04:00:00+00:00"));
-        persons.add(new Person("4", "anna", "2010-09-12T04:00:00+00:00"));
-        return persons;
+    private List<Actor> testActors() {
+        final List<Actor> actors = new LinkedList<>();
+        actors.add(new Actor("1", "ralf", "2010-09-12T04:00:00+00:00"));
+        actors.add(new Actor("2", "mike", "2010-09-12T04:00:00+00:00"));
+        actors.add(new Actor("3", "meike", "2010-09-12T04:00:00+00:00"));
+        actors.add(new Actor("4", "anna", "2010-09-12T04:00:00+00:00"));
+        return actors;
     }
 
-    private List<Ticket> testTickets() {
-        final List<Ticket> tickets = new LinkedList<>();
+    private List<Edge> testEdges() {
+        final List<Edge> edges = new LinkedList<>();
 
-        tickets.add(new Ticket("Ticket 13", "1312", "1", "2",
+        edges.add(new Edge("Ticket 13", "1312", "1", "2",
                 "2012-09-12T04:00:00+00:00", "2012-09-20T04:00:00+00:00", "15",
                 "8", "closed", "3", "7"));
 
-        tickets.add(new Ticket("Ticket 13", "1313", "1", "3",
+        edges.add(new Edge("Ticket 13", "1313", "1", "3",
                 "2012-09-12T04:00:00+00:00", "2012-09-20T04:00:00+00:00", "15",
                 "8", "closed", "3", "7"));
 
-        tickets.add(new Ticket("Ticket 15", "1521", "2", "4",
+        edges.add(new Edge("Ticket 15", "1521", "2", "4",
                 "2012-10-12T04:00:00+00:00", "2012-10-20T04:00:00+00:00", "15",
                 "8", "closed", "1", "0"));
-        return tickets;
+        return edges;
     }
 
 }

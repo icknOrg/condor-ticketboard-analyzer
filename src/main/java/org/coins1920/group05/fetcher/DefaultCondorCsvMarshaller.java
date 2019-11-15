@@ -2,8 +2,8 @@ package org.coins1920.group05.fetcher;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.coins1920.group05.fetcher.model.condor.Person;
-import org.coins1920.group05.fetcher.model.condor.Ticket;
+import org.coins1920.group05.fetcher.model.condor.Actor;
+import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.util.Pair;
 
 import java.io.BufferedWriter;
@@ -18,39 +18,39 @@ import java.util.function.BiConsumer;
 
 public class DefaultCondorCsvMarshaller implements CondorCsvMarshaller {
 
-    private static final String PERSONS_FILENAME = "persons.csv";
+    private static final String ACTORS_FILENAME = "persons.csv";
     private static final String TICKETS_FILENAME = "tickets.csv";
     private final CSVFormat condorFormat = CSVFormat.DEFAULT;
 
     @Override
-    public Pair<File, File> write(List<Person> persons, List<Ticket> tickets, String dir) {
-        final File personsFile = writePersons(persons, dir);
-        final File ticketsFile = writeTickets(tickets, dir);
-        return new Pair<>(personsFile, ticketsFile);
+    public Pair<File, File> write(List<Actor> actors, List<Edge> edges, String dir) {
+        final File actorsFile = writeActors(actors, dir);
+        final File ticketsFile = writeEdges(edges, dir);
+        return new Pair<>(actorsFile, ticketsFile);
     }
 
-    private File writePersons(List<Person> persons, String dir) {
-        final Path path = Paths.get(dir, PERSONS_FILENAME);
+    private File writeActors(List<Actor> actors, String dir) {
+        final Path path = Paths.get(dir, ACTORS_FILENAME);
         final CSVFormat formatWithHeaders = condorFormat
                 .withHeader("Id", "Name", "starttime");
 
-        final BiConsumer<CSVPrinter, Person> printPersons = (csvp, p) -> {
+        final BiConsumer<CSVPrinter, Actor> printActors = (csvp, p) -> {
             try {
                 csvp.printRecord(String.valueOf(p.getId()), p.getName(), p.getStarttime());
             } catch (IOException e) {
                 e.printStackTrace();
             }
         };
-        return writeCsv(persons, printPersons, formatWithHeaders, path);
+        return writeCsv(actors, printActors, formatWithHeaders, path);
     }
 
-    private File writeTickets(List<Ticket> tickets, String dir) {
+    private File writeEdges(List<Edge> edges, String dir) {
         final Path path = Paths.get(dir, TICKETS_FILENAME);
         final CSVFormat formatWithHeaders = condorFormat
                 .withHeader("Name", "UUID", "Source", "Target", "Starttime", "Endtime",
                         "Planned_Duration", "Real_Duration", "Status", "Count_Subtasks", "Count_Comments");
 
-        final BiConsumer<CSVPrinter, Ticket> printTickets = (csvp, t) -> {
+        final BiConsumer<CSVPrinter, Edge> printEdges = (csvp, t) -> {
             try {
                 csvp.printRecord(t.getName(), t.getUUID(), t.getSource(), t.getTarget(),
                         t.getStarttime(), t.getEndtime(), t.getPlannedDuration(),
@@ -59,7 +59,7 @@ public class DefaultCondorCsvMarshaller implements CondorCsvMarshaller {
                 e.printStackTrace();
             }
         };
-        return writeCsv(tickets, printTickets, formatWithHeaders, path);
+        return writeCsv(edges, printEdges, formatWithHeaders, path);
     }
 
     private <T> File writeCsv(List<T> items, BiConsumer<CSVPrinter, T> printItems,

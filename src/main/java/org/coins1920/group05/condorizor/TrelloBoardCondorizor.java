@@ -2,8 +2,8 @@ package org.coins1920.group05.condorizor;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
-import org.coins1920.group05.fetcher.model.condor.Person;
-import org.coins1920.group05.fetcher.model.condor.Ticket;
+import org.coins1920.group05.fetcher.model.condor.Actor;
+import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
@@ -44,24 +44,24 @@ public class TrelloBoardCondorizor {
         return CondorizorUtils.mapAndWriteToCsvFiles(
                 trelloBoardMembers,
                 trelloCardsForAllAuthors,
-                this::trelloMembersToCondorPersons,
-                this::trelloCardsToCondorTickets,
+                this::trelloMembersToCondorActors,
+                this::trelloCardsToCondorEdges,
                 outputDir
         );
     }
 
-    private List<Person> trelloMembersToCondorPersons(List<Member> members) {
+    private List<Actor> trelloMembersToCondorActors(List<Member> members) {
         final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: calculate "starttime"!
         return members
                 .stream()
-                .map(m -> new Person(m.getId(), m.getFullName(), fakeStartDate))
+                .map(m -> new Actor(m.getId(), m.getFullName(), fakeStartDate))
                 .collect(Collectors.toList());
     }
 
-    private List<Ticket> trelloCardsToCondorTickets(List<Card> cards) {
-        Function<Card, Ticket> cardToTicket = c -> {
+    private List<Edge> trelloCardsToCondorEdges(List<Card> cards) {
+        Function<Card, Edge> cardToTicket = c -> {
             final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: map other stuff as well!
-            return new Ticket(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
+            return new Edge(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
                     fakeStartDate, fakeStartDate, "", "",
                     "", "", "");
         };

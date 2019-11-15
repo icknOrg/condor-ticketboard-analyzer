@@ -1,8 +1,8 @@
 package org.coins1920.group05.condorizor;
 
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
-import org.coins1920.group05.fetcher.model.condor.Person;
-import org.coins1920.group05.fetcher.model.condor.Ticket;
+import org.coins1920.group05.fetcher.model.condor.Actor;
+import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
 import org.coins1920.group05.fetcher.util.Pair;
@@ -41,8 +41,8 @@ public class GitHubRepoCondorizor {
         return CondorizorUtils.mapAndWriteToCsvFiles(
                 githubRepoContributors,
                 githubIssuesForAllAuthors,
-                this::githubUsersToCondorPersons,
-                this::githubIssuesToCondorTickets,
+                this::githubUsersToCondorActors,
+                this::githubIssuesToCondorEdges,
                 outputDir
         );
     }
@@ -52,11 +52,11 @@ public class GitHubRepoCondorizor {
     }
 
 
-    private List<Person> githubUsersToCondorPersons(List<User> githubRepoUsers) {
+    private List<Actor> githubUsersToCondorActors(List<User> githubRepoUsers) {
         return new LinkedList<>(); // TODO: ...
     }
 
-    private List<Ticket> githubIssuesToCondorTickets(List<Issue> issues) {
+    private List<Edge> githubIssuesToCondorEdges(List<Issue> issues) {
         return new LinkedList<>(); // TODO: ...
     }
 }

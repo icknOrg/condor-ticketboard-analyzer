@@ -4,6 +4,9 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
+import org.coins1920.group05.fetcher.model.condor.EdgeType;
+import org.coins1920.group05.fetcher.model.general.AbstractMember;
+import org.coins1920.group05.fetcher.model.general.CategorizedBoardMembers;
 import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
@@ -36,12 +39,12 @@ public class TrelloBoardCondorizor {
         // the final data set should be "rectangular", i.e. a ticket/card tuple is duplicated
         // for _every_ member that changed it, wrote a comment, etc.:
         final List<Card> trelloCardsForAllAuthors = trelloCards
-                .map(c -> duplicateCardForAllAuthors(c, fetcher.fetchMembersForTicket(null, null, c.getId())))
+                .map(c -> duplicateCardForAllAuthors(c, fetcher.fetchMembersForTicket(c)))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
         // map to edges (tickets) and persons (nodes), then write to CSV files:
-        return CondorizorUtils.mapAndWriteToCsvFiles(
+        return CondorizorUtils.mapAndWriteToCsvFilez( // TODO: use the GitHub-version mapAndWrite() method!
                 trelloBoardMembers,
                 trelloCardsForAllAuthors,
                 this::trelloMembersToCondorActors,
@@ -52,6 +55,15 @@ public class TrelloBoardCondorizor {
 
     private List<Actor> trelloMembersToCondorActors(List<Member> members) {
         final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: calculate "starttime"!
+
+        // eliminate duplicate users:
+//        final Stream<Member> distinctBoardMembers = io.vavr.collection.List
+//                .ofAll(members.getAssignees())
+//                .appendAll(members.getCommentators())
+//                .distinctBy(Member::getId)
+//                .toJavaStream();
+
+        // map users to actors:
         return members
                 .stream()
                 .map(m -> new Actor(m.getId(), m.getFullName(), fakeStartDate))
@@ -63,7 +75,7 @@ public class TrelloBoardCondorizor {
             final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: map other stuff as well!
             return new Edge(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
                     fakeStartDate, fakeStartDate, "", "",
-                    "", "", "");
+                    "", "", "", EdgeType.ASSIGNING); // TODO: use the real edge type!
         };
 
         return cards

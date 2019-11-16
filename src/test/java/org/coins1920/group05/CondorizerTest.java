@@ -19,6 +19,7 @@ public class CondorizerTest {
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     @Test
+    @Ignore
     public void testTrelloBoardFetching() throws IOException {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();
@@ -35,7 +36,6 @@ public class CondorizerTest {
     }
 
     @Test
-    @Ignore
     public void testGitHubRepoFetching() throws IOException {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();

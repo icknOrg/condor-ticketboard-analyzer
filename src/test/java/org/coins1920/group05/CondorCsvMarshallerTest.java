@@ -4,6 +4,7 @@ import org.coins1920.group05.fetcher.CondorCsvMarshaller;
 import org.coins1920.group05.fetcher.DefaultCondorCsvMarshaller;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
+import org.coins1920.group05.fetcher.model.condor.EdgeType;
 import org.coins1920.group05.fetcher.util.Pair;
 import org.junit.Rule;
 import org.junit.Test;
@@ -61,15 +62,15 @@ public class CondorCsvMarshallerTest {
 
         edges.add(new Edge("Ticket 13", "1312", "1", "2",
                 "2012-09-12T04:00:00+00:00", "2012-09-20T04:00:00+00:00", "15",
-                "8", "closed", "3", "7"));
+                "8", "closed", "3", "7", EdgeType.CREATION));
 
         edges.add(new Edge("Ticket 13", "1313", "1", "3",
                 "2012-09-12T04:00:00+00:00", "2012-09-20T04:00:00+00:00", "15",
-                "8", "closed", "3", "7"));
+                "8", "closed", "3", "7", EdgeType.COMMENT));
 
         edges.add(new Edge("Ticket 15", "1521", "2", "4",
                 "2012-10-12T04:00:00+00:00", "2012-10-20T04:00:00+00:00", "15",
-                "8", "closed", "1", "0"));
+                "8", "closed", "1", "0", EdgeType.REACTION));
         return edges;
     }
 

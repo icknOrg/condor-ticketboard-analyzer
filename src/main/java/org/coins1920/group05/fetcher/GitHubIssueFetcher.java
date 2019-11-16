@@ -8,9 +8,12 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event> {
@@ -70,30 +73,61 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     @Override
-    public List<User> fetchMembersForTicket(String owner, String board, String ticketId) {
+    public List<User> fetchMembersForTicket(Issue ticket) {
         final List<User> contributors = new LinkedList<>();
 
         // to get ALL GitHub users that participated in an issue, we first get all its assignees:
-        final String singelIssueUrl = "/repos/{owner}/{board}/issues/{ticketId}";
-        final ResponseEntity<Issue> response = rt.getForEntity(singelIssueUrl, Issue.class, owner, board, ticketId);
-        if (response.getBody() != null) {
-            contributors.addAll(Arrays.asList(response.getBody().getAssignees()));
-        }
+        contributors.addAll(fetchAssigneesForTicket(ticket));
 
         // ...then all those users who wrote a comment:
-        final String commentsUrl = "/repos/{owner}/{board}/issues/{ticketId}/comments";
-        final ResponseEntity<Comment[]> commentsResponse = rt.getForEntity(commentsUrl, Comment[].class, owner, board, ticketId);
-        final List<Comment> comments = RestClientHelper.nonNullResponseEntities(commentsResponse);
-        final List<User> commentators = comments
-                .stream()
-                .map(Comment::getUser) // TODO: this is a bad idea, as the "created-at" timestamp info is lost!
-                .collect(Collectors.toList());
-        contributors.addAll(commentators);
+        contributors.addAll(fetchCommentatorsForTicket(ticket));
 
         // and finally everyone who reacted (e.g. by emoji-liking a comment:
         // TODO: fetchActionsForTicket().getUsers()
 
         return contributors;
+    }
+
+    @Override
+    public List<User> fetchAssigneesForTicket(Issue ticket) {
+//        final String singelIssueUrl = "/repos/{owner}/{board}/issues/{ticketId}";
+//        final ResponseEntity<Issue> response = rt.getForEntity(singelIssueUrl, Issue.class, owner, board, ticketId);
+        final ResponseEntity<Issue> response = rt.getForEntity(ticket.getUrl(), Issue.class);
+
+        if (response.getBody() == null) {
+            return new LinkedList<>();
+        } else {
+            logger.info("I got " + response.getBody().getAssignees().length + " assignee(s)!");
+            return Arrays
+                    .stream(response.getBody().getAssignees())
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+        }
+    }
+
+    @Override
+    public List<User> fetchCommentatorsForTicket(Issue ticket) {
+        if (ticket.getCommentsUrl() == null || ticket.getCommentsUrl().isEmpty()) {
+            logger.debug("  the issue " + ticket.getId() + " has no comments => no comments URL!");
+            return new LinkedList<>();
+        } else {
+            // TODO: instead of using a separate RT, we should strip the root URI off of the getCommentsUrl() string!
+            try {
+                final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
+                final ResponseEntity<Comment[]> commentsResponse = rt.getForEntity(commentsUrl, Comment[].class);
+                final List<Comment> comments = RestClientHelper.nonNullResponseEntities(commentsResponse);
+                return comments
+                        .stream()
+                        .filter(Objects::nonNull)
+                        .map(Comment::getUser) // TODO: this is a bad idea, as the "created-at" timestamp info is lost!
+                        .collect(Collectors.toList());
+
+            } catch (MalformedURLException e) {
+                logger.error("The comments URL ('" + ticket.getCommentsUrl() +
+                        "') for ticket " + ticket.getId() + "was malformed!", e);
+                return new LinkedList<>();
+            }
+        }
     }
 
 }

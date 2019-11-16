@@ -137,7 +137,10 @@ public class TrelloFetcherTest {
 
     @Test
     public void testFetchMembersForCard() {
-        final List<Member> members = fetcher.fetchMembersForTicket(null, null, SAMPLE_CARD_ID2);
+        final Card card = new Card();
+        card.setId(SAMPLE_CARD_ID2);
+
+        final List<Member> members = fetcher.fetchMembersForTicket(card);
         assertThat(members, is(not(nullValue())));
         assertThat(members.size(), is(not(0)));
         logger.info("There is/are " + members.size() + " member(s)!");

@@ -17,4 +17,5 @@ public class Edge {
     private String Status;
     private String CountSubtasks;
     private String CountComments;
+    private EdgeType edgeType;
 }

@@ -4,6 +4,7 @@ import org.coins1920.group05.fetcher.model.general.AbstractAction;
 import org.coins1920.group05.fetcher.model.general.AbstractBoard;
 import org.coins1920.group05.fetcher.model.general.AbstractMember;
 import org.coins1920.group05.fetcher.model.general.AbstractTicket;
+import org.coins1920.group05.fetcher.model.github.User;
 
 import java.util.List;
 
@@ -42,5 +43,9 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
 
     List<A> fetchActionsForTicket(String ticketId);
 
-    List<M> fetchMembersForTicket(String owner, String board, String ticketId);
+    List<M> fetchMembersForTicket(T ticket);
+
+    List<M> fetchAssigneesForTicket(T ticket);
+
+    List<M> fetchCommentatorsForTicket(T ticket);
 }

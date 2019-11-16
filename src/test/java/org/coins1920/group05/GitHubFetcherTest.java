@@ -4,6 +4,7 @@ import org.coins1920.group05.fetcher.GitHubIssueFetcher;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,20 +39,24 @@ public class GitHubFetcherTest {
 
     @Test
     public void testFetchRepoContributors() {
-        final List<User> contributors = fetcher.fetchBoardMembers(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1);
-        assertThat(contributors, is(not(nullValue())));
-        assertThat(contributors.size(), is(not(0)));
-        logger.info("There is/are " + contributors.size() + " contributor(s)!");
-        logger.info(" the first one is: " + contributors.get(0));
+        final Issue issue = new Issue();
+        issue.setId("476356409");
+        issue.setCommentsUrl("https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/220/comments");
+
+        final List<User> commentators = fetcher.fetchCommentatorsForTicket(issue);
+        assertThat(commentators, is(not(nullValue())));
+        assertThat(commentators.size(), is(not(0)));
+        logger.info("There is/are " + commentators.size() + " commentator(s)!");
+        logger.info(" the first one is: " + commentators.get(0));
     }
 
     @Test
+    @Ignore
     public void testFetchIssueContributors() {
-        final List<User> contributors = fetcher.fetchMembersForTicket(
-                SAMPLE_BOARD_OWNER,
-                SAMPLE_BOARD_NAME2,
-                "7168"
-        );
+        final Issue issue = new Issue();
+        issue.setId("7168");
+
+        final List<User> contributors = fetcher.fetchMembersForTicket(issue);
         assertThat(contributors, is(not(nullValue())));
         assertThat(contributors.size(), is(not(0)));
         logger.info("There is/are " + contributors.size() + " contributor(s)!");

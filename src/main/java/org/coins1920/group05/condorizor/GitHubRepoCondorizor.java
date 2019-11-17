@@ -8,9 +8,9 @@ import org.coins1920.group05.fetcher.model.general.CategorizedBoardMembers;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
 import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.fetcher.util.Triple;
 
 import java.io.File;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -63,14 +63,46 @@ public class GitHubRepoCondorizor {
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
 
+        final List<Triple<Issue, User, EdgeType>> issues = rectangularize(issuesWithUsers);
+
         // map to edges (tickets) and nodes (persons), then write to CSV files:
         return CondorizorUtils.mapAndWriteToCsvFiles(
                 allUsers,
-                issuesWithUsers,
+                issues,
                 this::githubUsersToCondorActors,
                 this::githubIssuesToCondorEdges,
                 outputDir
         );
+    }
+
+    private List<Triple<Issue, User, EdgeType>> rectangularize(
+            List<Pair<Issue, CategorizedBoardMembers<User>>> issuesWithUsers) {
+        return issuesWithUsers
+                .stream()
+                .map(iwu -> {
+                    final Issue issue = iwu.getFirst();
+                    final Triple<Issue, User, EdgeType> creator = new Triple<>(
+                            issue, iwu.getSecond().getCreator(), EdgeType.CREATION
+                    );
+
+                    final List<Triple<Issue, User, EdgeType>> commentators = iwu.getSecond().getCommentators()
+                            .stream()
+                            .map(c -> new Triple<>(issue, c, EdgeType.COMMENT))
+                            .collect(Collectors.toList());
+
+                    final List<Triple<Issue, User, EdgeType>> assignees = iwu.getSecond().getAssignees()
+                            .stream()
+                            .map(c -> new Triple<>(issue, c, EdgeType.ASSIGNING))
+                            .collect(Collectors.toList());
+
+                    return io.vavr.collection.List
+                            .of(creator)
+                            .appendAll(commentators)
+                            .appendAll(assignees)
+                            .toJavaList();
+                })
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
     }
 
     private List<Actor> githubUsersToCondorActors(List<User> repoUsers) {
@@ -88,11 +120,16 @@ public class GitHubRepoCondorizor {
                 .collect(Collectors.toList());
     }
 
-    private List<Edge> githubIssuesToCondorEdges(List<Pair<Issue, CategorizedBoardMembers<User>>> issues) {
-        final Function<User, Edge> userToActor = u -> new Edge("", "", "", "",
-                "", "", "", "", "", "",
-                "", EdgeType.REACTION);
-
-        return new LinkedList<>(); // TODO: ...
+    private List<Edge> githubIssuesToCondorEdges(List<Triple<Issue, User, EdgeType>> issues) {
+        return issues.stream()
+                .map(iuet -> {
+                    final Issue issue = iuet.getFirst();
+                    return new Edge(issue.getTitle(), issue.getId(),
+                            iuet.getSecond().getId(), "",
+                            "", "", "", "",
+                            issue.getState(), "",
+                            issue.getComments(), iuet.getThird());
+                })
+                .collect(Collectors.toList());
     }
 }

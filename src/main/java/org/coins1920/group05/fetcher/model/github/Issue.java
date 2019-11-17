@@ -22,6 +22,7 @@ public class Issue extends AbstractTicket {
 
     private String state;
     private String created_at;
+    private String comments; // the number of comments attached to this issue
     private User[] assignees;
     private User user; // the ticket author
 }

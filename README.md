@@ -9,10 +9,17 @@ $ mvn install
 ```
 
 ## How to run it
+### Trello
 Export your API key (e.g. "y1o2u3r4e5k6e7y8") and OAuth token string (e.g. "o0a9u8t7h6") as environment variables
 and execute the *.jar file you've just compiled:
 ```bash
 $ export TRELLO_API_KEY=y1o2u3r4e5k6e7y8
 $ export TRELLO_OAUTH_KEY=o0a9u8t7h6
 $ java -jar target/condor-ticketboard-fetcher.jar trello myboardid /my/output/folder/
+```
+
+### GitHub
+Run:
+```bash
+$ java -jar target/condor-ticketboard-fetcher.jar github linuxmint cinnamon-spices-extensions /my/output/folder/
 ```

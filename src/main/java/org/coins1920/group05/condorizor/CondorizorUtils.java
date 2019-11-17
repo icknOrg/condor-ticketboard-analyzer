@@ -4,10 +4,12 @@ import org.coins1920.group05.fetcher.CondorCsvMarshaller;
 import org.coins1920.group05.fetcher.DefaultCondorCsvMarshaller;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
+import org.coins1920.group05.fetcher.model.condor.EdgeType;
 import org.coins1920.group05.fetcher.model.general.AbstractMember;
 import org.coins1920.group05.fetcher.model.general.AbstractTicket;
 import org.coins1920.group05.fetcher.model.general.CategorizedBoardMembers;
 import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.fetcher.util.Triple;
 
 import java.io.File;
 import java.util.List;
@@ -44,9 +46,9 @@ public class CondorizorUtils {
      */
     public static <M extends AbstractMember, T extends AbstractTicket> Pair<File, File> mapAndWriteToCsvFiles(
             List<M> boardMembers,
-            List<Pair<T, CategorizedBoardMembers<M>>> allTickets,
+            List<Triple<T, M, EdgeType>> allTickets,
             Function<List<M>, List<Actor>> toActors,
-            Function<List<Pair<T, CategorizedBoardMembers<M>>>, List<Edge>> toEdges, String outputDir) {
+            Function<List<Triple<T, M, EdgeType>>, List<Edge>> toEdges, String outputDir) {
         // map to actors and tickets:
         final List<Actor> actors = toActors.apply(boardMembers);
         final List<Edge> edges = toEdges.apply(allTickets);

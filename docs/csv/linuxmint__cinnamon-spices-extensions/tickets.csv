@@ -1,0 +1,54 @@
+Name,UUID,Source,Target,Starttime,Endtime,Planned_Duration,Real_Duration,Status,Count_Subtasks,Count_Comments,Edge_type
+Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),520651325,10391266,,,,,,open,,0,CREATION
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,476356409,11470532,,,,,,open,,2,CREATION
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,476356409,11470532,,,,,,open,,2,COMMENT
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,476356409,5958984,,,,,,open,,2,COMMENT
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,426820091,49053218,,,,,,open,,2,CREATION
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,426820091,386567,,,,,,open,,2,COMMENT
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,426820091,2505927,,,,,,open,,2,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,418384469,73755,,,,,,open,,3,CREATION
+DesktopCube@yare: background behind cube should be custom image or black,418384469,73755,,,,,,open,,3,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,418384469,33965039,,,,,,open,,3,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,418384469,73755,,,,,,open,,3,COMMENT
+wobbly-windows@mecheye.net : Some tearing affect and hickups,395023901,2259575,,,,,,open,,0,CREATION
+Flipper@connerdev: transition has visual glitch,394503602,9968138,,,,,,open,,0,CREATION
+workspace-scroller@ori: Cinnamon 4.0 Support,394014203,1300133,,,,,,open,,3,CREATION
+workspace-scroller@ori: Cinnamon 4.0 Support,394014203,432683,,,,,,open,,3,COMMENT
+workspace-scroller@ori: Cinnamon 4.0 Support,394014203,1300133,,,,,,open,,3,COMMENT
+workspace-scroller@ori: Cinnamon 4.0 Support,394014203,432683,,,,,,open,,3,COMMENT
+"Flipper@connerdev: works, but no settings reachable in LM19.1",393793286,9968138,,,,,,open,,2,CREATION
+"Flipper@connerdev: works, but no settings reachable in LM19.1",393793286,1300133,,,,,,open,,2,COMMENT
+"Flipper@connerdev: works, but no settings reachable in LM19.1",393793286,9968138,,,,,,open,,2,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,382041508,5958984,,,,,,open,,6,CREATION
+gTile@shuairan : keyboard support for multi monitor grid,382041508,5958984,,,,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,382041508,6859057,,,,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,382041508,6859057,,,,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,382041508,5958984,,,,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,382041508,5958984,,,,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,382041508,6859057,,,,,,open,,6,COMMENT
+desktop-scroller@ccadeptic23  blocks mouse clicks on screen border,379556034,17616347,,,,,,open,,0,CREATION
+" workspace-grid@daemonl not compatible with 3.6.7",328068172,17271565,,,,,,open,,2,CREATION
+" workspace-grid@daemonl not compatible with 3.6.7",328068172,4397312,,,,,,open,,2,COMMENT
+" workspace-grid@daemonl not compatible with 3.6.7",328068172,25767509,,,,,,open,,2,COMMENT
+Extensions licensing,315580295,10391266,,,,,,open,,8,CREATION
+Extensions licensing,315580295,9084941,,,,,,open,,8,COMMENT
+Extensions licensing,315580295,10391266,,,,,,open,,8,COMMENT
+Extensions licensing,315580295,8415124,,,,,,open,,8,COMMENT
+Extensions licensing,315580295,8415124,,,,,,open,,8,COMMENT
+Extensions licensing,315580295,4397312,,,,,,open,,8,COMMENT
+Extensions licensing,315580295,10391266,,,,,,open,,8,COMMENT
+Extensions licensing,315580295,4397312,,,,,,open,,8,COMMENT
+Extensions licensing,315580295,6859057,,,,,,open,,8,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,296553694,2837468,,,,,,open,,3,CREATION
+spice workspace-scroller: works on only one monitor in extended display mode,296553694,4397312,,,,,,open,,3,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,296553694,6859057,,,,,,open,,3,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,296553694,6665146,,,,,,open,,3,COMMENT
+smart-panel@mohammad-sn: Doesn't work with a second panel,288294902,13596575,,,,,,open,,2,CREATION
+smart-panel@mohammad-sn: Doesn't work with a second panel,288294902,4397312,,,,,,open,,2,COMMENT
+smart-panel@mohammad-sn: Doesn't work with a second panel,288294902,13596575,,,,,,open,,2,COMMENT
+CinnaDockP2@norbusan: does not work,264242855,8415124,,,,,,open,,2,CREATION
+CinnaDockP2@norbusan: does not work,264242855,1735589,,,,,,open,,2,COMMENT
+CinnaDockP2@norbusan: does not work,264242855,4397312,,,,,,open,,2,COMMENT
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),202861196,19552720,,,,,,open,,2,CREATION
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),202861196,4095021,,,,,,open,,2,COMMENT
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),202861196,19552720,,,,,,open,,2,COMMENT

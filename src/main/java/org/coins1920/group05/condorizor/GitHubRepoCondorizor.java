@@ -119,12 +119,14 @@ public class GitHubRepoCondorizor {
                 .collect(Collectors.toList());
     }
 
-    private List<Edge> githubIssuesToCondorEdges(List<Triple<Issue, User, EdgeType>> issues) {
+    private List<Edge> githubIssuesToCondorEdges(List<Triple<Issue, User, EdgeType>> issues) { // TODO: should have "<? ext Interaction>" instead of User!
         return issues.stream()
                 .map(iuet -> {
                     final Issue issue = iuet.getFirst();
+                    final User user = iuet.getSecond(); // the user who commented/reacted/was assignee/...
+                    final User ticketAuthor = issue.getUser(); // the original ticket author
                     return new Edge(issue.getTitle(), issue.getId(),
-                            iuet.getSecond().getId(), "",
+                            user.getId(), ticketAuthor.getId(),
                             "", "", "", "",
                             issue.getState(), "",
                             issue.getComments(), iuet.getThird());

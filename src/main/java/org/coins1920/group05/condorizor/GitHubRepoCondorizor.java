@@ -19,9 +19,8 @@ import java.util.stream.Stream;
 public class GitHubRepoCondorizor {
 
     public Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
-        final String apiKey = System.getenv("GITHUB_API_KEY");
         final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
-        final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(apiKey, oauthToken);
+        final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(oauthToken);
 
         // first, fetch all issues of the given repo:
         final Stream<Issue> githubIssues = fetcher

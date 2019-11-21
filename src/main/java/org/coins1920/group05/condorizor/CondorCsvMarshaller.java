@@ -1,4 +1,4 @@
-package org.coins1920.group05.fetcher;
+package org.coins1920.group05.condorizor;
 
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;

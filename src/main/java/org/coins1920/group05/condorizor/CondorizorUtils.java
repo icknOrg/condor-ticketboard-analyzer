@@ -1,13 +1,10 @@
 package org.coins1920.group05.condorizor;
 
-import org.coins1920.group05.fetcher.CondorCsvMarshaller;
-import org.coins1920.group05.fetcher.DefaultCondorCsvMarshaller;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.condor.EdgeType;
 import org.coins1920.group05.fetcher.model.general.AbstractMember;
 import org.coins1920.group05.fetcher.model.general.AbstractTicket;
-import org.coins1920.group05.fetcher.model.general.CategorizedBoardMembers;
 import org.coins1920.group05.fetcher.util.Pair;
 import org.coins1920.group05.fetcher.util.Triple;
 

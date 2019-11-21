@@ -1,7 +1,7 @@
 package org.coins1920.group05;
 
-import org.coins1920.group05.fetcher.CondorCsvMarshaller;
-import org.coins1920.group05.fetcher.DefaultCondorCsvMarshaller;
+import org.coins1920.group05.condorizor.CondorCsvMarshaller;
+import org.coins1920.group05.condorizor.DefaultCondorCsvMarshaller;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.condor.EdgeType;

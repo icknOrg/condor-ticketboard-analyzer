@@ -5,7 +5,7 @@ import org.coins1920.group05.fetcher.util.RestClientHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
@@ -23,8 +23,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     private Logger logger = LoggerFactory.getLogger(GitHubIssueFetcher.class);
 
     private final RestTemplate rt;
-    private String key;
-    private String token;
+    private String oauthToken;
 
     public GitHubIssueFetcher() {
         this.rt = new RestTemplateBuilder()
@@ -32,9 +31,8 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                 .build();
     }
 
-    public GitHubIssueFetcher(String apiKey, String oauthToken) {
-        this.key = apiKey;
-        this.token = oauthToken;
+    public GitHubIssueFetcher(String oauthToken) {
+        this.oauthToken = oauthToken;
         this.rt = new RestTemplateBuilder()
                 .rootUri(GITHUB_ROOT_URI)
                 .build();
@@ -53,16 +51,14 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     @Override
     public List<User> fetchBoardMembers(String owner, String board) {
         final String url = "/repos/{owner}/{board}/contributors";
-        final ResponseEntity<User[]> response = rt.getForEntity(url, User[].class, owner, board);
-        // TODO: pagination! Consecutively add '...?page=2&per_page=100' to the URL!
+        final ResponseEntity<User[]> response = getAllEntitiesWithPagination(url, User[].class, owner, board);
         return RestClientHelper.nonNullResponseEntities(response);
     }
 
     @Override
     public List<Issue> fetchTickets(String owner, String board) {
         final String url = "/repos/{owner}/{board}/issues";
-        final ResponseEntity<Issue[]> response = rt.getForEntity(url, Issue[].class, owner, board);
-        // TODO: pagination! Consecutively add '...?page=2&per_page=100' to the URL!
+        final ResponseEntity<Issue[]> response = getAllEntitiesWithPagination(url, Issue[].class, owner, board);
         return RestClientHelper.nonNullResponseEntities(response);
     }
 
@@ -90,9 +86,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<User> fetchAssigneesForTicket(Issue ticket) {
-//        final String singelIssueUrl = "/repos/{owner}/{board}/issues/{ticketId}";
-//        final ResponseEntity<Issue> response = rt.getForEntity(singelIssueUrl, Issue.class, owner, board, ticketId);
-        final ResponseEntity<Issue> response = rt.getForEntity(ticket.getUrl(), Issue.class);
+        final ResponseEntity<Issue> response = getAllEntitiesWithPagination(ticket.getUrl(), Issue.class);
 
         if (response.getBody() == null) {
             return new LinkedList<>();
@@ -114,7 +108,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
             // TODO: instead of using a separate RT, we should strip the root URI off of the getCommentsUrl() string!
             try {
                 final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
-                final ResponseEntity<Comment[]> commentsResponse = rt.getForEntity(commentsUrl, Comment[].class);
+                final ResponseEntity<Comment[]> commentsResponse = getAllEntitiesWithPagination(commentsUrl, Comment[].class);
                 final List<Comment> comments = RestClientHelper.nonNullResponseEntities(commentsResponse);
                 return comments
                         .stream()
@@ -130,4 +124,18 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         }
     }
 
+    private <T> ResponseEntity<T> getAllEntitiesWithPagination(String url, Class<T> responseType, Object... uriVariables) {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("user-agent", "Spring RestTemplate");
+        headers.set("Authorization", "token " + this.oauthToken);
+
+        final HttpEntity<?> entity = new HttpEntity<>(headers);
+        final ResponseEntity<T> response = rt.exchange(url, HttpMethod.GET, entity, responseType, uriVariables);
+
+        // TODO: paginate!
+        // TODO: consecutively add '...?page=2&per_page=100' to the URL!
+
+        return response;
+    }
 }

@@ -120,6 +120,9 @@ public class GitHubRepoCondorizor {
     }
 
     private List<Edge> githubIssuesToCondorEdges(List<Triple<Issue, User, EdgeType>> issues) { // TODO: should have "<? ext Interaction>" instead of User!
+        final String fakeStartTime = "2010-09-12T04:00:00+00:00"; // TODO: calculate "starttime"!
+        final String fakeEndTime = fakeStartTime; // TODO: calculate "endtime"!
+
         return issues.stream()
                 .map(iuet -> {
                     final Issue issue = iuet.getFirst();
@@ -127,7 +130,8 @@ public class GitHubRepoCondorizor {
                     final User ticketAuthor = issue.getUser(); // the original ticket author
                     return new Edge(issue.getTitle(), issue.getId(),
                             user.getId(), ticketAuthor.getId(),
-                            "", "", "", "",
+                            fakeStartTime, fakeEndTime,
+                            "", "",
                             issue.getState(), "",
                             issue.getComments(), iuet.getThird());
                 })

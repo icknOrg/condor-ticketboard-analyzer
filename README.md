@@ -19,7 +19,8 @@ $ java -jar target/condor-ticketboard-fetcher.jar trello myboardid /my/output/fo
 ```
 
 ### GitHub
-Run:
+Export your OAuth token and execute the *.jar file:
 ```bash
+$ export GITHUB_OAUTH_KEY=y1o2u3r4e5k6e7y8
 $ java -jar target/condor-ticketboard-fetcher.jar github linuxmint cinnamon-spices-extensions /my/output/folder/
 ```

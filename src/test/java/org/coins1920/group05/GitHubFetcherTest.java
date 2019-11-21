@@ -29,6 +29,7 @@ public class GitHubFetcherTest {
     }
 
     @Test
+    @Ignore // TODO: add a Wiremock stub!
     public void testFetchIssues() {
         final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1);
         assertThat(issues, is(not(nullValue())));
@@ -38,6 +39,7 @@ public class GitHubFetcherTest {
     }
 
     @Test
+    @Ignore // TODO: add a Wiremock stub!
     public void testFetchRepoContributors() {
         final Issue issue = new Issue();
         issue.setId("476356409");
@@ -51,7 +53,7 @@ public class GitHubFetcherTest {
     }
 
     @Test
-    @Ignore
+    @Ignore // TODO: add a Wiremock stub!
     public void testFetchIssueContributors() {
         final Issue issue = new Issue();
         issue.setId("7168");

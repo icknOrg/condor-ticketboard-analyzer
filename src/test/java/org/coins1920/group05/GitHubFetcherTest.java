@@ -4,11 +4,13 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
+import org.coins1920.group05.fetcher.util.RestClientHelper;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -98,5 +100,20 @@ public class GitHubFetcherTest {
                 .filter(a -> a.getLogin().equals("clefebvre"))
                 .count();
         assertThat(contributorsCalledClefebvre, is(1L));
+    }
+
+    @Test
+    public void testPaginationLinkSplitting() {
+        final String links = "<https://api.github.com/repositories/79458054/issues?state=" +
+                "closed&page=2>; rel=\"next\", <https://api.github.com/repositories/79458054/issues?state=closed&page=8>; rel=\"last\"";
+
+        final Optional<String> nextPageLink = RestClientHelper.splitGithubPaginationLinks(links);
+        assertThat(nextPageLink, is(not(nullValue())));
+
+        final String link = nextPageLink.orElseGet(() -> null);
+        assertThat(link, is(not(nullValue())));
+
+        final String expectedLink = "https://api.github.com/repositories/79458054/issues?state=closed&page=2";
+        assertThat(link, is(expectedLink));
     }
 }

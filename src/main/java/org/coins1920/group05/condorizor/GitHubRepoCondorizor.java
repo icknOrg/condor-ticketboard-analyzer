@@ -134,7 +134,9 @@ public class GitHubRepoCondorizor {
                             fakeStartTime, fakeEndTime,
                             "", "",
                             issue.getState(), "",
-                            issue.getComments(), iuet.getThird());
+                            issue.getComments(), iuet.getThird()
+                            // TODO: add an attribute "original_ID" that holds issue.getId() !
+                    );
                 })
                 .collect(Collectors.toList());
     }

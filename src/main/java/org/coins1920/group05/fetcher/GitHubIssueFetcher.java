@@ -18,23 +18,23 @@ import java.util.stream.Collectors;
 
 public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event> {
 
+    private static final Logger logger = LoggerFactory.getLogger(GitHubIssueFetcher.class);
     private static final String GITHUB_ROOT_URI = "https://api.github.com/";
 
-    private Logger logger = LoggerFactory.getLogger(GitHubIssueFetcher.class);
-
     private final RestTemplate rt;
-    private String oauthToken;
-
-    public GitHubIssueFetcher() {
-        this.rt = new RestTemplateBuilder()
-                .rootUri(GITHUB_ROOT_URI)
-                .build();
-    }
+    private final String oauthToken;
 
     public GitHubIssueFetcher(String oauthToken) {
         this.oauthToken = oauthToken;
         this.rt = new RestTemplateBuilder()
                 .rootUri(GITHUB_ROOT_URI)
+                .build();
+    }
+
+    public GitHubIssueFetcher(String oauthToken, String url) {
+        this.oauthToken = oauthToken;
+        this.rt = new RestTemplateBuilder()
+                .rootUri(url)
                 .build();
     }
 
@@ -61,15 +61,22 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
         final ResponseEntity<Issue[]> openTicketsResponse = getAllEntitiesWithPagination(
                 openTicketsUrl, Issue[].class, owner, board);
+        final List<Issue> openIssuesList = RestClientHelper.nonNullResponseEntities(openTicketsResponse);
+        logger.debug("I got " + openIssuesList.size() + " closed issues!");
 
         // and all closed ones:
         final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
         final ResponseEntity<Issue[]> closedTicketsResponse = getAllEntitiesWithPagination(
                 closedTicketsUrl, Issue[].class, owner, board);
+        final List<Issue> closedIssuesList = RestClientHelper.nonNullResponseEntities(closedTicketsResponse);
+        logger.debug("I got " + closedIssuesList.size() + " closed issues!");
 
         return io.vavr.collection.List
-                .ofAll(RestClientHelper.nonNullResponseEntities(openTicketsResponse))
-                .appendAll(RestClientHelper.nonNullResponseEntities(closedTicketsResponse))
+                .ofAll(openIssuesList)
+                .appendAll(closedIssuesList)
+                // filter out all PRs, we only want issues:
+                // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
+                // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
                 .toJavaList();
     }
 
@@ -113,10 +120,9 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     @Override
     public List<User> fetchCommentatorsForTicket(Issue ticket) {
         if (ticket.getCommentsUrl() == null || ticket.getCommentsUrl().isEmpty()) {
-            logger.debug("  the issue " + ticket.getId() + " has no comments => no comments URL!");
+            logger.warn("  the issue " + ticket.getId() + " has no comments => no comments URL!");
             return new LinkedList<>();
         } else {
-            // TODO: instead of using a separate RT, we should strip the root URI off of the getCommentsUrl() string!
             try {
                 final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
                 final ResponseEntity<Comment[]> commentsResponse = getAllEntitiesWithPagination(commentsUrl, Comment[].class);

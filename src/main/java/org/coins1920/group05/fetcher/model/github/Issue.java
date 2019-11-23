@@ -13,6 +13,7 @@ public class Issue extends AbstractTicket {
     private String number;
     private String title;
     private String url;
+    private User user; // the ticket author
 
     @JsonProperty("comments_url")
     private String commentsUrl; // points to all comments linked to this issue
@@ -24,5 +25,7 @@ public class Issue extends AbstractTicket {
     private String created_at;
     private String comments; // the number of comments attached to this issue
     private User[] assignees;
-    private User user; // the ticket author
+
+    @JsonProperty("pull_request")
+    private PullRequest pullRequest;
 }

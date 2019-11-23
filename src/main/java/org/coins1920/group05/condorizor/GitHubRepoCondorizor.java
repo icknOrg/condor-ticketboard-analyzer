@@ -12,6 +12,7 @@ import org.coins1920.group05.fetcher.util.Triple;
 
 import java.io.File;
 import java.util.List;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -128,7 +129,7 @@ public class GitHubRepoCondorizor {
                     final Issue issue = iuet.getFirst();
                     final User user = iuet.getSecond(); // the user who commented/reacted/was assignee/...
                     final User ticketAuthor = issue.getUser(); // the original ticket author
-                    return new Edge(issue.getTitle(), issue.getId(),
+                    return new Edge(issue.getTitle(), UUID.randomUUID().toString(),
                             user.getId(), ticketAuthor.getId(),
                             fakeStartTime, fakeEndTime,
                             "", "",

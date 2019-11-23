@@ -1,54 +1,54 @@
 Name,UUID,Source,Target,Starttime,Endtime,Planned_Duration,Real_Duration,Status,Count_Subtasks,Count_Comments,Edge_type
-Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),520651325,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
-gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,476356409,11470532,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,476356409,11470532,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,476356409,5958984,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-gTile@shuairan: Current version does not work on cinnamon 3.6.7,426820091,49053218,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-gTile@shuairan: Current version does not work on cinnamon 3.6.7,426820091,386567,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-gTile@shuairan: Current version does not work on cinnamon 3.6.7,426820091,2505927,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-DesktopCube@yare: background behind cube should be custom image or black,418384469,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
-DesktopCube@yare: background behind cube should be custom image or black,418384469,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-DesktopCube@yare: background behind cube should be custom image or black,418384469,33965039,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-DesktopCube@yare: background behind cube should be custom image or black,418384469,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-wobbly-windows@mecheye.net : Some tearing affect and hickups,395023901,2259575,2259575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
-Flipper@connerdev: transition has visual glitch,394503602,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
-workspace-scroller@ori: Cinnamon 4.0 Support,394014203,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
-workspace-scroller@ori: Cinnamon 4.0 Support,394014203,432683,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-workspace-scroller@ori: Cinnamon 4.0 Support,394014203,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-workspace-scroller@ori: Cinnamon 4.0 Support,394014203,432683,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-"Flipper@connerdev: works, but no settings reachable in LM19.1",393793286,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-"Flipper@connerdev: works, but no settings reachable in LM19.1",393793286,1300133,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-"Flipper@connerdev: works, but no settings reachable in LM19.1",393793286,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,382041508,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,CREATION
-gTile@shuairan : keyboard support for multi monitor grid,382041508,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,382041508,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,382041508,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,382041508,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,382041508,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,382041508,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-desktop-scroller@ccadeptic23  blocks mouse clicks on screen border,379556034,17616347,17616347,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
-" workspace-grid@daemonl not compatible with 3.6.7",328068172,17271565,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-" workspace-grid@daemonl not compatible with 3.6.7",328068172,4397312,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-" workspace-grid@daemonl not compatible with 3.6.7",328068172,25767509,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-Extensions licensing,315580295,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,CREATION
-Extensions licensing,315580295,9084941,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,315580295,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,315580295,8415124,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,315580295,8415124,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,315580295,4397312,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,315580295,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,315580295,4397312,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,315580295,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-spice workspace-scroller: works on only one monitor in extended display mode,296553694,2837468,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
-spice workspace-scroller: works on only one monitor in extended display mode,296553694,4397312,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-spice workspace-scroller: works on only one monitor in extended display mode,296553694,6859057,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-spice workspace-scroller: works on only one monitor in extended display mode,296553694,6665146,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-smart-panel@mohammad-sn: Doesn't work with a second panel,288294902,13596575,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-smart-panel@mohammad-sn: Doesn't work with a second panel,288294902,4397312,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-smart-panel@mohammad-sn: Doesn't work with a second panel,288294902,13596575,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-CinnaDockP2@norbusan: does not work,264242855,8415124,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-CinnaDockP2@norbusan: does not work,264242855,1735589,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-CinnaDockP2@norbusan: does not work,264242855,4397312,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),202861196,19552720,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),202861196,4095021,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),202861196,19552720,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),e3e9b6b8-5717-4836-80bf-85408fd7f297,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,6081ddeb-ac63-462f-9f0d-af0a386e2be7,11470532,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,42988d5d-59e2-4051-92b6-8b5ed683c7a4,11470532,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,214edfb7-4fab-4ca6-bada-430f769ebec0,5958984,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,98b12b51-9209-4590-8f75-6c1f260464c8,49053218,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,f205fdfe-8924-4ab1-b325-aacedfaabd59,386567,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,1d80d767-6fb9-4535-9ecd-564d085edd43,2505927,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,ea31c719-f108-4a73-a2e0-cf949fd3d83a,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
+DesktopCube@yare: background behind cube should be custom image or black,16bdae02-cedf-4f25-bf4a-209a7c5353c0,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,b7c84378-c185-4d1a-b494-f5e75aca08ac,33965039,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,e35da3c8-c937-4430-9152-7ac2a94d7750,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+wobbly-windows@mecheye.net : Some tearing affect and hickups,74a25f68-8428-422d-9321-afde8e0675fa,2259575,2259575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
+Flipper@connerdev: transition has visual glitch,108df94f-0bb0-47db-b7d5-77d5201c1900,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
+workspace-scroller@ori: Cinnamon 4.0 Support,126df18e-ebca-4f6e-af97-437c7449b593,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
+workspace-scroller@ori: Cinnamon 4.0 Support,86eb04c1-3f69-464a-a5f6-3ca4096daff8,432683,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+workspace-scroller@ori: Cinnamon 4.0 Support,83060617-fa34-4211-b988-686ad6d1bf84,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+workspace-scroller@ori: Cinnamon 4.0 Support,f3c78240-3fbd-4dee-a015-0165f4f832e8,432683,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+"Flipper@connerdev: works, but no settings reachable in LM19.1",137573d7-d90f-49e0-babf-f37c96a132f9,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+"Flipper@connerdev: works, but no settings reachable in LM19.1",abdb5a2d-de7a-4058-8c9c-462cb2ef75bb,1300133,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+"Flipper@connerdev: works, but no settings reachable in LM19.1",e758928f-bf82-4bfe-bb89-aa772398508c,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,5ba912be-153a-4dcb-8691-655b5f556c84,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,CREATION
+gTile@shuairan : keyboard support for multi monitor grid,3dd1b0e0-be68-4732-ba77-ffb6302eb1de,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,2a6277fd-aa34-4d7e-b26c-8b81b2e922a2,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,02fab725-bd3f-484d-8417-b37b532e85cb,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,f1efb077-8486-448f-8a20-035d661dc976,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,2e3a9005-b90b-4f7a-b8f0-398d262f97de,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,9a024fee-21c0-4dc9-97dd-ea594b1f1394,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+desktop-scroller@ccadeptic23  blocks mouse clicks on screen border,0d8b84cd-3b6e-4730-b39c-d77e244d50dd,17616347,17616347,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
+" workspace-grid@daemonl not compatible with 3.6.7",5fc10e13-0966-41ab-ba52-ebc39bd0807a,17271565,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+" workspace-grid@daemonl not compatible with 3.6.7",478c4ca8-bf0c-4a4e-86e8-e9b480e0f938,4397312,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+" workspace-grid@daemonl not compatible with 3.6.7",75396007-8dba-4888-836e-65cfb444160d,25767509,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+Extensions licensing,08b87529-7d81-40c9-8b97-3d5017e70c59,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,CREATION
+Extensions licensing,e659aff2-863d-42bf-998c-8cc77717bb0c,9084941,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,c837c781-90bf-43ba-8f80-13c9f2b9dc8e,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,1d82bb16-bc34-436b-85a8-e968a6403dc5,8415124,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,0864ce83-81e6-4e6e-8ef0-45148e92c8c6,8415124,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,40889c55-0c54-4b42-afab-65fe16c0adfa,4397312,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,cb7ad23a-efa7-49b7-80c7-418ea31f626e,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,a7b99aeb-d286-4617-9bbc-39558e52d3a5,4397312,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,e4624838-8900-409c-9bb8-e6ae7736bc46,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,494a7aea-d236-4317-bd82-2c38c6b36f89,2837468,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
+spice workspace-scroller: works on only one monitor in extended display mode,76d5f06e-75f8-4739-94fb-67ac6788c9bd,4397312,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,b6f859db-4bc2-4945-b4bd-e0f2eb960997,6859057,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,543b7118-f4bb-43ec-9ad7-0b75ec3d700c,6665146,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+smart-panel@mohammad-sn: Doesn't work with a second panel,c3a2a5c7-a573-4dbd-a39f-05636e967773,13596575,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+smart-panel@mohammad-sn: Doesn't work with a second panel,8b4671e7-cd34-4710-9db0-0723954f0739,4397312,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+smart-panel@mohammad-sn: Doesn't work with a second panel,361b3dbc-f588-4160-8db5-21c78aeefce1,13596575,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+CinnaDockP2@norbusan: does not work,058558a6-a437-4931-ad38-1b37bb39dfc1,8415124,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+CinnaDockP2@norbusan: does not work,7b8e0892-4990-4d09-b77e-4cc4ddc21714,1735589,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+CinnaDockP2@norbusan: does not work,9bd9ec86-3173-4a66-abf2-8e899dda7891,4397312,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),644a7e23-fb2f-44ad-bf5e-a07668c9feb0,19552720,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),47237ee6-ce2d-45f1-85fd-c19090746b1b,4095021,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),61d4f17f-a7f9-4734-956f-fde77f00e06a,19552720,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT

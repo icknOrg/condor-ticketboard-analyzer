@@ -1,54 +1,120 @@
 Name,UUID,Source,Target,Starttime,Endtime,Planned_Duration,Real_Duration,Status,Count_Subtasks,Count_Comments,Edge_type
-Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),e3e9b6b8-5717-4836-80bf-85408fd7f297,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
-gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,6081ddeb-ac63-462f-9f0d-af0a386e2be7,11470532,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,42988d5d-59e2-4051-92b6-8b5ed683c7a4,11470532,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,214edfb7-4fab-4ca6-bada-430f769ebec0,5958984,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-gTile@shuairan: Current version does not work on cinnamon 3.6.7,98b12b51-9209-4590-8f75-6c1f260464c8,49053218,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-gTile@shuairan: Current version does not work on cinnamon 3.6.7,f205fdfe-8924-4ab1-b325-aacedfaabd59,386567,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-gTile@shuairan: Current version does not work on cinnamon 3.6.7,1d80d767-6fb9-4535-9ecd-564d085edd43,2505927,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-DesktopCube@yare: background behind cube should be custom image or black,ea31c719-f108-4a73-a2e0-cf949fd3d83a,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
-DesktopCube@yare: background behind cube should be custom image or black,16bdae02-cedf-4f25-bf4a-209a7c5353c0,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-DesktopCube@yare: background behind cube should be custom image or black,b7c84378-c185-4d1a-b494-f5e75aca08ac,33965039,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-DesktopCube@yare: background behind cube should be custom image or black,e35da3c8-c937-4430-9152-7ac2a94d7750,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-wobbly-windows@mecheye.net : Some tearing affect and hickups,74a25f68-8428-422d-9321-afde8e0675fa,2259575,2259575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
-Flipper@connerdev: transition has visual glitch,108df94f-0bb0-47db-b7d5-77d5201c1900,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
-workspace-scroller@ori: Cinnamon 4.0 Support,126df18e-ebca-4f6e-af97-437c7449b593,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
-workspace-scroller@ori: Cinnamon 4.0 Support,86eb04c1-3f69-464a-a5f6-3ca4096daff8,432683,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-workspace-scroller@ori: Cinnamon 4.0 Support,83060617-fa34-4211-b988-686ad6d1bf84,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-workspace-scroller@ori: Cinnamon 4.0 Support,f3c78240-3fbd-4dee-a015-0165f4f832e8,432683,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-"Flipper@connerdev: works, but no settings reachable in LM19.1",137573d7-d90f-49e0-babf-f37c96a132f9,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-"Flipper@connerdev: works, but no settings reachable in LM19.1",abdb5a2d-de7a-4058-8c9c-462cb2ef75bb,1300133,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-"Flipper@connerdev: works, but no settings reachable in LM19.1",e758928f-bf82-4bfe-bb89-aa772398508c,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,5ba912be-153a-4dcb-8691-655b5f556c84,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,CREATION
-gTile@shuairan : keyboard support for multi monitor grid,3dd1b0e0-be68-4732-ba77-ffb6302eb1de,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,2a6277fd-aa34-4d7e-b26c-8b81b2e922a2,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,02fab725-bd3f-484d-8417-b37b532e85cb,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,f1efb077-8486-448f-8a20-035d661dc976,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,2e3a9005-b90b-4f7a-b8f0-398d262f97de,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-gTile@shuairan : keyboard support for multi monitor grid,9a024fee-21c0-4dc9-97dd-ea594b1f1394,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
-desktop-scroller@ccadeptic23  blocks mouse clicks on screen border,0d8b84cd-3b6e-4730-b39c-d77e244d50dd,17616347,17616347,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
-" workspace-grid@daemonl not compatible with 3.6.7",5fc10e13-0966-41ab-ba52-ebc39bd0807a,17271565,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-" workspace-grid@daemonl not compatible with 3.6.7",478c4ca8-bf0c-4a4e-86e8-e9b480e0f938,4397312,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-" workspace-grid@daemonl not compatible with 3.6.7",75396007-8dba-4888-836e-65cfb444160d,25767509,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-Extensions licensing,08b87529-7d81-40c9-8b97-3d5017e70c59,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,CREATION
-Extensions licensing,e659aff2-863d-42bf-998c-8cc77717bb0c,9084941,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,c837c781-90bf-43ba-8f80-13c9f2b9dc8e,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,1d82bb16-bc34-436b-85a8-e968a6403dc5,8415124,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,0864ce83-81e6-4e6e-8ef0-45148e92c8c6,8415124,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,40889c55-0c54-4b42-afab-65fe16c0adfa,4397312,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,cb7ad23a-efa7-49b7-80c7-418ea31f626e,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,a7b99aeb-d286-4617-9bbc-39558e52d3a5,4397312,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-Extensions licensing,e4624838-8900-409c-9bb8-e6ae7736bc46,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
-spice workspace-scroller: works on only one monitor in extended display mode,494a7aea-d236-4317-bd82-2c38c6b36f89,2837468,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
-spice workspace-scroller: works on only one monitor in extended display mode,76d5f06e-75f8-4739-94fb-67ac6788c9bd,4397312,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-spice workspace-scroller: works on only one monitor in extended display mode,b6f859db-4bc2-4945-b4bd-e0f2eb960997,6859057,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-spice workspace-scroller: works on only one monitor in extended display mode,543b7118-f4bb-43ec-9ad7-0b75ec3d700c,6665146,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
-smart-panel@mohammad-sn: Doesn't work with a second panel,c3a2a5c7-a573-4dbd-a39f-05636e967773,13596575,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-smart-panel@mohammad-sn: Doesn't work with a second panel,8b4671e7-cd34-4710-9db0-0723954f0739,4397312,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-smart-panel@mohammad-sn: Doesn't work with a second panel,361b3dbc-f588-4160-8db5-21c78aeefce1,13596575,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-CinnaDockP2@norbusan: does not work,058558a6-a437-4931-ad38-1b37bb39dfc1,8415124,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-CinnaDockP2@norbusan: does not work,7b8e0892-4990-4d09-b77e-4cc4ddc21714,1735589,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-CinnaDockP2@norbusan: does not work,9bd9ec86-3173-4a66-abf2-8e899dda7891,4397312,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),644a7e23-fb2f-44ad-bf5e-a07668c9feb0,19552720,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
-[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),47237ee6-ce2d-45f1-85fd-c19090746b1b,4095021,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
-[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),61d4f17f-a7f9-4734-956f-fde77f00e06a,19552720,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),69425bfc-0b11-4a13-8f8c-47404e5997e4,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,5e002969-f486-4df2-9af3-1a293c7989c6,11470532,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,75cf1747-59ad-4242-a0aa-ceb444880a1f,11470532,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+gTile@shuairan - Upgraded from Mint 19.1 to 19.2 and gTile stopped working,0c76e0c1-1de1-4c02-9405-d8d24e2e9c49,5958984,11470532,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,402ebf00-a8cf-4b7a-ae51-46327f060df2,49053218,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,318f8f09-51b5-4913-b5b9-aa73800628cd,386567,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+gTile@shuairan: Current version does not work on cinnamon 3.6.7,fbd9101c-3ada-4d9f-8054-2fabd795c7ba,2505927,49053218,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,c9a28194-c014-4f0f-9aaa-de6247ea3cdc,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
+DesktopCube@yare: background behind cube should be custom image or black,b820b057-b609-4352-859f-9b9cd37f2649,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,13b142e3-9842-4d8f-be83-2f5ed6398396,33965039,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+DesktopCube@yare: background behind cube should be custom image or black,eeef43de-67a8-4525-8f9d-7dbc050f98d7,73755,73755,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+wobbly-windows@mecheye.net : Some tearing affect and hickups,2c33a780-5242-4155-9d2b-0a25bc9d02e9,2259575,2259575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
+Flipper@connerdev: transition has visual glitch,f4ef1a53-c32f-4f20-acca-b95e82b87742,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
+workspace-scroller@ori: Cinnamon 4.0 Support,96b5d1c3-09fd-4081-af97-54da5b23f6b6,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
+workspace-scroller@ori: Cinnamon 4.0 Support,8c0a987c-f3de-4dea-9f56-d2c6214649ce,432683,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+workspace-scroller@ori: Cinnamon 4.0 Support,e3b9482f-e7f6-4ead-91a8-6e109ccb9732,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+workspace-scroller@ori: Cinnamon 4.0 Support,ac67dc8d-a615-44a7-b3ef-cd0c798ce83a,432683,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+"Flipper@connerdev: works, but no settings reachable in LM19.1",f84048aa-0d4a-4d54-9881-7ef7c6924261,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+"Flipper@connerdev: works, but no settings reachable in LM19.1",85e38529-9e7d-42b3-b2f8-049b18ce37f0,1300133,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+"Flipper@connerdev: works, but no settings reachable in LM19.1",df6ed809-bd58-44c5-b68d-9d69d0bcd85f,9968138,9968138,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,e10cbd76-cb15-40ff-ab2b-42d451d510b5,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,CREATION
+gTile@shuairan : keyboard support for multi monitor grid,9c700962-5bb6-4324-9c56-6175a56a78bb,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,f7bb43e6-b454-42f4-b0c9-95ce5c1ef724,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,bb288cf6-9307-4191-a4b1-5204ecc240bc,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,98c0b852-db3b-4cae-bb96-08cc6cb0b10a,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,003cc82d-db6b-4db8-873b-08d9fbc88f1d,5958984,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+gTile@shuairan : keyboard support for multi monitor grid,f0988a8a-35dc-48dc-804b-bb4833293d9f,6859057,5958984,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,6,COMMENT
+desktop-scroller@ccadeptic23  blocks mouse clicks on screen border,de0fb548-3358-4aaa-9766-82092fa48931,17616347,17616347,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,0,CREATION
+" workspace-grid@daemonl not compatible with 3.6.7",f52e0593-9f80-4570-8cc5-0f46fcf9df7c,17271565,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+" workspace-grid@daemonl not compatible with 3.6.7",4042dc28-5f90-450b-9107-4549944c4d8b,4397312,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+" workspace-grid@daemonl not compatible with 3.6.7",21907dc3-e0be-469b-8fd6-a1d799cd1fea,25767509,17271565,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+Extensions licensing,00e345fd-d694-4b2c-8dd8-fc3ce2ede053,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,CREATION
+Extensions licensing,8b16914a-d039-4944-90ee-1c91031776c3,9084941,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,63b59e0d-087d-4116-af56-dfb3b36527c8,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,d2310ce7-9a88-4771-87a1-7a666c50f4a6,8415124,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,ceb4faa2-8e77-4267-9a4f-3db2e0be9155,8415124,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,e63ba5c3-6fe0-40cb-bff1-5230b1443643,4397312,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,265e94bb-356e-4818-8384-e349af8f9bcc,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,a239a558-626d-4294-9a7d-95cd7cae33dc,4397312,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+Extensions licensing,5c3a8b5c-243a-41d1-a4f4-27c383715b66,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,8,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,6fdb1375-d1a1-4d3d-be78-05a78c59fe14,2837468,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,CREATION
+spice workspace-scroller: works on only one monitor in extended display mode,2b1877e1-317e-4f9b-bc70-670e7d284830,4397312,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,35e9d624-eba3-4144-a1a7-9125ff4271b8,6859057,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+spice workspace-scroller: works on only one monitor in extended display mode,163513ce-18ce-44d2-97ed-f3dfa1189ca4,6665146,2837468,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,3,COMMENT
+smart-panel@mohammad-sn: Doesn't work with a second panel,7ee1cd16-3f88-4e30-a5bc-c2f9e263ff89,13596575,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+smart-panel@mohammad-sn: Doesn't work with a second panel,49a9c8dc-302a-4465-b7f0-6b1b55bfaa99,4397312,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+smart-panel@mohammad-sn: Doesn't work with a second panel,3383a5ef-6d69-41f6-bb18-2a5a2d8520d3,13596575,13596575,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+CinnaDockP2@norbusan: does not work,1b2fd5cd-1ccb-4c6a-aecc-67e4a2f015bc,8415124,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+CinnaDockP2@norbusan: does not work,d7bdd171-1605-424c-8155-ae23100c837b,1735589,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+CinnaDockP2@norbusan: does not work,8d7611a6-32b6-42eb-87a8-557450ec2014,4397312,8415124,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),cfe4deb1-5a16-42c4-8594-6086af005700,19552720,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,CREATION
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),b9f551b6-7a55-479e-8cc1-57cd24f37748,4095021,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+[Request] Can we ask for requests here? Also a bug. (opacify@anish.org),3b24b84e-b21a-40fa-b81f-dac6c4d0cdcc,19552720,19552720,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,open,,2,COMMENT
+Watermark nl.po,b78465f9-c2fd-499d-ba07-7824a28a285e,3099270,3099270,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+Update Watermark v4.2-20190710 (watermark@germanfr),c565dd06-d6ff-4171-82b7-a7b28ee2bb08,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),2bf2b5c4-7fa7-45cb-bf0f-39c25620e4b2,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+Added Italian translation to all extensions,8e816345-d152-4207-87f8-9d65bd9a350c,1354519,1354519,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,3,CREATION
+Added Italian translation to all extensions,e7fd7706-9bbc-44f0-a178-61b00550459c,10391266,1354519,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,3,COMMENT
+Added Italian translation to all extensions,f57cbaa1-f0a5-4b69-9a5a-fd6b626f9f67,1354519,1354519,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,3,COMMENT
+Added Italian translation to all extensions,f6ff62c2-adf9-4ea9-a98d-4af0aa06995e,10391266,1354519,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,3,COMMENT
+Update Watermark v4.2-20190710 (watermark@germanfr),5ba5393f-4909-4376-b243-30f7b2107ab6,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+[watermark@germanfr] Updated fr.po - French translation,7363bd41-5c56-43c8-be9b-b4cd76b0840b,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,7,CREATION
+[watermark@germanfr] Updated fr.po - French translation,07297186-ef07-4979-971c-83eda4d2f79d,10391266,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,7,COMMENT
+[watermark@germanfr] Updated fr.po - French translation,7ed3a134-fa63-4b18-9387-a15ad1cffb93,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,7,COMMENT
+[watermark@germanfr] Updated fr.po - French translation,c2034039-03d4-4dce-b0cb-5e4501689d45,10391266,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,7,COMMENT
+[watermark@germanfr] Updated fr.po - French translation,417442ee-da4a-4622-b0e6-a0b5797be9d0,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,7,COMMENT
+[watermark@germanfr] Updated fr.po - French translation,9f66e281-9bb6-4695-af73-0f7306674923,10391266,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,7,COMMENT
+[watermark@germanfr] Updated fr.po - French translation,bee8d8f0-0a4f-43e4-a1c0-d5cc10349b9a,6322481,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,7,COMMENT
+[watermark@germanfr] Updated fr.po - French translation,f8e9287e-6c5f-41f8-b9d4-75d5d34e158b,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,7,COMMENT
+gTile@shuairan: Add Cinnamon 4.2 to compatibility list,02e40683-85c4-476e-9884-2bef393ad27b,150479,150479,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+cinnamon-maximus@fmete: remove some hacks,debbe81c-1126-433f-96d4-79a7d6573ccc,20357500,20357500,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+maximus@fmete: update to make the extension working,7eaba167-a226-4de9-9922-058f98b42c52,20357500,20357500,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+Transparent Panels (transparent-panels@germanfr) will not load with Cinnamon 4.2.3,b81aff49-a6e0-4266-b65a-409f7de26bde,44762859,44762859,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,1,CREATION
+Transparent Panels (transparent-panels@germanfr) will not load with Cinnamon 4.2.3,df912ca9-8e79-4c00-babd-ebe13f69ce7f,44762859,44762859,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,1,COMMENT
+[DesktopCube@yare] - Compatibility with Cinnamon 4.2,319e2059-29ad-464d-ad10-0429d50d79d1,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+[Win7AltTab@entelechy] Enable showing windows from all workspaces,46f7787f-9412-46f2-a5eb-f6bf6d4a9b65,12522078,12522078,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),03ddbdb7-ddf1-4259-b514-e8d1a7deda40,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,CREATION
+Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),44165184-0559-4a99-bb65-40c873c48203,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),30ef22e8-8330-4aed-9e8c-23af0baafffc,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+Update Watermark v4.2-20190710 (watermark@germanfr),5c060781-c07f-4f9e-b6d9-f7cca473e772,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+wobbly-windows@mecheye.net : doesn't work in Linux Mint 19.1,c4f70cd6-bc64-440c-a87d-5dacc2613649,6375934,6375934,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,CREATION
+wobbly-windows@mecheye.net : doesn't work in Linux Mint 19.1,5da6f498-9727-4fb5-be43-bfa81e61f329,33965039,6375934,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+wobbly-windows@mecheye.net : doesn't work in Linux Mint 19.1,2df5a292-4fdd-4178-9c25-58d98ef16fa7,6375934,6375934,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+Update vulnerable NPM dependencies,edf70022-41af-423c-846d-afa64e92230f,6859057,6859057,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+workspace-names-updater@workspace-manager.gitlab.io: Initial Commit,462dfbfe-3418-408a-8e0f-60e911d13bdf,47278150,47278150,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+[desktop-icons-per-workspace@cardsurf] Use mktemp command,3f5b2e9f-f60f-4042-8d2f-d78c6a22b59a,3139729,3139729,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+Workspace grid nl.po,0c945d9e-ca03-4851-a154-c1c1062ee3db,3099270,3099270,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+DesktopCube@yare: Button to access to the Cinnamon Settings Workspaces module.,f9e7f0f3-a5d2-48ce-87d9-f40dde4b9c39,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,CREATION
+DesktopCube@yare: Button to access to the Cinnamon Settings Workspaces module.,4efdd371-535c-4b6f-9ca4-82575d2b58c8,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+DesktopCube@yare: Button to access to the Cinnamon Settings Workspaces module.,e4361f49-ae79-4211-a434-424d5ddaf6e6,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+DesktopCube@yare: workspace 1--> 4 or 4-->1,63d67b8f-038e-4a25-b1da-88be6299f8a8,9275768,9275768,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,CREATION
+DesktopCube@yare: workspace 1--> 4 or 4-->1,c2793811-a9dd-4834-84c5-6629fb50a574,33965039,9275768,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+DesktopCube@yare: workspace 1--> 4 or 4-->1,0a71e893-41ac-4349-a03a-da467851e59f,33965039,9275768,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+gTile@shuairan: Update version compatibility,80061ea1-2d7b-41b3-9866-e9b1706ae2f2,6859057,6859057,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+gTile after recent commit not working in Cinnamon 3.2.7,577bc4b7-0eb0-464f-8442-0b4e0a47c69a,21959071,21959071,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,3,CREATION
+gTile after recent commit not working in Cinnamon 3.2.7,9f691409-0140-495a-932d-5b266cbde785,6859057,21959071,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,3,COMMENT
+gTile after recent commit not working in Cinnamon 3.2.7,3ae6ea6c-a36f-4f0a-a090-372844b0beb9,21959071,21959071,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,3,COMMENT
+gTile after recent commit not working in Cinnamon 3.2.7,58aa7688-403c-4b1e-a3de-751f9731c7fd,6859057,21959071,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,3,COMMENT
+gTile after recent commit not working in Cinnamon 3.2.7,cb480f72-f50e-4162-99d3-8cc7f6dd9046,21959071,21959071,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,1,CREATION
+gTile after recent commit not working in Cinnamon 3.2.7,7b61ba3e-2c72-4c34-af23-94943d126536,6859057,21959071,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,1,COMMENT
+DesktopCube@yare - Make compatible w. Cinnamon 4.0,52e80bba-c2c3-4ba2-8d55-7b515d9909fa,33965039,33965039,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+Update Transparent panels v4.0~20181106 (transparent-panels@germanfr),0f917566-c972-42ec-9167-e7b0685bf106,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+Update Watermark v4.0~20181227 (watermark@germanfr),76012680-12e2-42ed-a702-66a5e6559288,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,CREATION
+Update Watermark v4.0~20181227 (watermark@germanfr),f83141d6-84e0-49bb-b2de-0f3b7c38391a,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),e34f2c6e-d087-4061-8f39-fc1560ecbed2,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),78a0d4ce-7140-423b-82be-526c8dc4f73b,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),33a31ab9-ca7c-49c0-825f-31cce225d81e,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),28d20831-4c0a-43e8-a950-9190a6d1cc2d,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),b848bc02-f259-4caa-b04b-6accc3cab786,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),ec110885-7794-43f0-9c3c-b79ae960dab4,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),d0c928b4-acaf-4171-9655-28ae1437304e,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),47eddeb9-3a59-4d66-ac98-226322137ae1,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),bc402bfb-a2d9-47db-95ef-388a46b34f3a,10391266,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+Update Watermark v4.0~20181227 (watermark@germanfr),72d2b9af-4ac0-4760-b4e4-d7c0c382e0ad,6859057,10391266,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,11,COMMENT
+transparent-panels@germanfr: update tr.po,cc26cdff-25a3-47b6-aeef-d39c6bfed201,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,CREATION
+transparent-panels@germanfr: update tr.po,4fd77416-ac0b-47d8-9da1-e159bafd23fc,10391266,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+transparent-panels@germanfr: update tr.po,2203a119-d8e3-472c-b159-da162ba0812c,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,2,COMMENT
+gTile@shuairan: add tr.po,86e34873-a976-456c-b143-dd9ce4eeea29,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION
+workspace-scroller@ori: add tr.po,534925a4-1535-4bc5-9b4a-8d61680f89f5,1300133,1300133,2010-09-12T04:00:00+00:00,2010-09-12T04:00:00+00:00,,,closed,,0,CREATION

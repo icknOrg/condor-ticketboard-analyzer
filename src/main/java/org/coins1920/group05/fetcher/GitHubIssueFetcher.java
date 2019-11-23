@@ -57,9 +57,20 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<Issue> fetchTickets(String owner, String board) {
-        final String url = "/repos/{owner}/{board}/issues";
-        final ResponseEntity<Issue[]> response = getAllEntitiesWithPagination(url, Issue[].class, owner, board);
-        return RestClientHelper.nonNullResponseEntities(response);
+        // all open tickets:
+        final String openTicketsUrl = "/repos/{owner}/{board}/issues";
+        final ResponseEntity<Issue[]> openTicketsResponse = getAllEntitiesWithPagination(
+                openTicketsUrl, Issue[].class, owner, board);
+
+        // and all closed ones:
+        final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
+        final ResponseEntity<Issue[]> closedTicketsResponse = getAllEntitiesWithPagination(
+                closedTicketsUrl, Issue[].class, owner, board);
+
+        return io.vavr.collection.List
+                .ofAll(RestClientHelper.nonNullResponseEntities(openTicketsResponse))
+                .appendAll(RestClientHelper.nonNullResponseEntities(closedTicketsResponse))
+                .toJavaList();
     }
 
     @Override

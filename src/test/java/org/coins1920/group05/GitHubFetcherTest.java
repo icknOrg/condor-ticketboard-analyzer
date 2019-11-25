@@ -116,4 +116,31 @@ public class GitHubFetcherTest {
         final String expectedLink = "https://api.github.com/repositories/79458054/issues?state=closed&page=2";
         assertThat(link, is(expectedLink));
     }
+
+    @Test
+    public void testPaginationLinkSplittingWithThreeLinks() {
+        final String links = "<https://api.github.com/repositories/79458054/issues?state=" +
+                "closed&page=1>; rel=\"prev\", <https://api.github.com/repositories/79458054/issues?state=closed&page=3>; " +
+                "rel=\"next\", <https://api.github.com/repositories/79458054/issues?state=closed&page=8>; " +
+                "rel=\"last\", <https://api.github.com/repositories/79458054/issues?state=closed&page=1>; rel=\"first\"";
+
+        final Optional<String> nextPageLink = RestClientHelper.splitGithubPaginationLinks(links);
+        assertThat(nextPageLink, is(not(nullValue())));
+
+        final String link = nextPageLink.orElseGet(() -> null);
+        assertThat(link, is(not(nullValue())));
+
+        final String expectedLink = "https://api.github.com/repositories/79458054/issues?state=closed&page=3";
+        assertThat(link, is(expectedLink));
+    }
+
+    @Test
+    public void testPaginationLinkSplittingWithNoNextLink() {
+        final String links = "Link: <https://api.github.com/repositories/79458054/issues?state=closed&" +
+                "page=7>; rel=\"prev\", <https://api.github.com/repositories/79458054/issues?state=closed&page=1>; rel=\"first\"";
+
+        final Optional<String> nextPageLink = RestClientHelper.splitGithubPaginationLinks(links);
+        assertThat(nextPageLink, is(not(nullValue())));
+        assertThat(nextPageLink.isPresent(), is(false));
+    }
 }

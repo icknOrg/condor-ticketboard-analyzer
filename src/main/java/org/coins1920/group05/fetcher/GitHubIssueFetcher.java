@@ -10,10 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
@@ -152,14 +149,17 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         if (response.getHeaders().containsKey(paginationLinkKey)) {
             final String linkUrls = Objects.requireNonNull(
                     response.getHeaders().get(paginationLinkKey)).get(0);
-            final String linkUrl = RestClientHelper
-                    .splitGithubPaginationLinks(linkUrls)
-                    .orElseThrow(NullPointerException::new);
-            logger.debug("Found a link to the next page: " + linkUrl);
-            return io.vavr.collection.List
-                    .ofAll(RestClientHelper.nonNullResponseEntities(response))
-                    // TODO: .appendAll(getAllEntitiesWithPagination(f, linkUrl))
-                    .toJavaList();
+            final Optional<String> linkUrlOptional = RestClientHelper.splitGithubPaginationLinks(linkUrls);
+            if (linkUrlOptional.isPresent()) {
+                final String linkUrl = linkUrlOptional.get();
+                logger.debug("Found a link to the next page: " + linkUrl);
+                return io.vavr.collection.List
+                        .ofAll(RestClientHelper.nonNullResponseEntities(response))
+                        .appendAll(getAllEntitiesWithPagination(f, linkUrl))
+                        .toJavaList();
+            } else {
+                return RestClientHelper.nonNullResponseEntities(response);
+            }
         } else {
             return RestClientHelper.nonNullResponseEntities(response);
         }

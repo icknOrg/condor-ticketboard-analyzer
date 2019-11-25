@@ -57,13 +57,13 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         // all open tickets:
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
         final List<Issue> openIssuesList = getAllEntitiesWithPagination((u, e) ->
-                rt.exchange(openTicketsUrl, HttpMethod.GET, e, Issue[].class, owner, board), openTicketsUrl);
-        logger.debug("I got " + openIssuesList.size() + " closed issues!");
+                rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), openTicketsUrl);
+        logger.debug("I got " + openIssuesList.size() + " issues!");
 
         // and all closed ones:
         final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
         final List<Issue> closedIssuesList = getAllEntitiesWithPagination((u, e) ->
-                rt.exchange(closedTicketsUrl, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
+                rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
         logger.debug("I got " + closedIssuesList.size() + " closed issues!");
 
         return io.vavr.collection.List
@@ -121,7 +121,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
             try {
                 final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
                 final List<Comment> comments = getAllEntitiesWithPagination((u, e) ->
-                        rt.exchange(commentsUrl, HttpMethod.GET, e, Comment[].class), commentsUrl);
+                        rt.exchange(u, HttpMethod.GET, e, Comment[].class), commentsUrl);
                 return comments
                         .stream()
                         .filter(Objects::nonNull)
@@ -149,7 +149,8 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         if (response.getHeaders().containsKey(paginationLinkKey)) {
             final String linkUrls = Objects.requireNonNull(
                     response.getHeaders().get(paginationLinkKey)).get(0);
-            final Optional<String> linkUrlOptional = RestClientHelper.splitGithubPaginationLinks(linkUrls);
+            final Optional<String> linkUrlOptional = RestClientHelper
+                    .splitGithubPaginationLinks(linkUrls);
             if (linkUrlOptional.isPresent()) {
                 final String linkUrl = linkUrlOptional.get();
                 logger.debug("Found a link to the next page: " + linkUrl);

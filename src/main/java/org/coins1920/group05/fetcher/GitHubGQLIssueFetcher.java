@@ -31,6 +31,8 @@ public class GitHubGQLIssueFetcher {
     }
 
     public List<Object> fetch(String owner, String board){
+
+
         // Declare connection parameters
         CloseableHttpClient client = null;
         CloseableHttpResponse response= null;
@@ -42,7 +44,31 @@ public class GitHubGQLIssueFetcher {
         JSONObject jsonObj = new JSONObject();
         // TODO: Query ändern, sodass alles relevante gefetcht wird
         try {
-            jsonObj.put("query", "{repository(owner: \""+owner+"\", name: \""+board+"\") { issues(first:5) { edges { node { title } } } } }");
+            jsonObj.put("query", "{repository(owner: \""+owner+"\", name: \""+board+"\") { " +
+                                            "issues(first:5) { " +
+                                                "edges { " +
+                                                     " node { " +
+                                                        "title, " +
+                                                        "databaseId, " +
+                                                        "createdAt, " +
+                                                        "closedAt, " +
+                                                        "author  {" +
+                                                            "login" +
+                                                        "}, " +
+                                                        "assignees (first: 100) { " +
+                                                            "nodes {" +
+                                                                "login, " +
+                                                                "location" +
+                                                            "}" +
+                                                        "}, " +
+                                                        "comments (first: 100) {" +
+                                                            "nodes {" +
+                                                                "author {login}, " +
+                                                                "bodyText, " +
+                                                                "createdAt" +
+                                                            "}," +
+                                                        "}, " +
+                                                     "} } } } }");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -66,6 +92,7 @@ public class GitHubGQLIssueFetcher {
 
         try{
             BufferedReader reader= new BufferedReader(new InputStreamReader(response.getEntity().getContent()));
+            Object t = response.getEntity().getContent();
             //TODO: Hier irgendwo JSON Liste erstellen
             String line= null;
             StringBuilder builder= new StringBuilder();

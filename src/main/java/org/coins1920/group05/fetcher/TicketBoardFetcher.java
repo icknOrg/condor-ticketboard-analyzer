@@ -1,10 +1,6 @@
 package org.coins1920.group05.fetcher;
 
-import org.coins1920.group05.fetcher.model.general.AbstractAction;
-import org.coins1920.group05.fetcher.model.general.AbstractBoard;
-import org.coins1920.group05.fetcher.model.general.AbstractMember;
-import org.coins1920.group05.fetcher.model.general.AbstractTicket;
-import org.coins1920.group05.fetcher.model.github.User;
+import org.coins1920.group05.fetcher.model.general.*;
 
 import java.util.List;
 
@@ -15,7 +11,8 @@ import java.util.List;
 public interface TicketBoardFetcher<B extends AbstractBoard,
         M extends AbstractMember,
         T extends AbstractTicket,
-        A extends AbstractAction> {
+        A extends AbstractAction,
+        C extends AbstractComment> {
 
     List<B> fetchBoards();
 
@@ -24,7 +21,7 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
      *
      * @param owner the board/repo owner's name
      * @param board the board name or ID. For Trello boards this is the ID found in Trello's
-     *                website URLs (e.g. "lgaJQMYA" in "https://trello.com/b/lgaJQMYA/team5coin")
+     *              website URLs (e.g. "lgaJQMYA" in "https://trello.com/b/lgaJQMYA/team5coin")
      * @return a board POJO containing all info needed for a Condor import
      */
     B fetchBoard(String owner, String board);
@@ -34,12 +31,12 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
      *
      * @param owner the board/repo owner's name
      * @param board the board name or ID. For Trello boards this is the ID found in Trello's
-     *                website URLs (e.g. "lgaJQMYA" in "https://trello.com/b/lgaJQMYA/team5coin")
+     *              website URLs (e.g. "lgaJQMYA" in "https://trello.com/b/lgaJQMYA/team5coin")
      * @return the board's members
      */
     List<M> fetchBoardMembers(String owner, String board);
 
-    List<T> fetchTickets(String owner, String board);
+    List<T> fetchTickets(String owner, String board, boolean fetchClosedTickets);
 
     List<A> fetchActionsForTicket(String ticketId);
 
@@ -48,4 +45,6 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
     List<M> fetchAssigneesForTicket(T ticket);
 
     List<M> fetchCommentatorsForTicket(T ticket);
+
+    List<C> fetchCommentsForTicket(T ticket);
 }

@@ -34,7 +34,8 @@ public class GitHubFetcherTest {
     public static void setUpClass() {
         final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
         final String wiremockUrl = "http://localhost:" + WIREMOCK_PORT + "/";
-        fetcher = new GitHubIssueFetcher(oauthToken, wiremockUrl);
+        final boolean paginate = false;
+        fetcher = new GitHubIssueFetcher(oauthToken, paginate, wiremockUrl);
     }
 
     @Before
@@ -60,7 +61,7 @@ public class GitHubFetcherTest {
 
     @Test
     public void testFetchIssues() {
-        final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1);
+        final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1, false);
         assertThat(issues, is(not(nullValue())));
         logger.info("There is/are " + issues.size() + " issue(s)!");
         assertThat(issues.size(), is(46));

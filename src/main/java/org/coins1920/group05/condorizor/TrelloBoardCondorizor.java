@@ -5,8 +5,6 @@ import org.coins1920.group05.fetcher.TrelloBoardFetcher;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.condor.EdgeType;
-import org.coins1920.group05.fetcher.model.general.AbstractMember;
-import org.coins1920.group05.fetcher.model.general.CategorizedBoardMembers;
 import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
@@ -31,8 +29,9 @@ public class TrelloBoardCondorizor {
         final List<Member> trelloBoardMembers = fetcher.fetchBoardMembers(null, boardId);
 
         // fetch all cards for the given board:
+        final boolean fetchClosedTickets = false;
         final Stream<Card> trelloCards = fetcher
-                .fetchTickets(null, boardId)
+                .fetchTickets(null, boardId, fetchClosedTickets)
                 .stream()
                 .map(c -> addAuthor(c, fetcher.fetchActionsForTicket(c.getId())));
 

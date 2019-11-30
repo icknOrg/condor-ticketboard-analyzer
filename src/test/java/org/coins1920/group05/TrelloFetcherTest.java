@@ -107,7 +107,7 @@ public class TrelloFetcherTest {
 
     @Test
     public void testFetchCards() {
-        final List<Card> cards = fetcher.fetchTickets(null, SAMPLE_BOARD_SHORTLINK);
+        final List<Card> cards = fetcher.fetchTickets(null, SAMPLE_BOARD_SHORTLINK, false);
         assertThat(cards, is(not(nullValue())));
         assertThat(cards.size(), is(not(0)));
         logger.info("There is/are " + cards.size() + " card(s)!");

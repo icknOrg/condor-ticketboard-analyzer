@@ -5,6 +5,7 @@ import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.condor.EdgeType;
 import org.coins1920.group05.fetcher.model.general.CategorizedBoardMembers;
+import org.coins1920.group05.fetcher.model.github.Comment;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
 import org.coins1920.group05.fetcher.util.Pair;
@@ -21,27 +22,46 @@ public class GitHubRepoCondorizor {
 
     public Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
         final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
-        final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(oauthToken);
+        final boolean paginate = false;
+        final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(oauthToken, paginate);
 
         // first, fetch all issues of the given repo:
-        final Stream<Issue> githubIssues = fetcher
-                .fetchTickets(owner, board)
-                .stream();
+        final boolean fetchClosedTickets = false;
+        final List<Issue> githubIssues = fetcher
+                .fetchTickets(owner, board, fetchClosedTickets);
 
-        // for all issues: fetch all users that participated (as assignee or commentator or ...):
-        final Function<Issue, Pair<Issue, CategorizedBoardMembers<User>>> withAllParticipatingUsers = i ->
-                new Pair<>(i,
+        // fetch all comments and the corresponding users for all issues:
+        final List<Pair<Issue, List<Comment>>> comments = githubIssues
+                .stream()
+                .map(i -> new Pair<>(i, fetcher.fetchCommentsForTicket(i)))
+                .collect(Collectors.toList());
+
+        // fetch all assignees for all tickets:
+        final List<Pair<Issue, List<User>>> assignees = githubIssues
+                .stream()
+                .map(i -> new Pair<>(i, fetcher.fetchAssigneesForTicket(i)))
+                .collect(Collectors.toList());
+
+        final Function<Pair<Issue, List<Comment>>, Pair<Issue, CategorizedBoardMembers<User>>> withAllParticipatingUsers = p ->
+                new Pair<>(p.getFirst(),
                         new CategorizedBoardMembers<User>(
-                                i.getUser(),
-                                fetcher.fetchAssigneesForTicket(i),
-                                fetcher.fetchCommentatorsForTicket(i)
+                                p.getFirst().getUser(),
+                                assignees
+                                        .stream()
+                                        .filter(a -> a.getFirst() == p.getFirst())
+                                        .findFirst()
+                                        .orElseThrow(NullPointerException::new)
+                                        .getSecond(),
+                                p.getSecond()
+                                        .stream()
+                                        .map(Comment::getUser)
+                                        .collect(Collectors.toList())
                         ));
-        final List<Pair<Issue, CategorizedBoardMembers<User>>> issuesWithUsers = githubIssues
+        final List<Pair<Issue, CategorizedBoardMembers<User>>> issuesWithUsers = comments
+                .stream()
                 .map(withAllParticipatingUsers)
                 .collect(Collectors.toList());
 
-        // fetch all repo contributors (i.e. people who committed or merged PRs):
-//        final List<User> githubRepoContributors = fetcher.fetchBoardMembers(owner, board); // TODO: are committers relevant for the issues?
 
         // aggregate all users, map to Condor Actors/Edges and write to CSV files:
         return condorizeIssuesAndUsers(issuesWithUsers, outputDir);

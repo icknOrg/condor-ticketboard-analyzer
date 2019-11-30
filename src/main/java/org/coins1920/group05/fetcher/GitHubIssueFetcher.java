@@ -14,23 +14,26 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event> {
+public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event, Comment> {
 
     private static final Logger logger = LoggerFactory.getLogger(GitHubIssueFetcher.class);
     private static final String GITHUB_ROOT_URI = "https://api.github.com/";
 
     private final RestTemplate rt;
     private final String oauthToken;
+    private final Boolean paginate;
 
-    public GitHubIssueFetcher(String oauthToken) {
+    public GitHubIssueFetcher(String oauthToken, boolean paginate) {
         this.oauthToken = oauthToken;
+        this.paginate = paginate;
         this.rt = new RestTemplateBuilder()
                 .rootUri(GITHUB_ROOT_URI)
                 .build();
     }
 
-    public GitHubIssueFetcher(String oauthToken, String url) {
+    public GitHubIssueFetcher(String oauthToken, boolean paginate, String url) {
         this.oauthToken = oauthToken;
+        this.paginate = paginate;
         this.rt = new RestTemplateBuilder()
                 .rootUri(url)
                 .build();
@@ -49,11 +52,12 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     @Override
     public List<User> fetchBoardMembers(String owner, String board) {
         final String url = "/repos/{owner}/{board}/contributors";
-        return getAllEntitiesWithPagination((u, e) -> rt.exchange(u, HttpMethod.GET, e, User[].class, owner, board), url);
+        return getAllEntitiesWithPagination((u, e) ->
+                rt.exchange(u, HttpMethod.GET, e, User[].class, owner, board), url);
     }
 
     @Override
-    public List<Issue> fetchTickets(String owner, String board) {
+    public List<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
         // all open tickets:
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
         final List<Issue> openIssuesList = getAllEntitiesWithPagination((u, e) ->
@@ -114,20 +118,23 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<User> fetchCommentatorsForTicket(Issue ticket) {
+        return fetchCommentsForTicket(ticket)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(Comment::getUser)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Comment> fetchCommentsForTicket(Issue ticket) {
         if (ticket.getCommentsUrl() == null || ticket.getCommentsUrl().isEmpty()) {
             logger.warn("  the issue " + ticket.getId() + " has no comments => no comments URL!");
             return new LinkedList<>();
         } else {
             try {
                 final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
-                final List<Comment> comments = getAllEntitiesWithPagination((u, e) ->
+                return getAllEntitiesWithPagination((u, e) ->
                         rt.exchange(u, HttpMethod.GET, e, Comment[].class), commentsUrl);
-                return comments
-                        .stream()
-                        .filter(Objects::nonNull)
-                        .map(Comment::getUser) // TODO: this is a bad idea, as the "created-at" timestamp info is lost!
-                        .collect(Collectors.toList());
-
             } catch (MalformedURLException e) {
                 logger.error("The comments URL ('" + ticket.getCommentsUrl() +
                         "') for ticket " + ticket.getId() + "was malformed!", e);
@@ -146,7 +153,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         final ResponseEntity<U[]> response = f.apply(url, entity);
 
         final String paginationLinkKey = "Link";
-        if (response.getHeaders().containsKey(paginationLinkKey)) {
+        if (paginate && response.getHeaders().containsKey(paginationLinkKey)) {
             final String linkUrls = Objects.requireNonNull(
                     response.getHeaders().get(paginationLinkKey)).get(0);
             final Optional<String> linkUrlOptional = RestClientHelper

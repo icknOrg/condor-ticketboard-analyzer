@@ -10,31 +10,32 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event> {
+public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event, Comment> {
 
+    private static final Logger logger = LoggerFactory.getLogger(GitHubIssueFetcher.class);
     private static final String GITHUB_ROOT_URI = "https://api.github.com/";
 
-    private Logger logger = LoggerFactory.getLogger(GitHubIssueFetcher.class);
-
     private final RestTemplate rt;
-    private String oauthToken;
+    private final String oauthToken;
+    private final Boolean paginate;
 
-    public GitHubIssueFetcher() {
+    public GitHubIssueFetcher(String oauthToken, boolean paginate) {
+        this.oauthToken = oauthToken;
+        this.paginate = paginate;
         this.rt = new RestTemplateBuilder()
                 .rootUri(GITHUB_ROOT_URI)
                 .build();
     }
 
-    public GitHubIssueFetcher(String oauthToken) {
+    public GitHubIssueFetcher(String oauthToken, boolean paginate, String url) {
         this.oauthToken = oauthToken;
+        this.paginate = paginate;
         this.rt = new RestTemplateBuilder()
-                .rootUri(GITHUB_ROOT_URI)
+                .rootUri(url)
                 .build();
     }
 
@@ -51,26 +52,36 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     @Override
     public List<User> fetchBoardMembers(String owner, String board) {
         final String url = "/repos/{owner}/{board}/contributors";
-        final ResponseEntity<User[]> response = getAllEntitiesWithPagination(url, User[].class, owner, board);
-        return RestClientHelper.nonNullResponseEntities(response);
+        return getAllEntitiesWithPagination((u, e) ->
+                rt.exchange(u, HttpMethod.GET, e, User[].class, owner, board), url);
     }
 
     @Override
-    public List<Issue> fetchTickets(String owner, String board) {
+    public List<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
         // all open tickets:
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
-        final ResponseEntity<Issue[]> openTicketsResponse = getAllEntitiesWithPagination(
-                openTicketsUrl, Issue[].class, owner, board);
+        final List<Issue> openIssuesList = getAllEntitiesWithPagination((u, e) ->
+                rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), openTicketsUrl);
+        logger.debug("I got " + openIssuesList.size() + " issues!");
 
-        // and all closed ones:
-        final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
-        final ResponseEntity<Issue[]> closedTicketsResponse = getAllEntitiesWithPagination(
-                closedTicketsUrl, Issue[].class, owner, board);
+        // and all closed ones?
+        if (!fetchClosedTickets) {
+            return openIssuesList;
 
-        return io.vavr.collection.List
-                .ofAll(RestClientHelper.nonNullResponseEntities(openTicketsResponse))
-                .appendAll(RestClientHelper.nonNullResponseEntities(closedTicketsResponse))
-                .toJavaList();
+        } else {
+            final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
+            final List<Issue> closedIssuesList = getAllEntitiesWithPagination((u, e) ->
+                    rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
+            logger.debug("I got " + closedIssuesList.size() + " closed issues!");
+
+            return io.vavr.collection.List
+                    .ofAll(openIssuesList)
+                    .appendAll(closedIssuesList)
+                    // filter out all PRs, we only want issues: // TODO: do we??
+                    // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
+                    // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
+                    .toJavaList();
+        }
     }
 
     @Override
@@ -97,7 +108,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<User> fetchAssigneesForTicket(Issue ticket) {
-        final ResponseEntity<Issue> response = getAllEntitiesWithPagination(ticket.getUrl(), Issue.class);
+        final ResponseEntity<Issue> response = rt.getForEntity(ticket.getUrl(), Issue.class);
 
         if (response.getBody() == null) {
             return new LinkedList<>();
@@ -112,21 +123,23 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<User> fetchCommentatorsForTicket(Issue ticket) {
+        return fetchCommentsForTicket(ticket)
+                .stream()
+                .filter(Objects::nonNull)
+                .map(Comment::getUser)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Comment> fetchCommentsForTicket(Issue ticket) {
         if (ticket.getCommentsUrl() == null || ticket.getCommentsUrl().isEmpty()) {
-            logger.debug("  the issue " + ticket.getId() + " has no comments => no comments URL!");
+            logger.warn("  the issue " + ticket.getId() + " has no comments => no comments URL!");
             return new LinkedList<>();
         } else {
-            // TODO: instead of using a separate RT, we should strip the root URI off of the getCommentsUrl() string!
             try {
                 final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
-                final ResponseEntity<Comment[]> commentsResponse = getAllEntitiesWithPagination(commentsUrl, Comment[].class);
-                final List<Comment> comments = RestClientHelper.nonNullResponseEntities(commentsResponse);
-                return comments
-                        .stream()
-                        .filter(Objects::nonNull)
-                        .map(Comment::getUser) // TODO: this is a bad idea, as the "created-at" timestamp info is lost!
-                        .collect(Collectors.toList());
-
+                return getAllEntitiesWithPagination((u, e) ->
+                        rt.exchange(u, HttpMethod.GET, e, Comment[].class), commentsUrl);
             } catch (MalformedURLException e) {
                 logger.error("The comments URL ('" + ticket.getCommentsUrl() +
                         "') for ticket " + ticket.getId() + "was malformed!", e);
@@ -135,18 +148,33 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         }
     }
 
-    private <T> ResponseEntity<T> getAllEntitiesWithPagination(String url, Class<T> responseType, Object... uriVariables) {
+    private <U> List<U> getAllEntitiesWithPagination(BiFunction<String, HttpEntity<?>, ResponseEntity<U[]>> f, String url) {
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("user-agent", "Spring RestTemplate");
         headers.set("Authorization", "token " + this.oauthToken);
 
         final HttpEntity<?> entity = new HttpEntity<>(headers);
-        final ResponseEntity<T> response = rt.exchange(url, HttpMethod.GET, entity, responseType, uriVariables);
+        final ResponseEntity<U[]> response = f.apply(url, entity);
 
-        // TODO: paginate!
-        // TODO: consecutively add '...?page=2&per_page=100' to the URL!
-
-        return response;
+        final String paginationLinkKey = "Link";
+        if (paginate && response.getHeaders().containsKey(paginationLinkKey)) {
+            final String linkUrls = Objects.requireNonNull(
+                    response.getHeaders().get(paginationLinkKey)).get(0);
+            final Optional<String> linkUrlOptional = RestClientHelper
+                    .splitGithubPaginationLinks(linkUrls);
+            if (linkUrlOptional.isPresent()) {
+                final String linkUrl = linkUrlOptional.get();
+                logger.debug("Found a link to the next page: " + linkUrl);
+                return io.vavr.collection.List
+                        .ofAll(RestClientHelper.nonNullResponseEntities(response))
+                        .appendAll(getAllEntitiesWithPagination(f, linkUrl))
+                        .toJavaList();
+            } else {
+                return RestClientHelper.nonNullResponseEntities(response);
+            }
+        } else {
+            return RestClientHelper.nonNullResponseEntities(response);
+        }
     }
 }

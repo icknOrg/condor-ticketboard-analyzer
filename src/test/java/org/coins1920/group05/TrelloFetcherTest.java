@@ -10,12 +10,7 @@ import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
@@ -26,7 +21,6 @@ public class TrelloFetcherTest {
 
     private Logger logger = LoggerFactory.getLogger(TrelloFetcherTest.class);
 
-    private static final String APPLICATION_JSON = "application/json";
     private static final String SAMPLE_BOARD_SHORTLINK = "lgaJQMYA";
     private static final String SAMPLE_CARD_ID1 = "5db19ed82bd7cd5b26346bd7";
     private static final String SAMPLE_CARD_ID2 = "5db19ed8256e14829baf66e0";
@@ -41,44 +35,50 @@ public class TrelloFetcherTest {
     public static void setUpClass() {
         final String key = System.getenv("TRELLO_API_KEY");
         final String token = System.getenv("TRELLO_OAUTH_KEY");
-        fetcher = new TrelloBoardFetcher(key, token, "http://localhost:" + WIREMOCK_PORT + "/");
+        final String wiremockUrl = "http://localhost:" + WIREMOCK_PORT + "/";
+        fetcher = new TrelloBoardFetcher(key, token, wiremockUrl);
     }
 
     @Before
     public void setUp() {
-        final String singleBoard = readFromResourceFile("trello/single_board.json");
+        final String singleBoard = TestUtils.readFromResourceFile(
+                "trello/single_board.json", TrelloFetcherTest.class);
         stubFor(get(urlPathMatching("/1/boards/" + SAMPLE_BOARD_SHORTLINK + "([a-zA-Z0-9/-]*)"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", TestUtils.APPLICATION_JSON)
                         .withBody(singleBoard)));
 
-        final String boardMembers = readFromResourceFile("trello/board_members.json");
+        final String boardMembers = TestUtils.readFromResourceFile(
+                "trello/board_members.json", TrelloFetcherTest.class);
         stubFor(get(urlPathMatching("/1/boards/" + SAMPLE_BOARD_SHORTLINK + "/members" + "([a-zA-Z0-9/-]*)"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", TestUtils.APPLICATION_JSON)
                         .withBody(boardMembers)));
 
-        final String cards = readFromResourceFile("trello/cards.json");
+        final String cards = TestUtils.readFromResourceFile(
+                "trello/cards.json", TrelloFetcherTest.class);
         stubFor(get(urlPathMatching("/1/boards/" + SAMPLE_BOARD_SHORTLINK + "/cards" + "([a-zA-Z0-9/-]*)"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", TestUtils.APPLICATION_JSON)
                         .withBody(cards)));
 
-        final String cardActions = readFromResourceFile("trello/card_actions.json");
+        final String cardActions = TestUtils.readFromResourceFile(
+                "trello/card_actions.json", TrelloFetcherTest.class);
         stubFor(get(urlPathMatching("/1/cards/" + SAMPLE_CARD_ID1 + "/actions" + "([a-zA-Z0-9/-]*)"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", TestUtils.APPLICATION_JSON)
                         .withBody(cardActions)));
 
-        final String cardMembers = readFromResourceFile("trello/card_members.json");
+        final String cardMembers = TestUtils.readFromResourceFile(
+                "trello/card_members.json", TrelloFetcherTest.class);
         stubFor(get(urlPathMatching("/1/cards/" + SAMPLE_CARD_ID2 + "/members" + "([a-zA-Z0-9/-]*)"))
                 .willReturn(aResponse()
                         .withStatus(200)
-                        .withHeader("Content-Type", APPLICATION_JSON)
+                        .withHeader("Content-Type", TestUtils.APPLICATION_JSON)
                         .withBody(cardMembers)));
     }
 
@@ -107,7 +107,7 @@ public class TrelloFetcherTest {
 
     @Test
     public void testFetchCards() {
-        final List<Card> cards = fetcher.fetchTickets(null, SAMPLE_BOARD_SHORTLINK);
+        final List<Card> cards = fetcher.fetchTickets(null, SAMPLE_BOARD_SHORTLINK, false);
         assertThat(cards, is(not(nullValue())));
         assertThat(cards.size(), is(not(0)));
         logger.info("There is/are " + cards.size() + " card(s)!");
@@ -165,28 +165,4 @@ public class TrelloFetcherTest {
         logger.info("boards[0] is: " + firstBoard);
         logger.info("boards[0].id = " + firstBoard.getId());
     }
-
-    private static String readFromResourceFile(String fileName) {
-        try {
-            try (InputStream inputStream = TrelloFetcherTest
-                    .class
-                    .getClassLoader()
-                    .getResourceAsStream(fileName)) {
-                if (inputStream == null) {
-                    return null;
-                } else {
-                    final BufferedReader bufferedReader = new BufferedReader(
-                            new InputStreamReader(inputStream)
-                    );
-                    return bufferedReader
-                            .lines()
-                            .collect(Collectors.joining());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 }

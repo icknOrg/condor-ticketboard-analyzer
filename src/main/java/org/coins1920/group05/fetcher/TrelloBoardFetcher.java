@@ -1,9 +1,6 @@
 package org.coins1920.group05.fetcher;
 
-import org.coins1920.group05.fetcher.model.trello.Action;
-import org.coins1920.group05.fetcher.model.trello.Board;
-import org.coins1920.group05.fetcher.model.trello.Card;
-import org.coins1920.group05.fetcher.model.trello.Member;
+import org.coins1920.group05.fetcher.model.trello.*;
 import org.coins1920.group05.fetcher.util.RestClientHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,11 +8,13 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.LinkedList;
 import java.util.List;
 
-public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Card, Action> {
+public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Card, Action, Comment> {
 
-    private Logger logger = LoggerFactory.getLogger(TrelloBoardFetcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(TrelloBoardFetcher.class);
+    private static final String TRELLO_ROOT_URI = "https://api.trello.com/";
 
     private final RestTemplate rt;
     private final String key;
@@ -25,7 +24,7 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
         this.key = key;
         this.token = token;
         this.rt = new RestTemplateBuilder()
-                .rootUri("https://api.trello.com/")
+                .rootUri(TRELLO_ROOT_URI)
                 .build();
     }
 
@@ -59,7 +58,7 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
     }
 
     @Override
-    public List<Card> fetchTickets(String owner, String board) {
+    public List<Card> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
         final String url = assembleUrl("boards/{board}/cards", null);
         final ResponseEntity<Card[]> response = rt.getForEntity(url, Card[].class, board, key, token);
         return RestClientHelper.nonNullResponseEntities(response);
@@ -82,12 +81,20 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
 
     @Override
     public List<Member> fetchAssigneesForTicket(Card ticket) {
-        return null;
+        logger.warn("The operation 'fetchAssigneesForTicket()' is not yet supported and will return an empty list!");
+        return new LinkedList<>();
     }
 
     @Override
     public List<Member> fetchCommentatorsForTicket(Card ticket) {
-        return null;
+        logger.warn("The operation 'fetchCommentatorsForTicket()' is not yet supported and will return an empty list!");
+        return new LinkedList<>();
+    }
+
+    @Override
+    public List<Comment> fetchCommentsForTicket(Card ticket) {
+        logger.warn("The operation 'fetchAssigneesForTicket()' is not yet supported and will return an empty list!");
+        return new LinkedList<>();
     }
 
     private String assembleUrl(String resourcePart, String urlParameters) {

@@ -1,5 +1,59 @@
 [
   {
+    "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/232",
+    "repository_url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions",
+    "labels_url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/232/labels{/name}",
+    "comments_url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/232/comments",
+    "events_url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/232/events",
+    "html_url": "https://github.com/linuxmint/cinnamon-spices-extensions/pull/232",
+    "id": 520651325,
+    "node_id": "MDExOlB1bGxSZXF1ZXN0MzM5MTg2MzY2",
+    "number": 232,
+    "title": "Update Transparent panels v4.0~20181106 (transparent-panels@germanfr)",
+    "user": {
+      "login": "germanfr",
+      "id": 10391266,
+      "node_id": "MDQ6VXNlcjEwMzkxMjY2",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/10391266?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/germanfr",
+      "html_url": "https://github.com/germanfr",
+      "followers_url": "https://api.github.com/users/germanfr/followers",
+      "following_url": "https://api.github.com/users/germanfr/following{/other_user}",
+      "gists_url": "https://api.github.com/users/germanfr/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/germanfr/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/germanfr/subscriptions",
+      "organizations_url": "https://api.github.com/users/germanfr/orgs",
+      "repos_url": "https://api.github.com/users/germanfr/repos",
+      "events_url": "https://api.github.com/users/germanfr/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/germanfr/received_events",
+      "type": "User",
+      "site_admin": false
+    },
+    "labels": [
+
+    ],
+    "state": "open",
+    "locked": false,
+    "assignee": null,
+    "assignees": [
+
+    ],
+    "milestone": null,
+    "comments": 0,
+    "created_at": "2019-11-10T20:17:36Z",
+    "updated_at": "2019-11-10T20:17:36Z",
+    "closed_at": null,
+    "author_association": "CONTRIBUTOR",
+    "pull_request": {
+      "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/pulls/232",
+      "html_url": "https://github.com/linuxmint/cinnamon-spices-extensions/pull/232",
+      "diff_url": "https://github.com/linuxmint/cinnamon-spices-extensions/pull/232.diff",
+      "patch_url": "https://github.com/linuxmint/cinnamon-spices-extensions/pull/232.patch"
+    },
+    "body": "Changelog at: https://github.com/germanfr/cinnamon-transparent-panels/commits/master"
+  },
+  {
     "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/220",
     "repository_url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions",
     "labels_url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/issues/220/labels{/name}",
@@ -30,11 +84,15 @@
       "type": "User",
       "site_admin": false
     },
-    "labels": [],
+    "labels": [
+
+    ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 2,
     "created_at": "2019-08-02T21:07:11Z",
@@ -74,11 +132,15 @@
       "type": "User",
       "site_admin": false
     },
-    "labels": [],
+    "labels": [
+
+    ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 2,
     "created_at": "2019-03-29T05:12:48Z",
@@ -118,11 +180,15 @@
       "type": "User",
       "site_admin": false
     },
-    "labels": [],
+    "labels": [
+
+    ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 3,
     "created_at": "2019-03-07T15:56:23Z",
@@ -162,11 +228,15 @@
       "type": "User",
       "site_admin": false
     },
-    "labels": [],
+    "labels": [
+
+    ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 0,
     "created_at": "2018-12-31T19:41:35Z",
@@ -206,11 +276,15 @@
       "type": "User",
       "site_admin": false
     },
-    "labels": [],
+    "labels": [
+
+    ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 0,
     "created_at": "2018-12-27T22:46:05Z",
@@ -250,11 +324,15 @@
       "type": "User",
       "site_admin": false
     },
-    "labels": [],
+    "labels": [
+
+    ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 3,
     "created_at": "2018-12-25T12:17:23Z",
@@ -294,11 +372,15 @@
       "type": "User",
       "site_admin": false
     },
-    "labels": [],
+    "labels": [
+
+    ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 2,
     "created_at": "2018-12-24T01:06:43Z",
@@ -345,13 +427,16 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/BUG",
         "name": "BUG",
         "color": "ee0701",
-        "default": false
+        "default": false,
+        "description": null
       }
     ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 6,
     "created_at": "2018-11-19T03:15:31Z",
@@ -398,13 +483,16 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/no%20author",
         "name": "no author",
         "color": "ffffff",
-        "default": false
+        "default": false,
+        "description": ""
       }
     ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 0,
     "created_at": "2018-11-11T19:46:22Z",
@@ -451,13 +539,16 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/no%20author",
         "name": "no author",
         "color": "ffffff",
-        "default": false
+        "default": false,
+        "description": ""
       }
     ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 2,
     "created_at": "2018-05-31T09:45:02Z",
@@ -504,13 +595,16 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/discussion",
         "name": "discussion",
         "color": "ffdd6d",
-        "default": false
+        "default": false,
+        "description": ""
       }
     ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 8,
     "created_at": "2018-04-18T17:51:27Z",
@@ -557,7 +651,8 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/needs%20more%20info",
         "name": "needs more info",
         "color": "b71e07",
-        "default": false
+        "default": false,
+        "description": ""
       },
       {
         "id": 1132344712,
@@ -565,13 +660,16 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/no%20author",
         "name": "no author",
         "color": "ffffff",
-        "default": false
+        "default": false,
+        "description": ""
       }
     ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 3,
     "created_at": "2018-02-12T22:53:19Z",
@@ -618,13 +716,16 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/BUG",
         "name": "BUG",
         "color": "ee0701",
-        "default": false
+        "default": false,
+        "description": null
       }
     ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 2,
     "created_at": "2018-01-13T02:19:00Z",
@@ -671,13 +772,16 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/BUG",
         "name": "BUG",
         "color": "ee0701",
-        "default": false
+        "default": false,
+        "description": null
       }
     ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 2,
     "created_at": "2017-10-10T14:09:37Z",
@@ -724,7 +828,8 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/BUG",
         "name": "BUG",
         "color": "ee0701",
-        "default": false
+        "default": false,
+        "description": null
       },
       {
         "id": 525113062,
@@ -732,7 +837,8 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/FEATURE%20REQUEST",
         "name": "FEATURE REQUEST",
         "color": "f9d0c4",
-        "default": false
+        "default": false,
+        "description": null
       },
       {
         "id": 1132344712,
@@ -740,13 +846,16 @@
         "url": "https://api.github.com/repos/linuxmint/cinnamon-spices-extensions/labels/no%20author",
         "name": "no author",
         "color": "ffffff",
-        "default": false
+        "default": false,
+        "description": ""
       }
     ],
     "state": "open",
     "locked": false,
     "assignee": null,
-    "assignees": [],
+    "assignees": [
+
+    ],
     "milestone": null,
     "comments": 2,
     "created_at": "2017-01-24T16:03:43Z",

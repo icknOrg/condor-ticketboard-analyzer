@@ -5,8 +5,6 @@ import org.coins1920.group05.fetcher.TrelloBoardFetcher;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.condor.EdgeType;
-import org.coins1920.group05.fetcher.model.general.AbstractMember;
-import org.coins1920.group05.fetcher.model.general.CategorizedBoardMembers;
 import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
@@ -31,8 +29,9 @@ public class TrelloBoardCondorizor {
         final List<Member> trelloBoardMembers = fetcher.fetchBoardMembers(null, boardId);
 
         // fetch all cards for the given board:
+        final boolean fetchClosedTickets = false;
         final Stream<Card> trelloCards = fetcher
-                .fetchTickets(null, boardId)
+                .fetchTickets(null, boardId, fetchClosedTickets)
                 .stream()
                 .map(c -> addAuthor(c, fetcher.fetchActionsForTicket(c.getId())));
 
@@ -75,7 +74,8 @@ public class TrelloBoardCondorizor {
             final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: map other stuff as well!
             return new Edge(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
                     fakeStartDate, fakeStartDate, "", "",
-                    "", "", "", EdgeType.ASSIGNING); // TODO: use the real edge type!
+                    "", "", "", "",
+                    EdgeType.ASSIGNING); // TODO: use the real edge type!
         };
 
         return cards

@@ -1,20 +1,19 @@
 package org.coins1920.group05.condorizor;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.condor.EdgeType;
-import org.coins1920.group05.fetcher.model.general.CategorizedBoardMembers;
+import org.coins1920.group05.fetcher.model.general.Interaction;
 import org.coins1920.group05.fetcher.model.github.Comment;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
 import org.coins1920.group05.fetcher.util.Pair;
-import org.coins1920.group05.fetcher.util.Triple;
 
 import java.io.File;
 import java.util.List;
 import java.util.UUID;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -42,87 +41,86 @@ public class GitHubRepoCondorizor {
                 .map(i -> new Pair<>(i, fetcher.fetchAssigneesForTicket(i)))
                 .collect(Collectors.toList());
 
-        final Function<Pair<Issue, List<Comment>>, Pair<Issue, CategorizedBoardMembers<User>>> withAllParticipatingUsers = p ->
-                new Pair<>(p.getFirst(),
-                        new CategorizedBoardMembers<User>(
-                                p.getFirst().getUser(),
-                                assignees
-                                        .stream()
-                                        .filter(a -> a.getFirst() == p.getFirst())
-                                        .findFirst()
-                                        .orElseThrow(NullPointerException::new)
-                                        .getSecond(),
-                                p.getSecond()
-                                        .stream()
-                                        .map(Comment::getUser)
-                                        .collect(Collectors.toList())
-                        ));
-        final List<Pair<Issue, CategorizedBoardMembers<User>>> issuesWithUsers = comments
-                .stream()
-                .map(withAllParticipatingUsers)
-                .collect(Collectors.toList());
-
-
         // aggregate all users, map to Condor Actors/Edges and write to CSV files:
-        return condorizeIssuesAndUsers(issuesWithUsers, outputDir);
+        return condorizeIssuesAndUsers(githubIssues, comments, outputDir);
     }
 
     private Pair<File, File> condorizeIssuesAndUsers(
-            List<Pair<Issue, CategorizedBoardMembers<User>>> issuesWithUsers,
+            List<Issue> issues,
+            List<Pair<Issue, List<Comment>>> comments,
             String outputDir) {
-        // aggregate all users over all issues:
-        final List<User> allUsers = issuesWithUsers
-                .stream()
-                .map(Pair::getSecond)
-                .map(cu -> io.vavr.collection.List
-                        .ofAll(cu.getAssignees())
-                        .appendAll(cu.getCommentators())
-                        .append(cu.getCreator())
-                        .toJavaList()
-                )
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
 
-        final List<Triple<Issue, User, EdgeType>> issues = rectangularize(issuesWithUsers);
+        // aggregate all users over all issues and their comments:
+        final List<User> users = aggregateUsers(issues, comments);
+
+        // rectangularize:
+        final List<Pair<Issue, Interaction<User, Comment>>> rectangularizedIssues = rectangularize(
+                issues, comments);
 
         // map to edges (tickets) and nodes (persons), then write to CSV files:
         return CondorizorUtils.mapAndWriteToCsvFiles(
-                allUsers,
-                issues,
+                users,
+                rectangularizedIssues,
                 this::githubUsersToCondorActors,
                 this::githubIssuesToCondorEdges,
                 outputDir
         );
     }
 
-    private List<Triple<Issue, User, EdgeType>> rectangularize(
-            List<Pair<Issue, CategorizedBoardMembers<User>>> issuesWithUsers) {
-        return issuesWithUsers
+    private List<User> aggregateUsers(List<Issue> issues, List<Pair<Issue, List<Comment>>> comments) {
+        // get all ticket creators:
+        final List<User> creators = issues.stream()
+                .map(Issue::getUser)
+                .collect(Collectors.toList());
+
+        // ...and commentators:
+        final List<User> commentators = comments
                 .stream()
-                .map(iwu -> {
-                    final Issue issue = iwu.getFirst();
-                    final Triple<Issue, User, EdgeType> creator = new Triple<>(
-                            issue, iwu.getSecond().getCreator(), EdgeType.CREATION
-                    );
+                .map(Pair::getSecond)
+                .flatMap(List::stream)
+                .map(Comment::getUser)
+                .collect(Collectors.toList());
 
-                    final List<Triple<Issue, User, EdgeType>> commentators = iwu.getSecond().getCommentators()
+        // return the union:
+        return io.vavr.collection.List
+                .ofAll(creators)
+                .appendAll(commentators)
+                .distinctBy(User::getId)
+                .toJavaList();
+    }
+
+    private List<Pair<Issue, Interaction<User, Comment>>> rectangularize(
+            List<Issue> issues,
+            List<Pair<Issue, List<Comment>>> comments) {
+        // map all ticket creations to our pseudo-sum-type:
+        final List<Pair<Issue, Interaction<User, Comment>>> creationInteractions = issues
+                .stream()
+                .map(t -> new Pair<>(t,
+                        new Interaction<User, Comment>(t.getUser(), null, EdgeType.CREATION)))
+                .collect(Collectors.toList());
+
+        // turn the List of Pair<Issue, List<Comment>> into a flattened List of Pair<Issue, Comment>
+        // and map them to our pseudo-sum-type:
+        final List<Pair<Issue, Interaction<User, Comment>>> commentInteractions = comments
+                .stream()
+                .map(iwc -> {
+                    final Issue issue = iwc.getFirst();
+                    return iwc.getSecond()
                             .stream()
-                            .map(c -> new Triple<>(issue, c, EdgeType.COMMENT))
+                            .map(c -> new Pair<Issue, Comment>(issue, c))
                             .collect(Collectors.toList());
-
-                    final List<Triple<Issue, User, EdgeType>> assignees = iwu.getSecond().getAssignees()
-                            .stream()
-                            .map(c -> new Triple<>(issue, c, EdgeType.ASSIGNING))
-                            .collect(Collectors.toList());
-
-                    return io.vavr.collection.List
-                            .of(creator)
-                            .appendAll(commentators)
-                            .appendAll(assignees)
-                            .toJavaList();
                 })
                 .flatMap(List::stream)
+                .map(p -> new Pair<Issue, Interaction<User, Comment>>(p.getFirst(),
+                        new Interaction<User, Comment>(null, p.getSecond(), EdgeType.COMMENT)))
                 .collect(Collectors.toList());
+
+        // return the union:
+        return io.vavr.collection.List
+                .ofAll(creationInteractions)
+                .appendAll(commentInteractions)
+                // TODO: .appendAll(assigningInteractions)
+                .toJavaList();
     }
 
     private List<Actor> githubUsersToCondorActors(List<User> repoUsers) {
@@ -140,23 +138,40 @@ public class GitHubRepoCondorizor {
                 .collect(Collectors.toList());
     }
 
-    private List<Edge> githubIssuesToCondorEdges(List<Triple<Issue, User, EdgeType>> issues) { // TODO: should have "<? ext Interaction>" instead of User!
+    private List<Edge> githubIssuesToCondorEdges(List<Pair<Issue, Interaction<User, Comment>>> ticketInteractions) {
         final String fakeStartTime = "2010-09-12T04:00:00+00:00"; // TODO: calculate "starttime"!
         final String fakeEndTime = fakeStartTime; // TODO: calculate "endtime"!
 
-        return issues.stream()
-                .map(iuet -> {
-                    final Issue issue = iuet.getFirst();
-                    final User user = iuet.getSecond(); // the user who commented/reacted/was assignee/...
+        return ticketInteractions
+                .stream()
+                .map(i -> {
+                    final Issue issue = i.getFirst();
                     final User ticketAuthor = issue.getUser(); // the original ticket author
-                    return new Edge(issue.getTitle(), UUID.randomUUID().toString(),
-                            user.getId(), ticketAuthor.getId(),
+                    final Edge edge = new Edge(issue.getTitle(), UUID.randomUUID().toString(),
+                            null, ticketAuthor.getId(),
                             fakeStartTime, fakeEndTime,
                             "", "",
                             issue.getState(), "",
-                            issue.getComments(), iuet.getThird()
+                            issue.getComments(), "",
+                            i.getSecond().getEdgeType()
                             // TODO: add an attribute "original_ID" that holds issue.getId() !
                     );
+
+                    if (i.getSecond().getEdgeType() == EdgeType.CREATION) {
+                        edge.setSource(ticketAuthor.getId());
+                    }
+
+                    if (i.getSecond().getEdgeType() == EdgeType.COMMENT) {
+                        final Comment comment = i.getSecond().getComment();
+                        final User commentator = i.getSecond().getComment().getUser();
+                        final String escapedCommentBody = StringEscapeUtils
+                                .escapeHtml4(comment.getBody())
+                                .replaceAll("\r\n", " ")
+                                .replaceAll("\n", " ");
+                        edge.setCommentBody(escapedCommentBody);
+                        edge.setSource(commentator.getId());
+                    }
+                    return edge;
                 })
                 .collect(Collectors.toList());
     }

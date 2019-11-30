@@ -74,7 +74,8 @@ public class TrelloBoardCondorizor {
             final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: map other stuff as well!
             return new Edge(c.getName(), c.getId(), c.getCreator(), c.getAuthor(),
                     fakeStartDate, fakeStartDate, "", "",
-                    "", "", "", EdgeType.ASSIGNING); // TODO: use the real edge type!
+                    "", "", "", "",
+                    EdgeType.ASSIGNING); // TODO: use the real edge type!
         };
 
         return cards

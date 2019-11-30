@@ -36,7 +36,6 @@ public class CondorizerTest {
     }
 
     @Test
-    @Ignore
     public void testGitHubRepoFetching() throws IOException {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();

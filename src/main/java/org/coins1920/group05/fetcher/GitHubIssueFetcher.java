@@ -64,19 +64,24 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                 rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), openTicketsUrl);
         logger.debug("I got " + openIssuesList.size() + " issues!");
 
-        // and all closed ones:
-        final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
-        final List<Issue> closedIssuesList = getAllEntitiesWithPagination((u, e) ->
-                rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
-        logger.debug("I got " + closedIssuesList.size() + " closed issues!");
+        // and all closed ones?
+        if (!fetchClosedTickets) {
+            return openIssuesList;
 
-        return io.vavr.collection.List
-                .ofAll(openIssuesList)
-                .appendAll(closedIssuesList)
-                // filter out all PRs, we only want issues:
-                // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
-                // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
-                .toJavaList();
+        } else {
+            final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
+            final List<Issue> closedIssuesList = getAllEntitiesWithPagination((u, e) ->
+                    rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
+            logger.debug("I got " + closedIssuesList.size() + " closed issues!");
+
+            return io.vavr.collection.List
+                    .ofAll(openIssuesList)
+                    .appendAll(closedIssuesList)
+                    // filter out all PRs, we only want issues: // TODO: do we??
+                    // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
+                    // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
+                    .toJavaList();
+        }
     }
 
     @Override

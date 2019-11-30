@@ -6,16 +6,17 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Edge {
-    private String Name;
-    private String UUID;
-    private String Source;
-    private String Target;
-    private String Starttime;
-    private String Endtime;
-    private String PlannedDuration;
-    private String RealDuration;
-    private String Status;
-    private String CountSubtasks;
-    private String CountComments;
+    private String name;
+    private String uuid;
+    private String source;
+    private String target;
+    private String startTime;
+    private String endTime;
+    private String plannedDuration;
+    private String realDuration;
+    private String status;
+    private String countSubtasks;
+    private String countComments;
+    private String commentBody;
     private EdgeType edgeType;
 }

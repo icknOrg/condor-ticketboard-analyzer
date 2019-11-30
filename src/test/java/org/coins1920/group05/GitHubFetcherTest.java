@@ -61,7 +61,7 @@ public class GitHubFetcherTest {
 
     @Test
     public void testFetchIssues() {
-        final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1, false);
+        final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1, true);
         assertThat(issues, is(not(nullValue())));
         logger.info("There is/are " + issues.size() + " issue(s)!");
         assertThat(issues.size(), is(46));

@@ -49,14 +49,15 @@ public class DefaultCondorCsvMarshaller implements CondorCsvMarshaller {
         final CSVFormat formatWithHeaders = condorFormat
                 .withHeader("Name", "UUID", "Source", "Target", "Starttime", "Endtime",
                         "Planned_Duration", "Real_Duration", "Status", "Count_Subtasks",
-                        "Count_Comments", "Edge_type");
+                        "Count_Comments", "Comment_Body", "Edge_type");
 
         final BiConsumer<CSVPrinter, Edge> printEdges = (csvp, t) -> {
             try {
-                csvp.printRecord(t.getName(), t.getUUID(), t.getSource(), t.getTarget(),
-                        t.getStarttime(), t.getEndtime(), t.getPlannedDuration(),
+                csvp.printRecord(t.getName(), t.getUuid(), t.getSource(), t.getTarget(),
+                        t.getStartTime(), t.getEndTime(), t.getPlannedDuration(),
                         t.getRealDuration(), t.getStatus(), t.getCountSubtasks(),
-                        t.getCountComments(), t.getEdgeType().label);
+                        t.getCountComments(), t.getCommentBody(),
+                        t.getEdgeType().label);
             } catch (IOException e) {
                 e.printStackTrace();
             }

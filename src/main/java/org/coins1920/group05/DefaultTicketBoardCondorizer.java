@@ -1,7 +1,6 @@
 package org.coins1920.group05;
 
 import org.coins1920.group05.condorizor.GitHubRepoCondorizor;
-import org.coins1920.group05.condorizor.GitHubGQLRepoCondorizor;
 import org.coins1920.group05.condorizor.TrelloBoardCondorizor;
 import org.coins1920.group05.fetcher.TicketBoard;
 import org.coins1920.group05.fetcher.util.Pair;
@@ -20,8 +19,7 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                 throw new UnsupportedOperationException();
 
             case GITHUB:
-                //return new GitHubRepoCondorizor().fetchGitHubIssues(owner, board, outputDir);
-                return new GitHubGQLRepoCondorizor().fetchGitHubIssues(owner, board, outputDir);
+                return new GitHubRepoCondorizor().fetchGitHubIssues(owner, board, outputDir);
 
             default:
                 throw new IllegalArgumentException("Ticket board type wasn't recognized!");

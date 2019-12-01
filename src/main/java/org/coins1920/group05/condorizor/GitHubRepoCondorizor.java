@@ -25,7 +25,7 @@ public class GitHubRepoCondorizor {
         final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(oauthToken, paginate);
 
         // first, fetch all issues of the given repo:
-        final boolean fetchClosedTickets = false;
+        final boolean fetchClosedTickets = true;
         final List<Issue> githubIssues = fetcher
                 .fetchTickets(owner, board, fetchClosedTickets);
 

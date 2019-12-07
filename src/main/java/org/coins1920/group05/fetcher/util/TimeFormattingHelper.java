@@ -36,6 +36,7 @@ public class TimeFormattingHelper {
                 .appendValue(MINUTE_OF_HOUR, 2)
                 .appendLiteral(':')
                 .appendValue(SECOND_OF_MINUTE, 2)
+                .appendFraction(NANO_OF_SECOND, 3, 3, true)
                 .appendOffset("+HH:MM", "+00:00")
                 .toFormatter(Locale.GERMANY)
                 .withZone(ZoneId.of(DEFAULT_ZONE_ID));

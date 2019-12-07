@@ -155,6 +155,6 @@ public class GitHubFetcherTest {
         final String condorTimestamp = TimeFormattingHelper
                 .githubTimestampToCondorTimestamp(githubSampleTimestamp);
         assertThat(condorTimestamp, is(not(nullValue())));
-        assertThat(condorTimestamp, is("2019-11-10T21:17:36+01:00"));
+        assertThat(condorTimestamp, is("2019-11-10T21:17:36.000+01:00"));
     }
 }

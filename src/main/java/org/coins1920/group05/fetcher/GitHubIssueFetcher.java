@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
@@ -108,17 +109,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<User> fetchAssigneesForTicket(Issue ticket) {
-        final ResponseEntity<Issue> response = rt.getForEntity(ticket.getUrl(), Issue.class);
-
-        if (response.getBody() == null) {
-            return new LinkedList<>();
-        } else {
-            logger.info("I got " + response.getBody().getAssignees().length + " assignee(s)!");
-            return Arrays
-                    .stream(response.getBody().getAssignees())
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
-        }
+        return Arrays.asList(ticket.getAssignees());
     }
 
     @Override
@@ -153,28 +144,41 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.add("user-agent", "Spring RestTemplate");
         headers.set("Authorization", "token " + this.oauthToken);
-
         final HttpEntity<?> entity = new HttpEntity<>(headers);
-        final ResponseEntity<U[]> response = f.apply(url, entity);
 
-        final String paginationLinkKey = "Link";
-        if (paginate && response.getHeaders().containsKey(paginationLinkKey)) {
-            final String linkUrls = Objects.requireNonNull(
-                    response.getHeaders().get(paginationLinkKey)).get(0);
-            final Optional<String> linkUrlOptional = RestClientHelper
-                    .splitGithubPaginationLinks(linkUrls);
-            if (linkUrlOptional.isPresent()) {
-                final String linkUrl = linkUrlOptional.get();
-                logger.debug("Found a link to the next page: " + linkUrl);
-                return io.vavr.collection.List
-                        .ofAll(RestClientHelper.nonNullResponseEntities(response))
-                        .appendAll(getAllEntitiesWithPagination(f, linkUrl))
-                        .toJavaList();
+        try {
+            final ResponseEntity<U[]> response = f.apply(url, entity);
+
+            final String paginationLinkKey = "Link";
+            if (paginate && response.getHeaders().containsKey(paginationLinkKey)) {
+                final String linkUrls = Objects.requireNonNull(
+                        response.getHeaders().get(paginationLinkKey)).get(0);
+                final Optional<String> linkUrlOptional = RestClientHelper
+                        .splitGithubPaginationLinks(linkUrls);
+                if (linkUrlOptional.isPresent()) {
+                    final String linkUrl = linkUrlOptional.get();
+                    logger.debug("Found a link to the next page: " + linkUrl);
+
+                    // catch 403 Forbidden exception for pagination requests:
+                    try {
+                        return io.vavr.collection.List
+                                .ofAll(RestClientHelper.nonNullResponseEntities(response))
+                                .appendAll(getAllEntitiesWithPagination(f, linkUrl))
+                                .toJavaList();
+                    } catch (HttpClientErrorException e) {
+                        return RestClientHelper.nonNullResponseEntities(response);
+                    }
+
+                } else {
+                    return RestClientHelper.nonNullResponseEntities(response);
+                }
             } else {
                 return RestClientHelper.nonNullResponseEntities(response);
             }
-        } else {
-            return RestClientHelper.nonNullResponseEntities(response);
+
+        } catch (HttpClientErrorException eo) {
+            return new LinkedList<>();
         }
+
     }
 }

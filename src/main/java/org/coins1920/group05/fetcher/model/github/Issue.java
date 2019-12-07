@@ -22,9 +22,17 @@ public class Issue extends AbstractTicket {
     private String eventsUrl; // points to all events linked to this issue
 
     private String state;
-    private String created_at;
     private String comments; // the number of comments attached to this issue
     private User[] assignees;
+
+    @JsonProperty("created_at")
+    private String createdAt;
+
+    @JsonProperty("updated_at")
+    private String updatedAt;
+
+    @JsonProperty("closed_at")
+    private String closedAt;
 
     @JsonProperty("pull_request")
     private PullRequest pullRequest;

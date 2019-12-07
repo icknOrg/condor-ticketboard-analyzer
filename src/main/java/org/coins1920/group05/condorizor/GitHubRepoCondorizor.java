@@ -10,6 +10,7 @@ import org.coins1920.group05.fetcher.model.github.Comment;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
 import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.fetcher.util.TimeFormattingHelper;
 
 import java.io.File;
 import java.util.List;
@@ -19,9 +20,8 @@ import java.util.stream.Stream;
 
 public class GitHubRepoCondorizor {
 
-    public Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
+    public Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir, boolean paginate) {
         final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
-        final boolean paginate = false;
         final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(oauthToken, paginate);
 
         // first, fetch all issues of the given repo:
@@ -31,13 +31,13 @@ public class GitHubRepoCondorizor {
 
         // fetch all comments and the corresponding users for all issues:
         final List<Pair<Issue, List<Comment>>> comments = githubIssues
-                .stream()
+                .parallelStream()
                 .map(i -> new Pair<>(i, fetcher.fetchCommentsForTicket(i)))
                 .collect(Collectors.toList());
 
         // fetch all assignees for all tickets:
         final List<Pair<Issue, List<User>>> assignees = githubIssues
-                .stream()
+                .parallelStream()
                 .map(i -> new Pair<>(i, fetcher.fetchAssigneesForTicket(i)))
                 .collect(Collectors.toList());
 
@@ -69,13 +69,14 @@ public class GitHubRepoCondorizor {
 
     private List<User> aggregateUsers(List<Issue> issues, List<Pair<Issue, List<Comment>>> comments) {
         // get all ticket creators:
-        final List<User> creators = issues.stream()
+        final List<User> creators = issues
+                .parallelStream()
                 .map(Issue::getUser)
                 .collect(Collectors.toList());
 
         // ...and commentators:
         final List<User> commentators = comments
-                .stream()
+                .parallelStream()
                 .map(Pair::getSecond)
                 .flatMap(List::stream)
                 .map(Comment::getUser)
@@ -94,7 +95,7 @@ public class GitHubRepoCondorizor {
             List<Pair<Issue, List<Comment>>> comments) {
         // map all ticket creations to our pseudo-sum-type:
         final List<Pair<Issue, Interaction<User, Comment>>> creationInteractions = issues
-                .stream()
+                .parallelStream()
                 .map(t -> new Pair<>(t,
                         new Interaction<User, Comment>(t.getUser(), null, EdgeType.CREATION)))
                 .collect(Collectors.toList());
@@ -102,7 +103,7 @@ public class GitHubRepoCondorizor {
         // turn the List of Pair<Issue, List<Comment>> into a flattened List of Pair<Issue, Comment>
         // and map them to our pseudo-sum-type:
         final List<Pair<Issue, Interaction<User, Comment>>> commentInteractions = comments
-                .stream()
+                .parallelStream()
                 .map(iwc -> {
                     final Issue issue = iwc.getFirst();
                     return iwc.getSecond()
@@ -124,7 +125,7 @@ public class GitHubRepoCondorizor {
     }
 
     private List<Actor> githubUsersToCondorActors(List<User> repoUsers) {
-        final String fakeStartDate = "2010-09-12T04:00:00+00:00"; // TODO: calculate "starttime"!
+        final String fallbackStartTime = TimeFormattingHelper.unixEpoch(); // TODO: calculate "starttime"!
 
         // eliminate duplicate users:
         final Stream<User> distinctGithubUsers = io.vavr.collection.List
@@ -134,22 +135,24 @@ public class GitHubRepoCondorizor {
 
         // map users to actors:
         return distinctGithubUsers
-                .map(u -> new Actor(u.getId(), u.getLogin(), fakeStartDate))
+                .map(u -> new Actor(u.getId(), u.getLogin(), computeTimestamp(fallbackStartTime, null)))
                 .collect(Collectors.toList());
     }
 
     private List<Edge> githubIssuesToCondorEdges(List<Pair<Issue, Interaction<User, Comment>>> ticketInteractions) {
-        final String fakeStartTime = "2010-09-12T04:00:00+00:00"; // TODO: calculate "starttime"!
-        final String fakeEndTime = fakeStartTime; // TODO: calculate "endtime"!
+        final String fallbackStartTime = TimeFormattingHelper.unixEpoch();
 
         return ticketInteractions
-                .stream()
+                .parallelStream()
                 .map(i -> {
                     final Issue issue = i.getFirst();
                     final User ticketAuthor = issue.getUser(); // the original ticket author
+                    final String startTime = computeTimestamp(issue.getCreatedAt(), fallbackStartTime);
+                    final String endTime = computeTimestamp(issue.getClosedAt(), null);
+
                     final Edge edge = new Edge(issue.getTitle(), UUID.randomUUID().toString(),
                             null, ticketAuthor.getId(),
-                            fakeStartTime, fakeEndTime,
+                            startTime, endTime,
                             "", "",
                             issue.getState(), "",
                             issue.getComments(), "",
@@ -174,5 +177,17 @@ public class GitHubRepoCondorizor {
                     return edge;
                 })
                 .collect(Collectors.toList());
+    }
+
+    private String computeTimestamp(String githubTimestamp, String fallbackTimestamp) {
+        final String fbts = (fallbackTimestamp == null)
+                ? TimeFormattingHelper.now()
+                : fallbackTimestamp;
+
+        final String ts = (githubTimestamp == null || githubTimestamp.trim().isEmpty())
+                ? fbts
+                : githubTimestamp;
+
+        return TimeFormattingHelper.githubTimestampToCondorTimestamp(ts);
     }
 }

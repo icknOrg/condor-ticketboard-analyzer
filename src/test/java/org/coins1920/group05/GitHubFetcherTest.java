@@ -5,6 +5,7 @@ import org.coins1920.group05.fetcher.GitHubIssueFetcher;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
 import org.coins1920.group05.fetcher.util.RestClientHelper;
+import org.coins1920.group05.fetcher.util.TimeFormattingHelper;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -143,5 +144,17 @@ public class GitHubFetcherTest {
         final Optional<String> nextPageLink = RestClientHelper.splitGithubPaginationLinks(links);
         assertThat(nextPageLink, is(not(nullValue())));
         assertThat(nextPageLink.isPresent(), is(false));
+    }
+
+    @Test
+    public void testTimestampMapping() {
+        // a (ISO 8601-formatted UTC) sample timestamp straight from a GitHub response:
+        final String githubSampleTimestamp = "2019-11-10T20:17:36Z";
+
+        // format to Condor-compatible format:
+        final String condorTimestamp = TimeFormattingHelper
+                .githubTimestampToCondorTimestamp(githubSampleTimestamp);
+        assertThat(condorTimestamp, is(not(nullValue())));
+        assertThat(condorTimestamp, is("2019-11-10T21:17:36+01:00"));
     }
 }

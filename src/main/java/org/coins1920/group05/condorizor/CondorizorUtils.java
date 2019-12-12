@@ -1,11 +1,11 @@
 package org.coins1920.group05.condorizor;
 
-import org.coins1920.group05.fetcher.model.condor.Actor;
-import org.coins1920.group05.fetcher.model.condor.Edge;
-import org.coins1920.group05.fetcher.model.general.AbstractComment;
-import org.coins1920.group05.fetcher.model.general.AbstractMember;
-import org.coins1920.group05.fetcher.model.general.AbstractTicket;
-import org.coins1920.group05.fetcher.model.general.Interaction;
+import org.coins1920.group05.model.condor.Actor;
+import org.coins1920.group05.model.condor.Edge;
+import org.coins1920.group05.model.general.AbstractComment;
+import org.coins1920.group05.model.general.AbstractMember;
+import org.coins1920.group05.model.general.AbstractTicket;
+import org.coins1920.group05.model.general.Interaction;
 import org.coins1920.group05.util.Pair;
 
 import java.io.File;

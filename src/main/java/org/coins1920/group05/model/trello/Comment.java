@@ -1,6 +1,6 @@
-package org.coins1920.group05.fetcher.model.trello;
+package org.coins1920.group05.model.trello;
 
-import org.coins1920.group05.fetcher.model.general.AbstractComment;
+import org.coins1920.group05.model.general.AbstractComment;
 
 public class Comment extends AbstractComment {
 }

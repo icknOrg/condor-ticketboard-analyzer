@@ -1,7 +1,7 @@
-package org.coins1920.group05.fetcher.model.trello;
+package org.coins1920.group05.model.trello;
 
 import lombok.*;
-import org.coins1920.group05.fetcher.model.general.AbstractTicket;
+import org.coins1920.group05.model.general.AbstractTicket;
 
 import java.io.Serializable;
 

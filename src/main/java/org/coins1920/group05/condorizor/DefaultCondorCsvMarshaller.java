@@ -2,8 +2,8 @@ package org.coins1920.group05.condorizor;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.coins1920.group05.fetcher.model.condor.Actor;
-import org.coins1920.group05.fetcher.model.condor.Edge;
+import org.coins1920.group05.model.condor.Actor;
+import org.coins1920.group05.model.condor.Edge;
 import org.coins1920.group05.util.Pair;
 
 import java.io.BufferedWriter;

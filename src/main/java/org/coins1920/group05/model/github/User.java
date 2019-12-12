@@ -1,8 +1,8 @@
-package org.coins1920.group05.fetcher.model.github;
+package org.coins1920.group05.model.github;
 
 import lombok.Getter;
 import lombok.ToString;
-import org.coins1920.group05.fetcher.model.general.AbstractMember;
+import org.coins1920.group05.model.general.AbstractMember;
 
 @Getter
 @ToString(callSuper = true)

@@ -2,10 +2,10 @@ package org.coins1920.group05;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
-import org.coins1920.group05.fetcher.model.trello.Action;
-import org.coins1920.group05.fetcher.model.trello.Board;
-import org.coins1920.group05.fetcher.model.trello.Card;
-import org.coins1920.group05.fetcher.model.trello.Member;
+import org.coins1920.group05.model.trello.Action;
+import org.coins1920.group05.model.trello.Board;
+import org.coins1920.group05.model.trello.Card;
+import org.coins1920.group05.model.trello.Member;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

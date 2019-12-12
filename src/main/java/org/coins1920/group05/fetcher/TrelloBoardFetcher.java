@@ -1,6 +1,6 @@
 package org.coins1920.group05.fetcher;
 
-import org.coins1920.group05.fetcher.model.trello.*;
+import org.coins1920.group05.model.trello.*;
 import org.coins1920.group05.util.RestClientHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

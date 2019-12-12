@@ -1,6 +1,6 @@
 package org.coins1920.group05.fetcher;
 
-import org.coins1920.group05.fetcher.model.general.*;
+import org.coins1920.group05.model.general.*;
 
 import java.util.List;
 

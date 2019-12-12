@@ -2,8 +2,8 @@ package org.coins1920.group05;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
-import org.coins1920.group05.fetcher.model.github.Issue;
-import org.coins1920.group05.fetcher.model.github.User;
+import org.coins1920.group05.model.github.Issue;
+import org.coins1920.group05.model.github.User;
 import org.coins1920.group05.util.RestClientHelper;
 import org.coins1920.group05.util.TimeFormattingHelper;
 import org.junit.*;

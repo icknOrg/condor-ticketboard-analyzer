@@ -1,4 +1,4 @@
-package org.coins1920.group05.fetcher.model.general;
+package org.coins1920.group05.model.general;
 
 import lombok.Getter;
 

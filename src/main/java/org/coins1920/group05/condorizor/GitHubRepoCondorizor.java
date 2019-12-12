@@ -2,13 +2,13 @@ package org.coins1920.group05.condorizor;
 
 import org.apache.commons.text.StringEscapeUtils;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
-import org.coins1920.group05.fetcher.model.condor.Actor;
-import org.coins1920.group05.fetcher.model.condor.Edge;
-import org.coins1920.group05.fetcher.model.condor.EdgeType;
-import org.coins1920.group05.fetcher.model.general.Interaction;
-import org.coins1920.group05.fetcher.model.github.Comment;
-import org.coins1920.group05.fetcher.model.github.Issue;
-import org.coins1920.group05.fetcher.model.github.User;
+import org.coins1920.group05.model.condor.Actor;
+import org.coins1920.group05.model.condor.Edge;
+import org.coins1920.group05.model.condor.EdgeType;
+import org.coins1920.group05.model.general.Interaction;
+import org.coins1920.group05.model.github.Comment;
+import org.coins1920.group05.model.github.Issue;
+import org.coins1920.group05.model.github.User;
 import org.coins1920.group05.util.Pair;
 import org.coins1920.group05.util.TimeFormattingHelper;
 

@@ -1,8 +1,8 @@
-package org.coins1920.group05.fetcher.model.trello;
+package org.coins1920.group05.model.trello;
 
 import lombok.Getter;
 import lombok.ToString;
-import org.coins1920.group05.fetcher.model.general.AbstractBoard;
+import org.coins1920.group05.model.general.AbstractBoard;
 
 @Getter
 @ToString(callSuper = true)

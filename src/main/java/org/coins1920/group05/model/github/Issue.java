@@ -1,8 +1,8 @@
-package org.coins1920.group05.fetcher.model.github;
+package org.coins1920.group05.model.github;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.coins1920.group05.fetcher.model.general.AbstractTicket;
+import org.coins1920.group05.model.general.AbstractTicket;
 
 @Getter
 @Setter

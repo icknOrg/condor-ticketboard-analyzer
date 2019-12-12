@@ -1,4 +1,4 @@
-package org.coins1920.group05.fetcher.model.condor;
+package org.coins1920.group05.model.condor;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

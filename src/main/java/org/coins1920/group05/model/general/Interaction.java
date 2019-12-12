@@ -1,8 +1,8 @@
-package org.coins1920.group05.fetcher.model.general;
+package org.coins1920.group05.model.general;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.coins1920.group05.fetcher.model.condor.EdgeType;
+import org.coins1920.group05.model.condor.EdgeType;
 
 /**
  * A generic interaction "sum type": creation | comment .

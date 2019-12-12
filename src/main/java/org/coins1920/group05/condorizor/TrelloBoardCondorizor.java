@@ -2,12 +2,12 @@ package org.coins1920.group05.condorizor;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
-import org.coins1920.group05.fetcher.model.condor.Actor;
-import org.coins1920.group05.fetcher.model.condor.Edge;
-import org.coins1920.group05.fetcher.model.condor.EdgeType;
-import org.coins1920.group05.fetcher.model.trello.Action;
-import org.coins1920.group05.fetcher.model.trello.Card;
-import org.coins1920.group05.fetcher.model.trello.Member;
+import org.coins1920.group05.model.condor.Actor;
+import org.coins1920.group05.model.condor.Edge;
+import org.coins1920.group05.model.condor.EdgeType;
+import org.coins1920.group05.model.trello.Action;
+import org.coins1920.group05.model.trello.Card;
+import org.coins1920.group05.model.trello.Member;
 import org.coins1920.group05.util.Pair;
 
 import java.io.File;

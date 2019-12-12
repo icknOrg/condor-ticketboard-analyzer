@@ -47,12 +47,15 @@ mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
 # Plot outputs
+x_column = 'Avg_Sentiment'
 plot_X = X_test.loc[:,'Avg_Sentiment']
-plt.scatter(plot_X, y_test,  color='black')
-plt.plot(plot_X, y_pred, color='blue', linewidth=3)
-
-plt.xticks(())
-plt.yticks(())
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.scatter(plot_X, y_test,  color='black')
+ax.scatter(plot_X, y_pred, color='blue')
+ax.set_xlabel(x_column)
+ax.set_ylabel('Repository Stars divided by Pull Requests')
+ax.set_title('Predictions')
 
 plt.show()
 

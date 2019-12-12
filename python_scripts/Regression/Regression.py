@@ -11,6 +11,8 @@ from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import ElasticNet
 
 
+plotFolderPath = './Plots/'
+
 # read csv
 df = pd.read_csv('input.csv',sep=',',encoding='utf-8').drop('Repository_Name', axis=1)
 
@@ -47,17 +49,19 @@ mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
 # Plot outputs
-x_column = 'Avg_Sentiment'
-plot_X = X_test.loc[:,'Avg_Sentiment']
-fig = plt.figure()
-ax = fig.add_subplot(111)
-ax.scatter(plot_X, y_test,  color='black')
-ax.scatter(plot_X, y_pred, color='blue')
-ax.set_xlabel(x_column)
-ax.set_ylabel('Repository Stars divided by Pull Requests')
-ax.set_title('Predictions')
+for column in X_train:
+    plot_X = X_test.loc[:, column]
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.scatter(plot_X, y_test, color='black')
+    ax.scatter(plot_X, y_pred, color='blue')
+    ax.set_xlabel(column)
+    ax.set_ylabel('Repository Stars divided by Pull Requests')
+    ax.set_title('Predictions')
+    plt.savefig(fname=plotFolderPath+column+'_scatter.png')
+    plt.close()
 
-plt.show()
+
 
 print('Coefficients: ')
 print(regr.best_estimator_.coef_)

@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-csvFolderPath = "./CSVs/"
+csvFolderPath = "../../docs/csv/samples/"
 resultPath = '../Regression/input.csv'
 
 
@@ -20,28 +20,33 @@ resultPath = '../Regression/input.csv'
 # - % of isolated people
 
 # Function used to extract aggregated metrics from 1 repository
-def processCSV(filename, df):
-    print(filename)
-    filePath = csvFolderPath + filename
-    csv = pd.read_csv(filePath, sep=',', encoding='utf-8', error_bad_lines=False)
-    nrows = csv.shape[0]
+def processCSV(dir, df):
+    actorPath = csvFolderPath+dir+'/processed/nodes.csv'
+    ticketsPath = csvFolderPath + dir + '/processed/edges.csv'
+
+    repo = dir
+    # Extract metrics from actor file
+    actors = pd.read_csv(actorPath, sep=',', encoding='utf-8', error_bad_lines=False)
+    nrows = actors.shape[0]
     ntop = int(round((nrows * 0.05), 0))
-    csvTop = csv.sort_values(by='total influence', ascending=False).head(ntop)
+    actorsTop = actors.sort_values(by='total influence', ascending=False).head(ntop)
 
-    top_avg_deg_cent = round(csvTop['Degree centrality'].mean(), 4)
-    top_avg_betw_osc = round(csvTop['Betweenness centrality oscillation'].mean(), 4)
-    top_avg_sentiment = round(csvTop['avg sentiment'].mean(), 4)
-    top_avg_complexity = round(csvTop['avg complexity'].mean(), 4)
-    top_avg_influence = round(csvTop['total influence'].mean(), 4)
-    top_avg_contrib = round(csvTop['Contribution index'].mean(), 4)
+    top_avg_deg_cent = round(actorsTop['Degree centrality'].mean(), 4)
+    top_avg_betw_osc = round(actorsTop['Betweenness centrality oscillation'].mean(), 4)
+    top_avg_sentiment = round(actorsTop['avg sentiment'].mean(), 4)
+    top_avg_complexity = round(actorsTop['avg complexity'].mean(), 4)
+    top_avg_influence = round(actorsTop['total influence'].mean(), 4)
+    top_avg_contrib = round(actorsTop['Contribution index'].mean(), 4)
 
-    avg_sentiment = round(csv['avg sentiment'].mean(), 4)
-    avg_complexity = round(csv['avg complexity'].mean(), 4)
+    avg_sentiment = round(actors['avg sentiment'].mean(), 4)
+    avg_complexity = round(actors['avg complexity'].mean(), 4)
 
-    perc_connected = round((csv.loc[csv['Degree centrality'] >= ntop].shape[0]) / nrows, 4)
-    perc_isolated = round((csv.loc[csv['Degree centrality'] == 1].shape[0]) / nrows, 4)
+    perc_connected = round((actors.loc[actors['Degree centrality'] >= ntop].shape[0]) / nrows, 4)
+    perc_isolated = round((actors.loc[actors['Degree centrality'] == 1].shape[0]) / nrows, 4)
 
-    repo = filename[:-4]
+    # Extract metrics from ticket file
+
+    edges = pd.read_csv(ticketsPath, sep=',', encoding='utf-8', error_bad_lines=False)
 
     result = df.append({'Avg_Degree_Centrality_Top': top_avg_deg_cent,
                         'Avg_Betweenness_Osc_Top': top_avg_betw_osc,
@@ -65,8 +70,9 @@ df = pd.DataFrame(columns=['Avg_Degree_Centrality_Top', 'Avg_Betweenness_Osc_Top
 
 # 2: Process Input CSVs
 
-for filename in os.listdir(csvFolderPath):
-    df = processCSV(filename, df)
+for dirs in os.listdir(csvFolderPath):
+    print(dirs)
+    df = processCSV(dirs, df)
 df.to_csv(resultPath, sep=',', encoding='utf-8', index=False)
 
 print(1)

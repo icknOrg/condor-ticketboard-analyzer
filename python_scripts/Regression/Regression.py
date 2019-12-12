@@ -10,21 +10,6 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import ElasticNet
 
-#csv structure:
-# Target: Stars/Pullreq
-# Attributes:
-# - Avg. degree centrality of Top 5% actors by influence
-# - Group betweenness centrality
-# - Avg. Betweenness Oscillation of Top 5% actors by influence
-# - % of actors with direct connections to at least 5% of the non-isolated actors
-# - Avg. sentiment
-# - Avg. sentiment of Top 5% actors by influence
-# - Avg. comlexity
-# - Avg. complexity of Top 5% actors by influence
-# - Avg. influence of Top 5% actors by influence
-# - Avg. contribution index of Top 5% actors by influence
-# - % of isolated people
-# - % of closed issues
 
 # read csv
 df = pd.read_csv('input.csv',sep=',',encoding='utf-8').drop('Repository_Name', axis=1)

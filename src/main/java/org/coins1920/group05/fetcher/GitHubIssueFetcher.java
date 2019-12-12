@@ -1,7 +1,7 @@
 package org.coins1920.group05.fetcher;
 
 import org.coins1920.group05.fetcher.model.github.*;
-import org.coins1920.group05.fetcher.util.RestClientHelper;
+import org.coins1920.group05.util.RestClientHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;

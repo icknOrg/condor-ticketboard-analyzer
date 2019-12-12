@@ -1,7 +1,7 @@
 package org.coins1920.group05;
 
 import org.coins1920.group05.fetcher.TicketBoard;
-import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.util.Pair;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;

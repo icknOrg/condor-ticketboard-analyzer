@@ -9,8 +9,8 @@ import org.coins1920.group05.fetcher.model.general.Interaction;
 import org.coins1920.group05.fetcher.model.github.Comment;
 import org.coins1920.group05.fetcher.model.github.Issue;
 import org.coins1920.group05.fetcher.model.github.User;
-import org.coins1920.group05.fetcher.util.Pair;
-import org.coins1920.group05.fetcher.util.TimeFormattingHelper;
+import org.coins1920.group05.util.Pair;
+import org.coins1920.group05.util.TimeFormattingHelper;
 
 import java.io.File;
 import java.util.List;

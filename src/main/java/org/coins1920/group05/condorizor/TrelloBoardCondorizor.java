@@ -8,7 +8,7 @@ import org.coins1920.group05.fetcher.model.condor.EdgeType;
 import org.coins1920.group05.fetcher.model.trello.Action;
 import org.coins1920.group05.fetcher.model.trello.Card;
 import org.coins1920.group05.fetcher.model.trello.Member;
-import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.util.Pair;
 
 import java.io.File;
 import java.util.Collection;

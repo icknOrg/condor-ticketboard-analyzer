@@ -5,7 +5,7 @@ import org.coins1920.group05.condorizor.DefaultCondorCsvMarshaller;
 import org.coins1920.group05.fetcher.model.condor.Actor;
 import org.coins1920.group05.fetcher.model.condor.Edge;
 import org.coins1920.group05.fetcher.model.condor.EdgeType;
-import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.util.Pair;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

@@ -6,7 +6,7 @@ import org.coins1920.group05.fetcher.model.general.AbstractComment;
 import org.coins1920.group05.fetcher.model.general.AbstractMember;
 import org.coins1920.group05.fetcher.model.general.AbstractTicket;
 import org.coins1920.group05.fetcher.model.general.Interaction;
-import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.util.Pair;
 
 import java.io.File;
 import java.util.List;

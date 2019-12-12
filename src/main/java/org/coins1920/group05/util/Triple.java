@@ -1,4 +1,4 @@
-package org.coins1920.group05.fetcher.util;
+package org.coins1920.group05.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

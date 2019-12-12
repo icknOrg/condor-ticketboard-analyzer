@@ -2,7 +2,7 @@ package org.coins1920.group05.condorizor;
 
 import org.coins1920.group05.fetcher.GitHubGQLIssueFetcher;
 import java.io.File;
-import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.util.Pair;
 
 import java.util.stream.Stream;
 

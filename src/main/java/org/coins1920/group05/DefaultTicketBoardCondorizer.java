@@ -3,7 +3,7 @@ package org.coins1920.group05;
 import org.coins1920.group05.condorizor.GitHubRepoCondorizor;
 import org.coins1920.group05.condorizor.TrelloBoardCondorizor;
 import org.coins1920.group05.fetcher.TicketBoard;
-import org.coins1920.group05.fetcher.util.Pair;
+import org.coins1920.group05.util.Pair;
 
 import java.io.File;
 

@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 
 import matplotlib.pyplot as plt
@@ -28,7 +27,7 @@ from sklearn.linear_model import ElasticNet
 # - % of closed issues
 
 # read csv
-df = pd.read_csv('dummy.csv',sep=',',encoding='utf-8')
+df = pd.read_csv('input.csv',sep=',',encoding='utf-8').drop('Repository_Name', axis=1)
 
 # scale (ElasticNet supports normalization as a hyperparameter)
 # scaler = MinMaxScaler()
@@ -49,7 +48,7 @@ y_test = test.loc[:,['Target']]
 
 # create and train model
 parameters = {
-    'alpha': [0.2,1,2,5],
+    'alpha': [1,2,5,10],
     'l1_ratio': [0,0.25,0.5,0.75,1],
     'normalize':[True]
 }
@@ -63,7 +62,7 @@ mse = mean_squared_error(y_test, y_pred)
 r2 = r2_score(y_test, y_pred)
 
 # Plot outputs
-plot_X = X_test.loc[:,'Group_Betweenness_Centrality']
+plot_X = X_test.loc[:,'Avg_Sentiment']
 plt.scatter(plot_X, y_test,  color='black')
 plt.plot(plot_X, y_pred, color='blue', linewidth=3)
 

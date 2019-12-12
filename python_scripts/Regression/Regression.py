@@ -10,11 +10,10 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import ElasticNet
 
-
 plotFolderPath = './Plots/'
 
 # read csv
-df = pd.read_csv('input.csv',sep=',',encoding='utf-8').drop('Repository_Name', axis=1)
+df = pd.read_csv('input.csv', sep=',', encoding='utf-8').drop('Repository_Name', axis=1)
 
 # scale (ElasticNet supports normalization as a hyperparameter)
 # scaler = MinMaxScaler()
@@ -29,19 +28,18 @@ df = pd.read_csv('input.csv',sep=',',encoding='utf-8').drop('Repository_Name', a
 # train test split
 train, test = train_test_split(df, test_size=0.2)
 X_train = train.drop('Target', axis=1)
-y_train = train.loc[:,['Target']]
+y_train = train.loc[:, ['Target']]
 X_test = test.drop('Target', axis=1)
-y_test = test.loc[:,['Target']]
+y_test = test.loc[:, ['Target']]
 
 # create and train model
 parameters = {
-    'alpha': [1,2,5,10],
-    'l1_ratio': [0,0.25,0.5,0.75,1],
-    'normalize':[True]
+    'alpha': [1, 2, 5, 10],
+    'l1_ratio': [0, 0.25, 0.5, 0.75, 1],
+    'normalize': [True]
 }
 regr = GridSearchCV(estimator=ElasticNet(), param_grid=parameters, n_jobs=-1, cv=5)
 regr.fit(X_train, y_train)
-print('Best score:', regr.best_score_)
 
 # predict and evaluate
 y_pred = regr.predict(X_test)
@@ -58,10 +56,11 @@ for column in X_train:
     ax.set_xlabel(column)
     ax.set_ylabel('Repository Stars divided by Pull Requests')
     ax.set_title('Predictions')
-    plt.savefig(fname=plotFolderPath+column+'_scatter.png')
+    plt.savefig(fname=plotFolderPath + column + '_scatter.png')
     plt.close()
 
-
-
+print('Best score:', regr.best_score_)
+print('Evaluation MSE: ' + str(mse))
+print('Evaluation R2: ' + str(r2))
 print('Coefficients: ')
 print(regr.best_estimator_.coef_)

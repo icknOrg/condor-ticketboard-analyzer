@@ -6,9 +6,9 @@ import org.coins1920.group05.model.condor.Actor;
 import org.coins1920.group05.model.condor.Edge;
 import org.coins1920.group05.model.condor.EdgeType;
 import org.coins1920.group05.model.general.Interaction;
-import org.coins1920.group05.model.github.Comment;
-import org.coins1920.group05.model.github.Issue;
-import org.coins1920.group05.model.github.User;
+import org.coins1920.group05.model.github.rest.Comment;
+import org.coins1920.group05.model.github.rest.Issue;
+import org.coins1920.group05.model.github.rest.User;
 import org.coins1920.group05.util.Pair;
 import org.coins1920.group05.util.TimeFormattingHelper;
 

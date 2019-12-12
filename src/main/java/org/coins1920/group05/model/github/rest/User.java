@@ -1,4 +1,4 @@
-package org.coins1920.group05.model.github;
+package org.coins1920.group05.model.github.rest;
 
 import lombok.Getter;
 import lombok.ToString;

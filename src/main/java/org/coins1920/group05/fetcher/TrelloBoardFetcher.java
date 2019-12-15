@@ -97,6 +97,12 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
         return new LinkedList<>();
     }
 
+    @Override
+    public Member fetchAllInfosForUser(Member user) {
+        logger.warn("The operation 'fetchAllInfosForUser()' is not yet supported!");
+        return null;
+    }
+
     private String assembleUrl(String resourcePart, String urlParameters) {
         final String nonNullUrlParameters = (urlParameters == null) ? "" : urlParameters;
         return "/1/" + resourcePart + "?key={key}&token={token}" + nonNullUrlParameters;

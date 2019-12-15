@@ -47,4 +47,6 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
     List<M> fetchCommentatorsForTicket(T ticket);
 
     List<C> fetchCommentsForTicket(T ticket);
+
+    M fetchAllInfosForUser(M user);
 }

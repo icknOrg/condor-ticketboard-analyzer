@@ -32,11 +32,21 @@ public class DefaultCondorCsvMarshaller implements CondorCsvMarshaller {
     private File writeActors(List<Actor> actors, String dir) {
         final Path path = Paths.get(dir, ACTORS_FILENAME);
         final CSVFormat formatWithHeaders = condorFormat
-                .withHeader("Id", "Name", "starttime");
+                .withHeader(
+                        "Id", "Name",
+                        "starttime", "company",
+                        "location", "email",
+                        "hireable"
+                );
 
         final BiConsumer<CSVPrinter, Actor> printActors = (csvp, p) -> {
             try {
-                csvp.printRecord(String.valueOf(p.getId()), p.getName(), p.getStarttime());
+                csvp.printRecord(
+                        String.valueOf(p.getId()), p.getName(),
+                        p.getStarttime(), p.getCompany(),
+                        p.getLocation(), p.getEmail(),
+                        p.getHireable()
+                );
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -47,9 +57,15 @@ public class DefaultCondorCsvMarshaller implements CondorCsvMarshaller {
     private File writeEdges(List<Edge> edges, String dir) {
         final Path path = Paths.get(dir, TICKETS_FILENAME);
         final CSVFormat formatWithHeaders = condorFormat
-                .withHeader("Name", "UUID", "Source", "Target", "Starttime", "Endtime",
-                        "Planned_Duration", "Real_Duration", "Status", "Count_Subtasks",
-                        "Count_Comments", "Comment_Body", "Edge_type");
+                .withHeader(
+                        "Name", "UUID",
+                        "Source", "Target",
+                        "Starttime", "Endtime",
+                        "Planned_Duration", "Real_Duration",
+                        "Status", "Count_Subtasks",
+                        "Count_Comments", "Comment_Body",
+                        "Edge_type"
+                );
 
         final BiConsumer<CSVPrinter, Edge> printEdges = (csvp, t) -> {
             try {

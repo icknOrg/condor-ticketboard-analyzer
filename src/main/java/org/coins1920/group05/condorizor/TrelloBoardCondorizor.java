@@ -65,7 +65,13 @@ public class TrelloBoardCondorizor {
         // map users to actors:
         return members
                 .stream()
-                .map(m -> new Actor(m.getId(), m.getFullName(), fakeStartDate))
+                .map(m -> new Actor(
+                                m.getId(), m.getFullName(),
+                                fakeStartDate,
+                                "", "",
+                                "", null
+                        )
+                )
                 .collect(Collectors.toList());
     }
 

@@ -50,10 +50,14 @@ public class CondorCsvMarshallerTest {
 
     private List<Actor> testActors() {
         final List<Actor> actors = new LinkedList<>();
-        actors.add(new Actor("1", "ralf", "2010-09-12T04:00:00+00:00"));
-        actors.add(new Actor("2", "mike", "2010-09-12T04:00:00+00:00"));
-        actors.add(new Actor("3", "meike", "2010-09-12T04:00:00+00:00"));
-        actors.add(new Actor("4", "anna", "2010-09-12T04:00:00+00:00"));
+        actors.add(new Actor("1", "ralf", "2010-09-12T04:00:00+00:00",
+                "", "", "", null));
+        actors.add(new Actor("2", "mike", "2010-09-12T04:00:00+00:00",
+                "", "", "", null));
+        actors.add(new Actor("3", "meike", "2010-09-12T04:00:00+00:00",
+                "", "", "", null));
+        actors.add(new Actor("4", "anna", "2010-09-12T04:00:00+00:00",
+                "", "", "", null));
         return actors;
     }
 

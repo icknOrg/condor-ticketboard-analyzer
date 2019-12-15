@@ -20,10 +20,14 @@ import java.util.stream.Stream;
 
 public class GitHubRepoCondorizor {
 
-    public Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir, boolean paginate) {
-        final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
-        final GitHubIssueFetcher fetcher = new GitHubIssueFetcher(oauthToken, paginate);
+    private final GitHubIssueFetcher fetcher;
 
+    public GitHubRepoCondorizor(boolean paginate) {
+        final String oauthToken = System.getenv("GITHUB_OAUTH_KEY");
+        this.fetcher = new GitHubIssueFetcher(oauthToken, paginate);
+    }
+
+    public Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
         // first, fetch all issues of the given repo:
         final boolean fetchClosedTickets = true;
         final List<Issue> githubIssues = fetcher
@@ -53,13 +57,19 @@ public class GitHubRepoCondorizor {
         // aggregate all users over all issues and their comments:
         final List<User> users = aggregateUsers(issues, comments);
 
+        // fetch additional infos about those users:
+        final List<User> fullBlownUsers = users
+                .parallelStream()
+                .map(fetcher::fetchAllInfosForUser)
+                .collect(Collectors.toList());
+
         // rectangularize:
         final List<Pair<Issue, Interaction<User, Comment>>> rectangularizedIssues = rectangularize(
                 issues, comments);
 
         // map to edges (tickets) and nodes (persons), then write to CSV files:
         return CondorizorUtils.mapAndWriteToCsvFiles(
-                users,
+                fullBlownUsers,
                 rectangularizedIssues,
                 this::githubUsersToCondorActors,
                 this::githubIssuesToCondorEdges,
@@ -135,7 +145,13 @@ public class GitHubRepoCondorizor {
 
         // map users to actors:
         return distinctGithubUsers
-                .map(u -> new Actor(u.getId(), u.getLogin(), computeTimestamp(fallbackStartTime, null)))
+                .map(u -> new Actor(
+                                u.getId(), u.getLogin(),
+                                computeTimestamp(fallbackStartTime, null),
+                                u.getCompany(), u.getLocation(),
+                                u.getEmail(), u.isHireable()
+                        )
+                )
                 .collect(Collectors.toList());
     }
 
@@ -150,7 +166,8 @@ public class GitHubRepoCondorizor {
                     final String startTime = computeTimestamp(issue.getCreatedAt(), fallbackStartTime);
                     final String endTime = computeTimestamp(issue.getClosedAt(), null);
 
-                    final Edge edge = new Edge(issue.getTitle(), UUID.randomUUID().toString(),
+                    final Edge edge = new Edge(
+                            issue.getTitle(), UUID.randomUUID().toString(),
                             null, ticketAuthor.getId(),
                             startTime, endTime,
                             "", "",

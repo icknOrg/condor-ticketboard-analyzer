@@ -19,7 +19,8 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                 throw new UnsupportedOperationException();
 
             case GITHUB:
-                return new GitHubRepoCondorizor().fetchGitHubIssues(owner, board, outputDir, true);
+                final boolean paginate = true;
+                return new GitHubRepoCondorizor(paginate).fetchGitHubIssues(owner, board, outputDir);
 
             default:
                 throw new IllegalArgumentException("Ticket board type wasn't recognized!");

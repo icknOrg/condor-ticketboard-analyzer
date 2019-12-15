@@ -7,6 +7,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class Actor {
     private String id;
-    private String Name;
+    private String name;
     private String starttime;
+    private String company;
+    private String location;
+    private String email;
+    private Boolean hireable;
 }

@@ -139,12 +139,20 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         }
     }
 
+    @Override
+    public User fetchAllInfosForUser(User user) {
+        final ResponseEntity<User> responseEntity = rt
+                .exchange(user.getUrl(), HttpMethod.GET, httpEntityWithDefaultHeaders(), User.class);
+        if (responseEntity.getStatusCode() == HttpStatus.OK) {
+            return responseEntity.getBody();
+        } else {
+            logger.warn("I couldn't fetch the user for URL: " + user.getUrl());
+            return null;
+        }
+    }
+
     private <U> List<U> getAllEntitiesWithPagination(BiFunction<String, HttpEntity<?>, ResponseEntity<U[]>> f, String url) {
-        final HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add("user-agent", "Spring RestTemplate");
-        headers.set("Authorization", "token " + this.oauthToken);
-        final HttpEntity<?> entity = new HttpEntity<>(headers);
+        final HttpEntity<?> entity = httpEntityWithDefaultHeaders();
 
         try {
             final ResponseEntity<U[]> response = f.apply(url, entity);
@@ -180,5 +188,13 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
             return new LinkedList<>();
         }
 
+    }
+
+    private HttpEntity<?> httpEntityWithDefaultHeaders() {
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.add("user-agent", "Spring RestTemplate");
+        headers.set("Authorization", "token " + this.oauthToken);
+        return new HttpEntity<>(headers);
     }
 }

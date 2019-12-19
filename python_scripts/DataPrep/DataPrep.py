@@ -1,13 +1,21 @@
 import pandas as pd
+import numpy as np
 import os
 
-csvFolderPath = "../../docs/csv/samples/"
+csvFolderPath = "../../../COIN/4_Repos/Ready_For_Regression/"
 resultPath = '../Regression/input.csv'
+
 
 # Function used to extract aggregated metrics from 1 repository
 def processCSV(dir, df):
     actorPath = csvFolderPath + dir + '/processed/nodes.csv'
     ticketsPath = csvFolderPath + dir + '/processed/edges.csv'
+    SOTPath = csvFolderPath + dir + '/processed/sentiment_over_time.csv'
+    activityPath = csvFolderPath + dir + '/processed/activity.csv'
+    awvciPath = csvFolderPath + dir + '/processed/awvci.csv'
+    betwCentrPath = csvFolderPath + dir + '/processed/betw_centr.csv'
+    betwOscPath = csvFolderPath + dir + '/processed/betw_osc.csv'
+    densityPath = csvFolderPath + dir + '/processed/density.csv'
 
     repo = dir
     # Extract metrics from actor file
@@ -37,6 +45,7 @@ def processCSV(dir, df):
 
     perc_connected = round((actors.loc[actors['Degree centrality'] >= ntop].shape[0]) / actors_rows, 4)
     perc_isolated = round((actors.loc[actors['Degree centrality'] == 1].shape[0]) / actors_rows, 4)
+    perc_hirable = round((actors.loc[actors['hireable'] == 1].shape[0]) / actors_rows, 4)
 
     # Extract metrics from ticket file
 
@@ -48,7 +57,73 @@ def processCSV(dir, df):
     perc_solo = edges[['Name']].groupby('Name').size().reset_index(name='counts')
     perc_solo = round((perc_solo.loc[perc_solo['counts'] == 1].shape[0]) / perc_solo.shape[0], 4)
 
-    result = df.append({'Avg_Degree_Centrality_Top': top_avg_deg_cent,
+    # Extract metrics from sentiment over time data
+
+    SOT = pd.read_csv(SOTPath, sep=',', encoding='utf-8', error_bad_lines=False)
+
+    group_messages = round(SOT['Avg. messages per day'].mean(), 4)
+    group_sentiment = round(SOT['Sentiment'].mean(), 4)
+    group_emotionality = round(SOT['Emotionality'].mean(), 4)
+    group_complexity = round(SOT['Complexity'].mean(), 4)
+    group_influence = round(SOT['Influence'].mean(), 4)
+
+    # Extract time series data
+
+    activity = pd.read_csv(activityPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
+    activity['Activity_Increase'] = np.nan
+    activity = activity[2:].reset_index()
+    for index, row in activity.iterrows():
+        if index > 0:
+            activity.loc[index, 'Activity_Increase'] = activity.loc[index, 0] / activity.loc[index - 1, 0]
+    group_activity_increase = round(activity['Activity_Increase'].mean(), 4)
+
+    awvci = pd.read_csv(awvciPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
+    awvci['awvci_Increase'] = np.nan
+    awvci = awvci[2:].reset_index()
+    for index, row in awvci.iterrows():
+        if index > 0:
+            awvci.loc[index, 'awvci_Increase'] = awvci.loc[index, 0] / awvci.loc[index - 1, 0]
+    group_awvci_increase = round(awvci['awvci_Increase'].mean(), 4)
+
+    betwCentr = pd.read_csv(betwCentrPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
+    betwCentr['betwCentr_Increase'] = np.nan
+    betwCentr = betwCentr[2:].reset_index()
+    for index, row in betwCentr.iterrows():
+        if index > 0:
+            betwCentr.loc[index, 'betwCentr_Increase'] = betwCentr.loc[index, 0] / betwCentr.loc[index - 1, 0]
+    group_betwCentr_increase = round(betwCentr['betwCentr_Increase'].mean(), 4)
+
+    betwOsc = pd.read_csv(betwOscPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
+    betwOsc['betwOsc_Increase'] = np.nan
+    betwOsc = betwOsc[2:].reset_index()
+    for index, row in betwOsc.iterrows():
+        if index > 0:
+            if betwOsc.loc[index - 1, 0] > 0:
+                betwOsc.loc[index, 'betwOsc_Increase'] = betwOsc.loc[index, 0] / betwOsc.loc[index - 1, 0]
+
+    group_betwOsc_increase = round(betwOsc['betwOsc_Increase'].mean(), 4)
+
+    density = pd.read_csv(densityPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
+    density['density_Increase'] = np.nan
+    density = density[2:].reset_index()
+    for index, row in density.iterrows():
+        if index > 0:
+            if density.loc[index - 1, 0] > 0:
+                density.loc[index, 'density_Increase'] = density.loc[index, 0] / density.loc[index - 1, 0]
+
+    group_density_increase = round(density['density_Increase'].mean(), 4)
+
+    result = df.append({'Group_Avg_Messages_Per_Day': group_messages,
+                        'Group_Avg_Sentiment': group_sentiment,
+                        'Group_Avg_Emotionality': group_emotionality,
+                        'Group_Avg_Complexity': group_complexity,
+                        'Group_Avg_Influence': group_influence,
+                        'Group_Avg_Percentage_Activity_Increase_Monthly': group_activity_increase,
+                        'Group_Avg_Percentage_AWVCI_Increase_Monthly': group_awvci_increase,
+                        'Group_Avg_Percentage_Betweenness_Centrality_Increase_Monthly': group_betwCentr_increase,
+                        'Group_Avg_Percentage_Betweenness_Oscillation_Increase_Monthly': group_betwOsc_increase,
+                        'Group_Avg_Percentage_Density_Increase_Monthly': group_density_increase,
+                        'Avg_Degree_Centrality_Top': top_avg_deg_cent,
                         'Avg_Degree_Centrality': avg_deg_cent,
                         'Avg_Betweenness_Osc_Top': top_avg_betw_osc,
                         'Avg_Betweenness_Osc': avg_betw_osc,
@@ -68,13 +143,24 @@ def processCSV(dir, df):
                         'Percentage_Closed_Issues': perc_closed_issues,
                         'Percentage_Creations': perc_creation,
                         'Percentage_Isolated_Actors': perc_isolated,
-                        'Percentage_Solo_Issues':perc_solo,
+                        'Percentage_Hirable_Actors': perc_hirable,
+                        'Percentage_Solo_Issues': perc_solo,
                         'Repository_Name': repo}, ignore_index=True)
     return result
 
 
 # 1: Create DataFrame
-df = pd.DataFrame(columns=['Avg_Degree_Centrality_Top',
+df = pd.DataFrame(columns=['Group_Avg_Messages_Per_Day',
+                           'Group_Avg_Sentiment',
+                           'Group_Avg_Emotionality',
+                           'Group_Avg_Complexity',
+                           'Group_Avg_Influence',
+                           'Group_Avg_Percentage_Activity_Increase_Monthly',
+                           'Group_Avg_Percentage_AWVCI_Increase_Monthly',
+                           'Group_Avg_Percentage_Betweenness_Centrality_Increase_Monthly',
+                           'Group_Avg_Percentage_Betweenness_Oscillation_Increase_Monthly',
+                           'Group_Avg_Percentage_Density_Increase_Monthly',
+                           'Avg_Degree_Centrality_Top',
                            'Avg_Degree_Centrality',
                            'Avg_Betweenness_Osc_Top',
                            'Avg_Betweenness_Osc',
@@ -92,6 +178,7 @@ df = pd.DataFrame(columns=['Avg_Degree_Centrality_Top',
                            'Avg_Contribution_Index_Oscil_Top',
                            'Avg_Contribution_Index_Oscil',
                            'Percentage_Isolated_Actors',
+                           'Percentage_Hirable_Actors',
                            'Percentage_Closed_Issues',
                            'Percentage_Creations',
                            'Percentage_Solo_Issues',

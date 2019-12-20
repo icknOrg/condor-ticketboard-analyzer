@@ -90,7 +90,8 @@ def processCSV(dir, df):
     betwCentr = betwCentr[2:].reset_index()
     for index, row in betwCentr.iterrows():
         if index > 0:
-            betwCentr.loc[index, 'betwCentr_Increase'] = betwCentr.loc[index, 0] / betwCentr.loc[index - 1, 0]
+            if betwCentr.iloc[index - 1, 1] > 0:
+                betwCentr.loc[index, 'betwCentr_Increase'] = betwCentr.iloc[index, 1] / betwCentr.iloc[index - 1, 1]
     group_betwCentr_increase = round(betwCentr['betwCentr_Increase'].mean(), 4)
 
     betwOsc = pd.read_csv(betwOscPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]

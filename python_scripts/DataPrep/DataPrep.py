@@ -82,7 +82,8 @@ def processCSV(dir, df):
     awvci = awvci[2:].reset_index()
     for index, row in awvci.iterrows():
         if index > 0:
-            awvci.loc[index, 'awvci_Increase'] = awvci.loc[index, 0] / awvci.loc[index - 1, 0]
+            if awvci.loc[index - 1, 0] > 0:
+                awvci.loc[index, 'awvci_Increase'] = awvci.loc[index, 0] / awvci.loc[index - 1, 0]
     group_awvci_increase = round(awvci['awvci_Increase'].mean(), 4)
 
     betwCentr = pd.read_csv(betwCentrPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]

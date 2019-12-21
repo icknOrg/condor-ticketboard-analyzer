@@ -141,12 +141,18 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public User fetchAllInfosForUser(User user) {
-        final ResponseEntity<User> responseEntity = rt
-                .exchange(user.getUrl(), HttpMethod.GET, httpEntityWithDefaultHeaders(), User.class);
-        if (responseEntity.getStatusCode() == HttpStatus.OK) {
-            return responseEntity.getBody();
-        } else {
-            logger.warn("I couldn't fetch the user for URL: " + user.getUrl());
+        try {
+            final ResponseEntity<User> responseEntity = rt
+                    .exchange(user.getUrl(), HttpMethod.GET, httpEntityWithDefaultHeaders(), User.class);
+            if (responseEntity.getStatusCode() == HttpStatus.OK) {
+                return responseEntity.getBody();
+            } else {
+                logger.warn("I couldn't fetch the user for URL: " + user.getUrl());
+                return null;
+            }
+            
+        } catch (Exception e) {
+            logger.warn("Something went wrong: ", e);
             return null;
         }
     }

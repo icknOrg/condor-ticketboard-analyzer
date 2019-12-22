@@ -1,6 +1,7 @@
 package org.coins1920.group05.condorizor;
 
 import org.apache.commons.lang3.SerializationUtils;
+import org.coins1920.group05.fetcher.FetchingResult;
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
 import org.coins1920.group05.model.condor.Actor;
 import org.coins1920.group05.model.condor.Edge;
@@ -30,8 +31,10 @@ public class TrelloBoardCondorizor {
 
         // fetch all cards for the given board:
         final boolean fetchClosedTickets = false;
-        final Stream<Card> trelloCards = fetcher
-                .fetchTickets(null, boardId, fetchClosedTickets)
+        final FetchingResult<Card> cardsResult = fetcher
+                .fetchTickets(null, boardId, fetchClosedTickets);
+        final Stream<Card> trelloCards = cardsResult
+                .getEntities()
                 .stream()
                 .map(c -> addAuthor(c, fetcher.fetchActionsForTicket(c.getId())));
 

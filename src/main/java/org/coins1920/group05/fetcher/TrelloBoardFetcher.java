@@ -8,6 +8,7 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,10 +59,10 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
     }
 
     @Override
-    public List<Card> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
+    public FetchingResult<Card> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
         final String url = assembleUrl("boards/{board}/cards", null);
         final ResponseEntity<Card[]> response = rt.getForEntity(url, Card[].class, board, key, token);
-        return RestClientHelper.nonNullResponseEntities(response);
+        return assembleFetchingResult(RestClientHelper.nonNullResponseEntities(response));
     }
 
     @Override
@@ -106,5 +107,17 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
     private String assembleUrl(String resourcePart, String urlParameters) {
         final String nonNullUrlParameters = (urlParameters == null) ? "" : urlParameters;
         return "/1/" + resourcePart + "?key={key}&token={token}" + nonNullUrlParameters;
+    }
+
+    private <T> FetchingResult<T> assembleFetchingResult(List<T> entities) {
+        // TODO: delete this method and use the all-args constructor isntead!
+        final List<URI> failedUrls = new LinkedList<>();
+        final List<URI> visitedUrls = new LinkedList<>();
+        return new FetchingResult<T>(
+                entities,
+                false,
+                failedUrls,
+                visitedUrls
+        );
     }
 }

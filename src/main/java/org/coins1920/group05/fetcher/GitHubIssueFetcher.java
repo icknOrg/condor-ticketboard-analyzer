@@ -10,6 +10,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiFunction;
@@ -58,7 +59,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     @Override
-    public List<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
+    public FetchingResult<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
         // all open tickets:
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
         final List<Issue> openIssuesList = getAllEntitiesWithPagination((u, e) ->
@@ -67,7 +68,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
         // and all closed ones?
         if (!fetchClosedTickets) {
-            return openIssuesList;
+            return assembleFetchingResult(openIssuesList);
 
         } else {
             final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
@@ -75,13 +76,14 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                     rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
             logger.debug("I got " + closedIssuesList.size() + " closed issues!");
 
-            return io.vavr.collection.List
+            final List<Issue> allIssues = io.vavr.collection.List
                     .ofAll(openIssuesList)
                     .appendAll(closedIssuesList)
                     // filter out all PRs, we only want issues: // TODO: do we??
                     // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
                     // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
                     .toJavaList();
+            return assembleFetchingResult(allIssues);
         }
     }
 
@@ -150,7 +152,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                 logger.warn("I couldn't fetch the user for URL: " + user.getUrl());
                 return null;
             }
-            
+
         } catch (Exception e) {
             logger.warn("Something went wrong: ", e);
             return null;
@@ -202,5 +204,17 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         headers.add("user-agent", "Spring RestTemplate");
         headers.set("Authorization", "token " + this.oauthToken);
         return new HttpEntity<>(headers);
+    }
+
+    private <T> FetchingResult<T> assembleFetchingResult(List<T> entities) {
+        // TODO: delete this method and use the all-args constructor isntead!
+        final List<URI> failedUrls = new LinkedList<>();
+        final List<URI> visitedUrls = new LinkedList<>();
+        return new FetchingResult<T>(
+                entities,
+                false,
+                failedUrls,
+                visitedUrls
+        );
     }
 }

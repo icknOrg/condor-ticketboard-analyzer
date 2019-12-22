@@ -1,6 +1,7 @@
 package org.coins1920.group05;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.coins1920.group05.fetcher.FetchingResult;
 import org.coins1920.group05.fetcher.TrelloBoardFetcher;
 import org.coins1920.group05.model.trello.Action;
 import org.coins1920.group05.model.trello.Board;
@@ -107,7 +108,9 @@ public class TrelloFetcherTest {
 
     @Test
     public void testFetchCards() {
-        final List<Card> cards = fetcher.fetchTickets(null, SAMPLE_BOARD_SHORTLINK, false);
+        final FetchingResult<Card> cardFetchingResult = fetcher
+                .fetchTickets(null, SAMPLE_BOARD_SHORTLINK, false);
+        final List<Card> cards = cardFetchingResult.getEntities();
         assertThat(cards, is(not(nullValue())));
         assertThat(cards.size(), is(not(0)));
         logger.info("There is/are " + cards.size() + " card(s)!");

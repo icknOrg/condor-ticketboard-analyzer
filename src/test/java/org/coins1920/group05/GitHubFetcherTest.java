@@ -1,6 +1,7 @@
 package org.coins1920.group05;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import org.coins1920.group05.fetcher.FetchingResult;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
 import org.coins1920.group05.model.github.rest.Issue;
 import org.coins1920.group05.model.github.rest.User;
@@ -62,7 +63,9 @@ public class GitHubFetcherTest {
 
     @Test
     public void testFetchIssues() {
-        final List<Issue> issues = fetcher.fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1, true);
+        final FetchingResult<Issue> issueFetchingResult = fetcher
+                .fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1, true);
+        final List<Issue> issues = issueFetchingResult.getEntities();
         assertThat(issues, is(not(nullValue())));
         logger.info("There is/are " + issues.size() + " issue(s)!");
         assertThat(issues.size(), is(46));

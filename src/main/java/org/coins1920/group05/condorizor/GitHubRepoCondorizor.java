@@ -1,6 +1,7 @@
 package org.coins1920.group05.condorizor;
 
 import org.apache.commons.text.StringEscapeUtils;
+import org.coins1920.group05.fetcher.FetchingResult;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
 import org.coins1920.group05.model.condor.Actor;
 import org.coins1920.group05.model.condor.Edge;
@@ -30,8 +31,8 @@ public class GitHubRepoCondorizor {
     public Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
         // first, fetch all issues of the given repo:
         final boolean fetchClosedTickets = true;
-        final List<Issue> githubIssues = fetcher
-                .fetchTickets(owner, board, fetchClosedTickets);
+        final FetchingResult<Issue> issueFetchingResult = fetcher.fetchTickets(owner, board, fetchClosedTickets);
+        final List<Issue> githubIssues = issueFetchingResult.getEntities();
 
         // fetch all comments and the corresponding users for all issues:
         final List<Pair<Issue, List<Comment>>> comments = githubIssues

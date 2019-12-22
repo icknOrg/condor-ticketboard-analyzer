@@ -36,7 +36,7 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
      */
     List<M> fetchBoardMembers(String owner, String board);
 
-    List<T> fetchTickets(String owner, String board, boolean fetchClosedTickets);
+    FetchingResult<T> fetchTickets(String owner, String board, boolean fetchClosedTickets);
 
     List<A> fetchActionsForTicket(String ticketId);
 

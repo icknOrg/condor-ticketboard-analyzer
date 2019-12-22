@@ -117,6 +117,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     @Override
     public List<User> fetchCommentatorsForTicket(Issue ticket) {
         return fetchCommentsForTicket(ticket)
+                .getEntities()
                 .stream()
                 .filter(Objects::nonNull)
                 .map(Comment::getUser)
@@ -124,19 +125,21 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     @Override
-    public List<Comment> fetchCommentsForTicket(Issue ticket) {
+    public FetchingResult<Comment> fetchCommentsForTicket(Issue ticket) {
         if (ticket.getCommentsUrl() == null || ticket.getCommentsUrl().isEmpty()) {
             logger.warn("  the issue " + ticket.getId() + " has no comments => no comments URL!");
-            return new LinkedList<>();
+            return assembleFetchingResult(new LinkedList<>());
         } else {
             try {
                 final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
-                return getAllEntitiesWithPagination((u, e) ->
+                List<Comment> comments = getAllEntitiesWithPagination((u, e) ->
                         rt.exchange(u, HttpMethod.GET, e, Comment[].class), commentsUrl);
+                return assembleFetchingResult(comments);
+
             } catch (MalformedURLException e) {
                 logger.error("The comments URL ('" + ticket.getCommentsUrl() +
                         "') for ticket " + ticket.getId() + "was malformed!", e);
-                return new LinkedList<>();
+                return assembleFetchingResult(new LinkedList<>());
             }
         }
     }

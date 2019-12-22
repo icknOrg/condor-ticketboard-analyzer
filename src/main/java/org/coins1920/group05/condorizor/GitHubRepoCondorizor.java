@@ -1,5 +1,6 @@
 package org.coins1920.group05.condorizor;
 
+import io.vavr.control.Either;
 import org.apache.commons.text.StringEscapeUtils;
 import org.coins1920.group05.fetcher.FetchingResult;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
@@ -14,6 +15,9 @@ import org.coins1920.group05.util.Pair;
 import org.coins1920.group05.util.TimeFormattingHelper;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -28,16 +32,42 @@ public class GitHubRepoCondorizor {
         this.fetcher = new GitHubIssueFetcher(oauthToken, paginate);
     }
 
-    public Pair<File, File> fetchGitHubIssues(String owner, String board, String outputDir) {
+    /**
+     * Fetches all issues (tickets) from the given GitHub repository. Returns either
+     * a serialized partial result or a pair of Condor (Actor-, Edges-) files.
+     * The partial result can be used to continue fetching at a later point in time.
+     *
+     * @param owner     repo owner
+     * @param board     repo name
+     * @param outputDir folder where results should be persisted
+     * @return either a serialized partial result or a pair of Condor (Actor-, Edges-) files
+     * @throws IOException if persisting to one of the files didn't work
+     */
+    public Either<File, Pair<File, File>> fetchGitHubIssues(String owner, String board, String outputDir) throws IOException {
         // first, fetch all issues of the given repo:
         final boolean fetchClosedTickets = true;
         final FetchingResult<Issue> issueFetchingResult = fetcher.fetchTickets(owner, board, fetchClosedTickets);
+
+        // did we run into a rate limit?
+        if (issueFetchingResult.isRateLimitOccurred()) {
+            return Either.left(persistPartialResultsToDisk(issueFetchingResult, outputDir));
+        }
+
+        // no, then let#s unwrap the issues from the FetchingResult object:
         final List<Issue> githubIssues = issueFetchingResult.getEntities();
 
         // fetch all comments and the corresponding users for all issues:
-        final List<Pair<Issue, List<Comment>>> comments = githubIssues
+        final List<Pair<Issue, FetchingResult<Comment>>> commentsForTicketResults = githubIssues
                 .parallelStream()
                 .map(i -> new Pair<>(i, fetcher.fetchCommentsForTicket(i)))
+                .collect(Collectors.toList());
+
+        // did we run into a rate limit?
+        // TODO: ...
+
+        final List<Pair<Issue, List<Comment>>> comments = commentsForTicketResults
+                .stream()
+                .map(c -> new Pair<>(c.getFirst(), c.getSecond().getEntities()))
                 .collect(Collectors.toList());
 
         // fetch all assignees for all tickets:
@@ -47,7 +77,7 @@ public class GitHubRepoCondorizor {
                 .collect(Collectors.toList());
 
         // aggregate all users, map to Condor Actors/Edges and write to CSV files:
-        return condorizeIssuesAndUsers(githubIssues, comments, outputDir);
+        return Either.right(condorizeIssuesAndUsers(githubIssues, comments, outputDir));
     }
 
     private Pair<File, File> condorizeIssuesAndUsers(
@@ -207,5 +237,20 @@ public class GitHubRepoCondorizor {
                 : githubTimestamp;
 
         return TimeFormattingHelper.githubTimestampToCondorTimestamp(ts);
+    }
+
+    private File persistPartialResultsToDisk(FetchingResult<Issue> issues, String outputDir) throws IOException {
+        final String uuid = UUID.randomUUID().toString();
+        final String fileName = "fetcher-result-" + uuid + ".partial";
+        final File partialResult = new File(outputDir, fileName);
+
+        final ObjectOutputStream outputStream = new ObjectOutputStream(
+                new FileOutputStream(partialResult)
+        );
+        outputStream.writeObject(issues);
+        outputStream.flush();
+        outputStream.close();
+
+        return partialResult;
     }
 }

@@ -93,9 +93,9 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
     }
 
     @Override
-    public List<Comment> fetchCommentsForTicket(Card ticket) {
+    public FetchingResult<Comment> fetchCommentsForTicket(Card ticket) {
         logger.warn("The operation 'fetchAssigneesForTicket()' is not yet supported and will return an empty list!");
-        return new LinkedList<>();
+        return assembleFetchingResult(new LinkedList<>());
     }
 
     @Override

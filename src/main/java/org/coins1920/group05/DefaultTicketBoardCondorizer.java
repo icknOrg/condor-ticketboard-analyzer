@@ -6,11 +6,12 @@ import org.coins1920.group05.fetcher.TicketBoard;
 import org.coins1920.group05.util.Pair;
 
 import java.io.File;
+import java.io.IOException;
 
 public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
 
     @Override
-    public Pair<File, File> ticketBoardToCsvFiles(TicketBoard ticketBoardType, String owner, String board, String outputDir) {
+    public Pair<File, File> ticketBoardToCsvFiles(TicketBoard ticketBoardType, String owner, String board, String outputDir) throws IOException {
         switch (ticketBoardType) {
             case TRELLO:
                 return new TrelloBoardCondorizor().fetchTrelloBoard(board, outputDir);
@@ -20,7 +21,9 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
 
             case GITHUB:
                 final boolean paginate = true;
-                return new GitHubRepoCondorizor(paginate).fetchGitHubIssues(owner, board, outputDir);
+                return new GitHubRepoCondorizor(paginate)
+                        .fetchGitHubIssues(owner, board, outputDir)
+                        .getOrElseThrow(f -> new RuntimeException("Couldn't fetch everything, the partial result is: " + f));
 
             default:
                 throw new IllegalArgumentException("Ticket board type wasn't recognized!");

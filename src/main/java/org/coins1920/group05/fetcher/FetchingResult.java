@@ -3,6 +3,7 @@ package org.coins1920.group05.fetcher;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class FetchingResult<T> {
+public class FetchingResult<T> implements Serializable {
 
     // all entities that could be fetched:
     private List<T> entities;

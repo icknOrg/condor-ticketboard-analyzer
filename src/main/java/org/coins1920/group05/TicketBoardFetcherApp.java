@@ -2,6 +2,8 @@ package org.coins1920.group05;
 
 import org.coins1920.group05.fetcher.TicketBoard;
 
+import java.io.IOException;
+
 /**
  * A ticket board fetcher for Condor.
  */
@@ -9,7 +11,7 @@ public class TicketBoardFetcherApp {
 
     private static final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         if (args.length < 3) {
             throw new IllegalArgumentException("Not enough arguments given!");
         }

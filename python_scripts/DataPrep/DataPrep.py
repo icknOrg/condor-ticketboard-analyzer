@@ -192,6 +192,7 @@ df = pd.DataFrame(columns=['Group_Avg_Messages_Per_Day',
 for dirs in os.listdir(csvFolderPath):
     print(dirs)
     df = processCSV(dirs, df)
+df = df.sort_values(by='Repository_Name', ascending=True)
 df.to_csv(resultPath, sep=',', encoding='utf-8', index=False)
 
 print(1)

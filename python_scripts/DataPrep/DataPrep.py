@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import math
 import os
 
 csvFolderPath = "../../../COIN/4_Repos/Ready_For_Regression/"
@@ -76,6 +77,8 @@ def processCSV(dir, df):
         if index > 0:
             activity.loc[index, 'Activity_Increase'] = activity.loc[index, 0] / activity.loc[index - 1, 0]
     group_activity_increase = round(activity['Activity_Increase'].mean(), 4)
+    if math.isnan(group_activity_increase):
+        group_activity_increase = 1
 
     awvci = pd.read_csv(awvciPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
     awvci['awvci_Increase'] = np.nan
@@ -85,6 +88,8 @@ def processCSV(dir, df):
             if awvci.loc[index - 1, 0] > 0:
                 awvci.loc[index, 'awvci_Increase'] = awvci.loc[index, 0] / awvci.loc[index - 1, 0]
     group_awvci_increase = round(awvci['awvci_Increase'].mean(), 4)
+    if math.isnan(group_awvci_increase):
+        group_awvci_increase = 1
 
     betwCentr = pd.read_csv(betwCentrPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
     betwCentr['betwCentr_Increase'] = np.nan
@@ -94,6 +99,8 @@ def processCSV(dir, df):
             if betwCentr.iloc[index - 1, 1] > 0:
                 betwCentr.loc[index, 'betwCentr_Increase'] = betwCentr.iloc[index, 1] / betwCentr.iloc[index - 1, 1]
     group_betwCentr_increase = round(betwCentr['betwCentr_Increase'].mean(), 4)
+    if math.isnan(group_betwCentr_increase):
+        group_betwCentr_increase = 1
 
     betwOsc = pd.read_csv(betwOscPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
     betwOsc['betwOsc_Increase'] = np.nan
@@ -104,6 +111,8 @@ def processCSV(dir, df):
                 betwOsc.loc[index, 'betwOsc_Increase'] = betwOsc.loc[index, 0] / betwOsc.loc[index - 1, 0]
 
     group_betwOsc_increase = round(betwOsc['betwOsc_Increase'].mean(), 4)
+    if math.isnan(group_betwOsc_increase):
+        group_betwOsc_increase = 1
 
     density = pd.read_csv(densityPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
     density['density_Increase'] = np.nan
@@ -114,6 +123,8 @@ def processCSV(dir, df):
                 density.loc[index, 'density_Increase'] = density.loc[index, 0] / density.loc[index - 1, 0]
 
     group_density_increase = round(density['density_Increase'].mean(), 4)
+    if math.isnan(group_density_increase):
+        group_density_increase = 1
 
     result = df.append({'Group_Avg_Messages_Per_Day': group_messages,
                         'Group_Avg_Sentiment': group_sentiment,

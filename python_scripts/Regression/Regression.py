@@ -15,6 +15,17 @@ plotFolderPath = './Plots/'
 # read csv
 df = pd.read_csv('input.csv', sep=',', encoding='utf-8').drop('Repository_Name', axis=1)
 
+# columns that possibly decrease prediction quality
+badColumns = ['Group_Avg_Influence',
+              'Avg_Betweenness_Osc_Top',
+              'Avg_Influence_Top',
+              'Avg_Influence',
+              'Avg_Influence_Per_Message_Top',
+              'Avg_Influence_Per_Message',
+              'Avg_Contribution_Index_Top',
+              'Avg_Contribution_Index_Oscil_Top']
+df = df.drop(badColumns, axis=1)
+
 # scale (ElasticNet supports normalization as a hyperparameter)
 # scaler = MinMaxScaler()
 # df[['Avg_Degree_Centrality_Top','Group_Betweenness_Centrality','Avg_Betweenness_Osc_Top','Percentage_Connected_Actors',
@@ -51,8 +62,9 @@ for column in X_train:
     plot_X = X_test.loc[:, column]
     fig = plt.figure()
     ax = fig.add_subplot(111)
+    ax.scatter(X_train.loc[:, column], y_train, color='black', alpha=0.2)
     ax.scatter(plot_X, y_test, color='black')
-    ax.scatter(plot_X, y_pred, color='blue')
+    ax.scatter(plot_X, y_pred, color='red')
     ax.set_xlabel(column)
     ax.set_ylabel('Repository Stars divided by Pull Requests')
     ax.set_title('Predictions')

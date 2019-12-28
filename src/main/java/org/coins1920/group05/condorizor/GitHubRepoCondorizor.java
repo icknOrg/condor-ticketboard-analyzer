@@ -1,6 +1,7 @@
 package org.coins1920.group05.condorizor;
 
 import io.vavr.control.Either;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 import org.coins1920.group05.fetcher.FetchingResult;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public class GitHubRepoCondorizor {
 
     private final GitHubIssueFetcher fetcher;
@@ -50,10 +52,12 @@ public class GitHubRepoCondorizor {
 
         // did we run into a rate limit?
         if (issueFetchingResult.isRateLimitOccurred()) {
+            log.warn("A rate limit occurred!");
             return Either.left(persistPartialResultsToDisk(issueFetchingResult, outputDir));
+            // TODO: this should not be a return! rather merge the different FetchingResults together!
         }
 
-        // no, then let#s unwrap the issues from the FetchingResult object:
+        // no, then let's unwrap the issues from the FetchingResult object:
         final List<Issue> githubIssues = issueFetchingResult.getEntities();
 
         // fetch all comments and the corresponding users for all issues:
@@ -92,6 +96,8 @@ public class GitHubRepoCondorizor {
         final List<User> fullBlownUsers = users
                 .parallelStream()
                 .map(fetcher::fetchAllInfosForUser)
+                // we need at least an ID to prevent duplicates:
+                .filter(u -> u.getId() != null && !u.getId().trim().isEmpty())
                 .collect(Collectors.toList());
 
         // rectangularize:

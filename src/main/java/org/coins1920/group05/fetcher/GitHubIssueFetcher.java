@@ -1,24 +1,22 @@
 package org.coins1920.group05.fetcher;
 
+import lombok.extern.slf4j.Slf4j;
 import org.coins1920.group05.model.github.rest.*;
 import org.coins1920.group05.util.RestClientHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event, Comment> {
 
-    private static final Logger logger = LoggerFactory.getLogger(GitHubIssueFetcher.class);
     private static final String GITHUB_ROOT_URI = "https://api.github.com/";
 
     private final RestTemplate rt;
@@ -55,35 +53,33 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     public List<User> fetchBoardMembers(String owner, String board) {
         final String url = "/repos/{owner}/{board}/contributors";
         return getAllEntitiesWithPagination((u, e) ->
-                rt.exchange(u, HttpMethod.GET, e, User[].class, owner, board), url);
+                rt.exchange(u, HttpMethod.GET, e, User[].class, owner, board), url)
+                .getEntities();
     }
 
     @Override
     public FetchingResult<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
         // all open tickets:
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
-        final List<Issue> openIssuesList = getAllEntitiesWithPagination((u, e) ->
+        final FetchingResult<Issue> openIssues = getAllEntitiesWithPagination((u, e) ->
                 rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), openTicketsUrl);
-        logger.debug("I got " + openIssuesList.size() + " issues!");
+        log.debug("I got " + openIssues.getEntities().size() + " issues!");
 
         // and all closed ones?
         if (!fetchClosedTickets) {
-            return assembleFetchingResult(openIssuesList);
+            // no, just the open ones:
+            return openIssues;
 
         } else {
             final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
-            final List<Issue> closedIssuesList = getAllEntitiesWithPagination((u, e) ->
+            final FetchingResult<Issue> closedIssues = getAllEntitiesWithPagination((u, e) ->
                     rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
-            logger.debug("I got " + closedIssuesList.size() + " closed issues!");
+            log.debug("I got " + closedIssues.getEntities().size() + " closed issues!");
 
-            final List<Issue> allIssues = io.vavr.collection.List
-                    .ofAll(openIssuesList)
-                    .appendAll(closedIssuesList)
-                    // filter out all PRs, we only want issues: // TODO: do we??
-                    // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
-                    // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
-                    .toJavaList();
-            return assembleFetchingResult(allIssues);
+            // filter out all PRs, we only want issues: // TODO: do we??
+            // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
+            // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
+            return FetchingResult.union(openIssues, closedIssues);
         }
     }
 
@@ -127,19 +123,18 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     @Override
     public FetchingResult<Comment> fetchCommentsForTicket(Issue ticket) {
         if (ticket.getCommentsUrl() == null || ticket.getCommentsUrl().isEmpty()) {
-            logger.warn("  the issue " + ticket.getId() + " has no comments => no comments URL!");
-            return assembleFetchingResult(new LinkedList<>());
+            log.warn("  the issue " + ticket.getId() + " has no comments => no comments URL!");
+            return new FetchingResult<>();
         } else {
             try {
                 final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
-                List<Comment> comments = getAllEntitiesWithPagination((u, e) ->
+                return getAllEntitiesWithPagination((u, e) ->
                         rt.exchange(u, HttpMethod.GET, e, Comment[].class), commentsUrl);
-                return assembleFetchingResult(comments);
 
             } catch (MalformedURLException e) {
-                logger.error("The comments URL ('" + ticket.getCommentsUrl() +
+                log.error("The comments URL ('" + ticket.getCommentsUrl() +
                         "') for ticket " + ticket.getId() + "was malformed!", e);
-                return assembleFetchingResult(new LinkedList<>());
+                return new FetchingResult<>();
             }
         }
     }
@@ -152,21 +147,22 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
             if (responseEntity.getStatusCode() == HttpStatus.OK) {
                 return responseEntity.getBody();
             } else {
-                logger.warn("I couldn't fetch the user for URL: " + user.getUrl());
+                log.warn("I couldn't fetch the user for URL: " + user.getUrl());
                 return null;
             }
 
         } catch (Exception e) {
-            logger.warn("Something went wrong: ", e);
+            log.warn("Something went wrong: ", e);
             return null;
         }
     }
 
-    private <U> List<U> getAllEntitiesWithPagination(BiFunction<String, HttpEntity<?>, ResponseEntity<U[]>> f, String url) {
+    private <U> FetchingResult<U> getAllEntitiesWithPagination(BiFunction<String, HttpEntity<?>, ResponseEntity<U[]>> f, String url) {
         final HttpEntity<?> entity = httpEntityWithDefaultHeaders();
 
         try {
             final ResponseEntity<U[]> response = f.apply(url, entity);
+            final List<U> responseEntities = RestClientHelper.nonNullResponseEntities(response);
 
             final String paginationLinkKey = "Link";
             if (paginate && response.getHeaders().containsKey(paginationLinkKey)) {
@@ -176,27 +172,56 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                         .splitGithubPaginationLinks(linkUrls);
                 if (linkUrlOptional.isPresent()) {
                     final String linkUrl = linkUrlOptional.get();
-                    logger.debug("Found a link to the next page: " + linkUrl);
+                    log.debug("Found a link to the next page: " + linkUrl);
 
-                    // catch 403 Forbidden exception for pagination requests:
                     try {
-                        return io.vavr.collection.List
-                                .ofAll(RestClientHelper.nonNullResponseEntities(response))
-                                .appendAll(getAllEntitiesWithPagination(f, linkUrl))
-                                .toJavaList();
+                        final FetchingResult<U> fetchingResult = new FetchingResult<>(
+                                responseEntities,
+                                false,
+                                new LinkedList<>(),
+                                io.vavr.collection.List.of(url).toJavaList()
+                        );
+                        return FetchingResult.union(
+                                fetchingResult,
+                                getAllEntitiesWithPagination(f, linkUrl)
+                        );
+
+                        // catch 403 Forbidden exception for pagination requests:
                     } catch (HttpClientErrorException e) {
-                        return RestClientHelper.nonNullResponseEntities(response);
+                        return new FetchingResult<>(
+                                responseEntities,
+                                true,
+                                new LinkedList<>(), // TODO: URL list?
+                                io.vavr.collection.List.of(url).toJavaList() // TODO: URL list?
+                        );
                     }
 
                 } else {
-                    return RestClientHelper.nonNullResponseEntities(response);
+                    // there was no pagination link:
+                    return new FetchingResult<>(
+                            responseEntities,
+                            false,
+                            new LinkedList<>(), // TODO: URL list?
+                            io.vavr.collection.List.of(url).toJavaList() // TODO: URL list?
+                    );
                 }
             } else {
-                return RestClientHelper.nonNullResponseEntities(response);
+                // there was no pagination link header:
+                return new FetchingResult<>(
+                        responseEntities,
+                        false,
+                        new LinkedList<>(), // TODO: URL list?
+                        io.vavr.collection.List.of(url).toJavaList() // TODO: URL list?
+                );
             }
 
         } catch (HttpClientErrorException eo) {
-            return new LinkedList<>();
+            return new FetchingResult<U>(
+                    new LinkedList<>(),
+                    true,
+                    new LinkedList<>(), // TODO: URL list?
+                    io.vavr.collection.List.of(url).toJavaList()
+            );
         }
 
     }
@@ -207,17 +232,5 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         headers.add("user-agent", "Spring RestTemplate");
         headers.set("Authorization", "token " + this.oauthToken);
         return new HttpEntity<>(headers);
-    }
-
-    private <T> FetchingResult<T> assembleFetchingResult(List<T> entities) {
-        // TODO: delete this method and use the all-args constructor isntead!
-        final List<URI> failedUrls = new LinkedList<>();
-        final List<URI> visitedUrls = new LinkedList<>();
-        return new FetchingResult<T>(
-                entities,
-                false,
-                failedUrls,
-                visitedUrls
-        );
     }
 }

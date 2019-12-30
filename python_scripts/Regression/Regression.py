@@ -45,8 +45,8 @@ y_test = test.loc[:, ['Target']]
 
 # create and train model
 parameters = {
-    'alpha': [1, 2, 5, 10],
-    'l1_ratio': [0, 0.25, 0.5, 0.75, 1],
+    'alpha': [0.1,0.25,0.5,0.75,1, 2, 5, 10,25,50,100,200],
+    'l1_ratio': [0,0.1, 0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9, 1],
     'normalize': [True]
 }
 regr = GridSearchCV(estimator=ElasticNet(), param_grid=parameters, n_jobs=-1, cv=5)

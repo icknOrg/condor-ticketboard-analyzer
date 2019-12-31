@@ -149,6 +149,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.2.0</version>
                 <configuration>
                     <finalName>condor-ticketboard-fetcher</finalName>
                     <descriptorRefs>

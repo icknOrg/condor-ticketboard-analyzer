@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.text.StringEscapeUtils;
 import org.coins1920.group05.fetcher.FetchingResult;
 import org.coins1920.group05.fetcher.GitHubIssueFetcher;
+import org.coins1920.group05.fetcher.PartialFetchingResult;
 import org.coins1920.group05.model.condor.Actor;
 import org.coins1920.group05.model.condor.Edge;
 import org.coins1920.group05.model.condor.EdgeType;
@@ -52,8 +53,10 @@ public class GitHubRepoCondorizor {
 
         // did we run into a rate limit?
         if (issueFetchingResult.isRateLimitOccurred()) {
-            log.warn("A rate limit occurred!");
-            return Either.left(persistPartialResultsToDisk(issueFetchingResult, outputDir));
+            log.warn("A rate limit occurred when fetching issues!");
+            final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
+                    = new PartialFetchingResult<>(issueFetchingResult, null);
+            return Either.left(persistPartialResultsToDisk(partialFetchingResult, outputDir));
             // TODO: this should not be a return! rather merge the different FetchingResults together!
         }
 
@@ -67,18 +70,28 @@ public class GitHubRepoCondorizor {
                 .collect(Collectors.toList());
 
         // did we run into a rate limit?
-        // TODO: ...
+        final boolean rateLimitOccurredForComments = commentsForTicketResults
+                .stream()
+                .anyMatch(c -> c.getSecond().isRateLimitOccurred());
+        if (rateLimitOccurredForComments) {
+            log.warn("A rate limit occurred when fetching comments!");
+            final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
+                    = new PartialFetchingResult<>(issueFetchingResult, commentsForTicketResults);
+            return Either.left(persistPartialResultsToDisk(partialFetchingResult, outputDir));
+            // TODO: this should not be a return! rather merge the different FetchingResults together!
+        }
 
+        // no, then let's unwrap the issues from the FetchingResult objects:
         final List<Pair<Issue, List<Comment>>> comments = commentsForTicketResults
                 .stream()
                 .map(c -> new Pair<>(c.getFirst(), c.getSecond().getEntities()))
                 .collect(Collectors.toList());
 
         // fetch all assignees for all tickets:
-        final List<Pair<Issue, List<User>>> assignees = githubIssues
-                .parallelStream()
-                .map(i -> new Pair<>(i, fetcher.fetchAssigneesForTicket(i)))
-                .collect(Collectors.toList());
+//        final List<Pair<Issue, List<User>>> assignees = githubIssues
+//                .parallelStream()
+//                .map(i -> new Pair<>(i, fetcher.fetchAssigneesForTicket(i)))
+//                .collect(Collectors.toList());
 
         // aggregate all users, map to Condor Actors/Edges and write to CSV files:
         return Either.right(condorizeIssuesAndUsers(githubIssues, comments, outputDir));
@@ -245,7 +258,8 @@ public class GitHubRepoCondorizor {
         return TimeFormattingHelper.githubTimestampToCondorTimestamp(ts);
     }
 
-    private File persistPartialResultsToDisk(FetchingResult<Issue> issues, String outputDir) throws IOException {
+    private File persistPartialResultsToDisk(PartialFetchingResult<Issue, User, Comment> partialFetchingResult,
+                                             String outputDir) throws IOException {
         final String uuid = UUID.randomUUID().toString();
         final String fileName = "fetcher-result-" + uuid + ".partial";
         final File partialResult = new File(outputDir, fileName);
@@ -253,7 +267,7 @@ public class GitHubRepoCondorizor {
         final ObjectOutputStream outputStream = new ObjectOutputStream(
                 new FileOutputStream(partialResult)
         );
-        outputStream.writeObject(issues);
+        outputStream.writeObject(partialFetchingResult);
         outputStream.flush();
         outputStream.close();
 

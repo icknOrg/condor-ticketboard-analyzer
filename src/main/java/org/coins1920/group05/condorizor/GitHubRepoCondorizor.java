@@ -14,12 +14,11 @@ import org.coins1920.group05.model.github.rest.Comment;
 import org.coins1920.group05.model.github.rest.Issue;
 import org.coins1920.group05.model.github.rest.User;
 import org.coins1920.group05.util.Pair;
+import org.coins1920.group05.util.PersistenceHelper;
 import org.coins1920.group05.util.TimeFormattingHelper;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -47,6 +46,14 @@ public class GitHubRepoCondorizor {
      * @throws IOException if persisting to one of the files didn't work
      */
     public Either<File, Pair<File, File>> fetchGitHubIssues(String owner, String board, String outputDir) throws IOException {
+        // check if there already exists a partial result in the given output directory:
+        boolean partialResultExists = PersistenceHelper.checkForPartialResult(owner, board, outputDir);
+        if (partialResultExists) {
+            PartialFetchingResult<Issue, User, Comment> partialFetchingResult = PersistenceHelper
+                    .getPersistedPartialResult(owner, board, outputDir);
+            // TODO: ...
+        }
+
         // first, fetch all issues of the given repo:
         final boolean fetchClosedTickets = true;
         final FetchingResult<Issue> issueFetchingResult = fetcher.fetchTickets(owner, board, fetchClosedTickets);
@@ -56,7 +63,7 @@ public class GitHubRepoCondorizor {
             log.warn("A rate limit occurred when fetching issues!");
             final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
                     = new PartialFetchingResult<>(issueFetchingResult, null);
-            return Either.left(persistPartialResultsToDisk(partialFetchingResult, outputDir));
+            return Either.left(PersistenceHelper.persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir));
             // TODO: this should not be a return! rather merge the different FetchingResults together!
         }
 
@@ -77,7 +84,7 @@ public class GitHubRepoCondorizor {
             log.warn("A rate limit occurred when fetching comments!");
             final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
                     = new PartialFetchingResult<>(issueFetchingResult, commentsForTicketResults);
-            return Either.left(persistPartialResultsToDisk(partialFetchingResult, outputDir));
+            return Either.left(PersistenceHelper.persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir));
             // TODO: this should not be a return! rather merge the different FetchingResults together!
         }
 
@@ -256,21 +263,5 @@ public class GitHubRepoCondorizor {
                 : githubTimestamp;
 
         return TimeFormattingHelper.githubTimestampToCondorTimestamp(ts);
-    }
-
-    private File persistPartialResultsToDisk(PartialFetchingResult<Issue, User, Comment> partialFetchingResult,
-                                             String outputDir) throws IOException {
-        final String uuid = UUID.randomUUID().toString();
-        final String fileName = "fetcher-result-" + uuid + ".partial";
-        final File partialResult = new File(outputDir, fileName);
-
-        final ObjectOutputStream outputStream = new ObjectOutputStream(
-                new FileOutputStream(partialResult)
-        );
-        outputStream.writeObject(partialFetchingResult);
-        outputStream.flush();
-        outputStream.close();
-
-        return partialResult;
     }
 }

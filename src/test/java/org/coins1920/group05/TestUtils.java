@@ -1,16 +1,14 @@
 package org.coins1920.group05;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.net.URL;
 import java.util.stream.Collectors;
 
 public class TestUtils {
 
     public static final String APPLICATION_JSON = "application/json";
 
-    public static String readFromResourceFile(String fileName, Class clazz) {
+    public static <T> String readFromResourceFile(String fileName, Class<T> clazz) {
         try {
             try (InputStream inputStream = clazz
                     .getClassLoader()
@@ -29,6 +27,18 @@ public class TestUtils {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static <T> File getFileFromResourceFolder(String fileName, Class<T> clazz) throws FileNotFoundException {
+        final URL resource = clazz
+                .getClassLoader()
+                .getResource(fileName);
+
+        if (resource != null) {
+            return new File(resource.getFile());
+        } else {
+            throw new FileNotFoundException("Could not find: " + fileName);
         }
     }
 }

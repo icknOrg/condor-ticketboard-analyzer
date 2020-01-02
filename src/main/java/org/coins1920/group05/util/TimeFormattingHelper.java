@@ -1,6 +1,7 @@
 package org.coins1920.group05.util;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -45,7 +46,7 @@ public class TimeFormattingHelper {
     }
 
     /**
-     * Return NOW as a ISO 8601-formatted, UTC-based timestamp, just like
+     * Return NOW as an ISO 8601-formatted, UTC-based timestamp, just like
      * GitHub, e.g. "2019-12-07T14:11:51Z".
      *
      * @return ISO 8601 now
@@ -59,6 +60,20 @@ public class TimeFormattingHelper {
                 .ISO_INSTANT
                 .withZone(ZoneId.of(DEFAULT_ZONE_ID))
                 .format(now);
+    }
+
+    /**
+     * Parses an ISO 8601-formatted timestamp (e.g. "2019-12-07T14:11:51Z")
+     * and returns an Instant.
+     *
+     * @param timestamp the ISO 8601-formatted timestamp
+     * @return the corresponding Instant
+     */
+    public static Instant parseIso8601Timestamp(String timestamp) {
+        return LocalDateTime
+                .parse(timestamp, DateTimeFormatter.ISO_DATE_TIME)
+                .atZone(ZoneId.of(DEFAULT_ZONE_ID))
+                .toInstant();
     }
 
     public static String unixEpoch() {

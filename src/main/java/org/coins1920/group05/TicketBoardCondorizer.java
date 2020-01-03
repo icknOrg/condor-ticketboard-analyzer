@@ -7,5 +7,5 @@ import java.io.File;
 import java.io.IOException;
 
 public interface TicketBoardCondorizer {
-    Pair<File, File> ticketBoardToCsvFiles(TicketBoard ticketBoardType, String owner, String board, String outputDir) throws IOException;
+    Pair<File, File> ticketBoardToCsvFiles(TicketBoard ticketBoardType, String owner, String board, String outputDir) throws IOException, ClassNotFoundException;
 }

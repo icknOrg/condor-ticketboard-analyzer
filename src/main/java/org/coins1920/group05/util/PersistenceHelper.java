@@ -6,10 +6,7 @@ import org.coins1920.group05.model.github.rest.Comment;
 import org.coins1920.group05.model.github.rest.Issue;
 import org.coins1920.group05.model.github.rest.User;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,35 +39,43 @@ public class PersistenceHelper {
         return partialResult;
     }
 
-    public static synchronized PartialFetchingResult<Issue, User, Comment> getPersistedPartialResult(
-            String owner, String board, String outputDir) throws IOException {
+    public static PartialFetchingResult<Issue, User, Comment> readPersistedPartialResult(
+            String owner, String board, String outputDir) throws IOException, ClassNotFoundException {
         final String fileNamePrefix = owner + "-" + board + "-";
-        final List<Path> matchingFiles = Files
-                .walk(Paths.get(outputDir))
-                .map(Path::getFileName)
-                .filter(p -> p.endsWith(PARTIAL_FILE_FILENAME_POSTFIX))
-                .filter(p -> p.startsWith(fileNamePrefix))
-                .collect(Collectors.toList());
+        final List<Path> matchingFiles = getMatchingFiles(fileNamePrefix, outputDir);
 
-        if (matchingFiles.size() == 1) {
-            return unserialize(matchingFiles.get(0));
-        } else {
-            // pick the file with the newest timestamp:
-            final Path newestPartial = matchingFiles
-                    .stream()
-                    .map(p -> new Pair<>(computeTsFromPartialResultFileName(p), p))
-                    .sorted(Comparator.comparingLong(Pair::getFirst))
-                    .findFirst()
-                    .orElseThrow(() -> new IllegalStateException(""))
-                    .getSecond();
-
-            return unserialize(newestPartial);
+        switch (matchingFiles.size()) {
+            case 0:
+                throw new IllegalStateException("There are no matching files in '" + outputDir + "'!");
+            case 1:
+                return deserialize(matchingFiles.get(0));
+            default:
+                log.debug("There are multiple files matching '" + owner + "', '" + board + "':");
+                return pickNewestPartialResultFile(matchingFiles);
         }
     }
 
-    public static PartialFetchingResult<Issue, User, Comment> unserialize(Path path) {
-        // TODO: new ObjectInputStream() ...
-        return null;
+    private static PartialFetchingResult<Issue, User, Comment> pickNewestPartialResultFile(
+            List<Path> matchingFiles) throws IOException, ClassNotFoundException {
+        matchingFiles.forEach(mf -> log.debug(" " + mf.getFileName()));
+        // pick the file with the newest timestamp:
+        final Path newestPartial = matchingFiles
+                .stream()
+                .map(p -> new Pair<>(computeTsFromPartialResultFileName(p), p))
+                .sorted(Comparator.comparingLong(Pair::getFirst))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException(""))
+                .getSecond();
+
+        return deserialize(newestPartial);
+    }
+
+    @SuppressWarnings("unchecked") // TODO: in Java 8, there's no chance to type-safely cast generic wrappers... :(
+    public static PartialFetchingResult<Issue, User, Comment> deserialize(Path path) throws IOException, ClassNotFoundException {
+        final FileInputStream fileInputStream = new FileInputStream(path.toFile());
+        final ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
+        final Object object = objectInputStream.readObject();
+        return (PartialFetchingResult<Issue, User, Comment>) object;
     }
 
     public static Long computeTsFromPartialResultFileName(Path path) {
@@ -106,14 +111,17 @@ public class PersistenceHelper {
         final String fileNamePrefix = owner + "-" + board + "-";
 
         log.debug("Looking for '" + fileNamePrefix + "*' in " + outputDir);
-        final List<Path> matchingFiles = Files
-                .walk(Paths.get(outputDir))
-                .map(Path::getFileName)
-                .filter(p -> p.toString().endsWith(PARTIAL_FILE_FILENAME_POSTFIX))
-                .filter(p -> p.toString().startsWith(fileNamePrefix))
-                .collect(Collectors.toList());
+        final List<Path> matchingFiles = getMatchingFiles(fileNamePrefix, outputDir);
 
         matchingFiles.forEach(f -> log.debug("Found matching file: " + f));
         return matchingFiles.size() > 0;
+    }
+
+    public static List<Path> getMatchingFiles(String fileNamePrefix, String outputDir) throws IOException {
+        return Files
+                .walk(Paths.get(outputDir))
+                .filter(p -> p.getFileName().toString().endsWith(PARTIAL_FILE_FILENAME_POSTFIX))
+                .filter(p -> p.getFileName().toString().startsWith(fileNamePrefix))
+                .collect(Collectors.toList());
     }
 }

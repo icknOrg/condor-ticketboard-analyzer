@@ -11,7 +11,7 @@ public class TicketBoardFetcherApp {
 
     private static final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         if (args.length < 3) {
             throw new IllegalArgumentException("Not enough arguments given!");
         }

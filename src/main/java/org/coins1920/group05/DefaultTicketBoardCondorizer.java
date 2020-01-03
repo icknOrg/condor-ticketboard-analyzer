@@ -11,7 +11,12 @@ import java.io.IOException;
 public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
 
     @Override
-    public Pair<File, File> ticketBoardToCsvFiles(TicketBoard ticketBoardType, String owner, String board, String outputDir) throws IOException {
+    public Pair<File, File> ticketBoardToCsvFiles(
+            TicketBoard ticketBoardType,
+            String owner,
+            String board,
+            String outputDir
+    ) throws IOException, ClassNotFoundException {
         switch (ticketBoardType) {
             case TRELLO:
                 return new TrelloBoardCondorizor().fetchTrelloBoard(board, outputDir);
@@ -23,7 +28,9 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                 final boolean paginate = true;
                 return new GitHubRepoCondorizor(paginate)
                         .fetchGitHubIssues(owner, board, outputDir)
-                        .getOrElseThrow(f -> new RuntimeException("Couldn't fetch everything, the partial result is: " + f));
+                        .getOrElseThrow(f -> new RuntimeException(
+                                "Couldn't fetch everything, the partial result is: " + f
+                        ));
 
             default:
                 throw new IllegalArgumentException("Ticket board type wasn't recognized!");

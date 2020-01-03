@@ -45,12 +45,12 @@ public class GitHubRepoCondorizor {
      * @return either a serialized partial result or a pair of Condor (Actor-, Edges-) files
      * @throws IOException if persisting to one of the files didn't work
      */
-    public Either<File, Pair<File, File>> fetchGitHubIssues(String owner, String board, String outputDir) throws IOException {
+    public Either<File, Pair<File, File>> fetchGitHubIssues(String owner, String board, String outputDir) throws IOException, ClassNotFoundException {
         // check if there already exists a partial result in the given output directory:
         boolean partialResultExists = PersistenceHelper.checkForPartialResult(owner, board, outputDir);
         if (partialResultExists) {
             PartialFetchingResult<Issue, User, Comment> partialFetchingResult = PersistenceHelper
-                    .getPersistedPartialResult(owner, board, outputDir);
+                    .readPersistedPartialResult(owner, board, outputDir);
             // TODO: ...
         }
 

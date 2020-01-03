@@ -18,7 +18,7 @@ public class AppTest {
 
     @Test
     @Ignore
-    public void testTrelloBoardFetching() throws IOException {
+    public void testTrelloBoardFetching() throws IOException, ClassNotFoundException {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final String boardId = "lgaJQMYA";
         final String[] args = {"trello", boardId, testFolder.getAbsolutePath()};
@@ -27,7 +27,7 @@ public class AppTest {
 
     @Test
     @Ignore
-    public void testGitHubRepoFetching() throws IOException {
+    public void testGitHubRepoFetching() throws IOException, ClassNotFoundException {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final String owner = "linuxmint";
         final String repo = "cinnamon-spices-extensions";

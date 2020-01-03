@@ -20,7 +20,7 @@ public class CondorizerTest {
 
     @Test
     @Ignore
-    public void testTrelloBoardFetching() throws IOException {
+    public void testTrelloBoardFetching() throws IOException, ClassNotFoundException {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();
         final Pair<File, File> csvFiles = condorizer.ticketBoardToCsvFiles(
@@ -37,7 +37,7 @@ public class CondorizerTest {
 
     @Test
     @Ignore
-    public void testGitHubRepoFetching() throws IOException {
+    public void testGitHubRepoFetching() throws IOException, ClassNotFoundException {
         final File testFolder = temporaryFolder.newFolder("test-condor-csv-files");
         final TicketBoardCondorizer condorizer = new DefaultTicketBoardCondorizer();
         final Pair<File, File> csvFiles = condorizer.ticketBoardToCsvFiles(

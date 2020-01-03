@@ -7,7 +7,6 @@ import org.coins1920.group05.model.github.rest.Issue;
 import org.coins1920.group05.model.github.rest.User;
 import org.coins1920.group05.util.Pair;
 import org.coins1920.group05.util.PersistenceHelper;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -15,8 +14,10 @@ import org.junit.rules.TemporaryFolder;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -33,6 +34,7 @@ public class PersistenceHelperTest {
     private final String testPartialResultFileName1 = "linuxmint-cinnamon-spices-applets-2019-12-07T14:11:51Z.partial";
     private final String testPartialResultFileName2 = "linuxmint-cinnamon-spices-applets-2020-01-02T14:11:51Z.partial";
 
+
     @Test
     public void testPartialResultDetection() throws IOException {
         final File partialResultFile = TestUtils
@@ -45,6 +47,7 @@ public class PersistenceHelperTest {
         boolean partialResultExists = PersistenceHelper.checkForPartialResult(owner, board, outputDir);
         assertThat(partialResultExists, is(true));
     }
+
 
     @Test
     public void testTsComputationFromPartialResultFileName() throws FileNotFoundException {
@@ -63,6 +66,7 @@ public class PersistenceHelperTest {
         assertThat(ts2, is(greaterThan(ts1)));
     }
 
+
     @Test
     public void testPersistedPartialResultReading() throws IOException, ClassNotFoundException {
         final File partialResultFile2 = TestUtils
@@ -77,22 +81,38 @@ public class PersistenceHelperTest {
         assertThat(partialResult, is(not(nullValue())));
 
         assertThat(partialResult.getIssueFetchingResult(), is(not(nullValue())));
-        System.out.println("  CommentsFetchingResults().size = " + partialResult.getIssueFetchingResult().getEntities().size());
+        assertThat(partialResult.getIssueFetchingResult().getEntities(), is(not(nullValue())));
+        assertThat(partialResult.getIssueFetchingResult().getEntities().size(), is(2));
+
         assertThat(partialResult.getCommentsFetchingResults(), is(not(nullValue())));
-        System.out.println("  CommentsFetchingResults().size = " + partialResult.getCommentsFetchingResults().size());
+        assertThat(partialResult.getCommentsFetchingResults().size(), is(2));
     }
 
+
     @Test
-    @Ignore
-    public void testPersistPartialResult() throws IOException {
+    public void testPersistAndReadPartialResult() throws IOException, ClassNotFoundException {
         final File folder = temporaryFolder.newFolder();
         final String outputDir = folder.getAbsolutePath();
         final PartialFetchingResult<Issue, User, Comment> partialFetchingResult = testResult();
 
+        // persist the test data to disc:
         final File file = PersistenceHelper
                 .persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir);
         assertThat(file, is(not(nullValue())));
+
+        // read it from disc again:
+        final PartialFetchingResult<Issue, User, Comment> partialResult = PersistenceHelper
+                .readPersistedPartialResult(owner, board, outputDir);
+        assertThat(partialResult, is(not(nullValue())));
+
+        assertThat(partialResult.getIssueFetchingResult(), is(not(nullValue())));
+        assertThat(partialResult.getIssueFetchingResult().getEntities(), is(not(nullValue())));
+        assertThat(partialResult.getIssueFetchingResult().getEntities().size(), is(2));
+
+        assertThat(partialResult.getCommentsFetchingResults(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().size(), is(2));
     }
+
 
     private PartialFetchingResult<Issue, User, Comment> testResult() {
         final List<Issue> issues = testIssues();
@@ -108,8 +128,16 @@ public class PersistenceHelperTest {
     }
 
     private FetchingResult<Comment> getTestCommentForIssue(Issue issue) {
-        // TODO: create comments...
-        return null;
+        final FetchingResult<Comment> commentFetchingResult1 = new FetchingResult<>();
+        final Comment comment11 = new Comment();
+        comment11.setBody("Bla blubb bla");
+        commentFetchingResult1.getEntities().add(comment11);
+
+        final Map<String, FetchingResult<Comment>> issueToCommentResult = new HashMap<>();
+        issueToCommentResult.put("12345", commentFetchingResult1);
+        // TODO: add more/different ones!
+
+        return issueToCommentResult.get(issue.getNumber());
     }
 
     private List<Issue> testIssues() {

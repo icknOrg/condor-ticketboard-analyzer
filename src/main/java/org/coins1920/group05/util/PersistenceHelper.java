@@ -62,11 +62,11 @@ public class PersistenceHelper {
         final Path newestPartial = matchingFiles
                 .stream()
                 .map(p -> new Pair<>(computeTsFromPartialResultFileName(p), p))
-                .sorted(Comparator.comparingLong(Pair::getFirst))
-                .findFirst()
+                .max(Comparator.comparingLong(Pair::getFirst))
                 .orElseThrow(() -> new IllegalStateException(""))
                 .getSecond();
 
+        log.debug("I picked the newest one: " + newestPartial.getFileName().toString());
         return deserialize(newestPartial);
     }
 

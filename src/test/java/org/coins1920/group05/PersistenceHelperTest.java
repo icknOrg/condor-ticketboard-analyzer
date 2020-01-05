@@ -118,12 +118,12 @@ public class PersistenceHelperTest {
         final List<Issue> issues = testIssues();
         final FetchingResult<Issue> issueFetchingResult = new FetchingResult<>(issues);
         final List<Pair<Issue, FetchingResult<Comment>>> commentsFetchingResults = testComments(issues);
-        return new PartialFetchingResult<Issue, User, Comment>(issueFetchingResult, commentsFetchingResults);
+        return new PartialFetchingResult<>(issueFetchingResult, commentsFetchingResults);
     }
 
     private List<Pair<Issue, FetchingResult<Comment>>> testComments(List<Issue> issues) {
         return issues.stream()
-                .map(i -> new Pair<Issue, FetchingResult<Comment>>(i, getTestCommentForIssue(i)))
+                .map(i -> new Pair<>(i, getTestCommentForIssue(i)))
                 .collect(Collectors.toList());
     }
 

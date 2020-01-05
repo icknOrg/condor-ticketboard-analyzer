@@ -58,7 +58,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     @Override
-    public FetchingResult<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
+    public FetchingResult<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls, List<String> failedUrls) {
         // all open tickets:
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
         final FetchingResult<Issue> openIssues = getAllEntitiesWithPagination((u, e) ->

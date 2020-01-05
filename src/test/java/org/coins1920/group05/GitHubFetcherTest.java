@@ -11,6 +11,7 @@ import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,7 +65,8 @@ public class GitHubFetcherTest {
     @Test
     public void testFetchIssues() {
         final FetchingResult<Issue> issueFetchingResult = fetcher
-                .fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1, true);
+                .fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1,
+                        true, new LinkedList<>(), new LinkedList<>());
         final List<Issue> issues = issueFetchingResult.getEntities();
         assertThat(issues, is(not(nullValue())));
         logger.info("There is/are " + issues.size() + " issue(s)!");

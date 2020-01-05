@@ -11,6 +11,7 @@ import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -109,7 +110,8 @@ public class TrelloFetcherTest {
     @Test
     public void testFetchCards() {
         final FetchingResult<Card> cardFetchingResult = fetcher
-                .fetchTickets(null, SAMPLE_BOARD_SHORTLINK, false);
+                .fetchTickets(null, SAMPLE_BOARD_SHORTLINK,
+                        false, new LinkedList<>(), new LinkedList<>());
         final List<Card> cards = cardFetchingResult.getEntities();
         assertThat(cards, is(not(nullValue())));
         assertThat(cards.size(), is(not(0)));

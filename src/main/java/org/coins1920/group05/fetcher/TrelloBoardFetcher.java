@@ -58,7 +58,7 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
     }
 
     @Override
-    public FetchingResult<Card> fetchTickets(String owner, String board, boolean fetchClosedTickets) {
+    public FetchingResult<Card> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls, List<String> failedUrls) {
         final String url = assembleUrl("boards/{board}/cards", null);
         final ResponseEntity<Card[]> response = rt.getForEntity(url, Card[].class, board, key, token);
         return new FetchingResult<>(RestClientHelper.nonNullResponseEntities(response));

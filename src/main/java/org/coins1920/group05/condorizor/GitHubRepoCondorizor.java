@@ -39,36 +39,56 @@ public class GitHubRepoCondorizor {
      * a serialized partial result or a pair of Condor (Actor-, Edges-) files.
      * The partial result can be used to continue fetching at a later point in time.
      *
-     * @param owner     repo owner
-     * @param board     repo name
-     * @param outputDir folder where results should be persisted
+     * @param owner              repo owner
+     * @param board              repo name
+     * @param fetchClosedTickets whether to fetch closed tickets as well or not
+     * @param outputDir          folder where results should be persisted
      * @return either a serialized partial result or a pair of Condor (Actor-, Edges-) files
      * @throws IOException if persisting to one of the files didn't work
      */
-    public Either<File, Pair<File, File>> fetchGitHubIssues(String owner, String board, String outputDir) throws IOException, ClassNotFoundException {
+    public Either<File, Pair<File, File>> fetchGitHubIssues(
+            String owner, String board, boolean fetchClosedTickets, String outputDir) throws IOException, ClassNotFoundException {
         // check if there already exists a partial result in the given output directory:
-        boolean partialResultExists = PersistenceHelper.checkForPartialResult(owner, board, outputDir);
-        if (partialResultExists) {
-            PartialFetchingResult<Issue, User, Comment> partialFetchingResult = PersistenceHelper
+        if (PersistenceHelper.checkForPartialResult(owner, board, outputDir)) {
+            final PartialFetchingResult<Issue, User, Comment> partialFetchingResult = PersistenceHelper
                     .readPersistedPartialResult(owner, board, outputDir);
-            // TODO: ...
-        }
+            log.debug("There are partial results!");
+            final FetchingResult<Issue> issueFetchingResult = partialFetchingResult.getIssueFetchingResult();
+            final List<Pair<Issue, FetchingResult<Comment>>> commentsFetchingResults = partialFetchingResult.getCommentsFetchingResults();
+            // TODO: add commentsFetchingResults to method signature below:
+            return fetchEverything(owner, board, fetchClosedTickets, outputDir, issueFetchingResult);
 
+        } else {
+            return fetchEverything(owner, board, fetchClosedTickets, outputDir, null);
+        }
+    }
+
+    private Either<File, Pair<File, File>> fetchEverything(
+            String owner, String board, boolean fetchClosedTickets,
+            String outputDir, FetchingResult<Issue> formerIssueFetchingResult) throws IOException {
         // first, fetch all issues of the given repo:
-        final boolean fetchClosedTickets = true;
-        final FetchingResult<Issue> issueFetchingResult = fetcher.fetchTickets(owner, board, fetchClosedTickets);
+        final FetchingResult<Issue> issueFetchingResult;
+        if (formerIssueFetchingResult != null) {
+            issueFetchingResult = fetcher.fetchTickets(
+                    owner, board, fetchClosedTickets,
+                    formerIssueFetchingResult.getVisitedUrls(), formerIssueFetchingResult.getFailedUrls());
+        } else {
+            issueFetchingResult = fetcher.fetchTickets(
+                    owner, board, fetchClosedTickets,
+                    null, null);
+        }
 
         // did we run into a rate limit?
         if (issueFetchingResult.isRateLimitOccurred()) {
             log.warn("A rate limit occurred when fetching issues!");
-            final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
-                    = new PartialFetchingResult<>(issueFetchingResult, null);
-            return Either.left(PersistenceHelper.persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir));
-            // TODO: this should not be a return! rather merge the different FetchingResults together!
+//            partialFetchingResults.add(new PartialFetchingResult<>(issueFetchingResult, null));
         }
 
         // no, then let's unwrap the issues from the FetchingResult object:
         final List<Issue> githubIssues = issueFetchingResult.getEntities();
+
+        // TODO: old and new issues!
+        // TODO: pass the old comments to the fetchComments() function:
 
         // fetch all comments and the corresponding users for all issues:
         final List<Pair<Issue, FetchingResult<Comment>>> commentsForTicketResults = githubIssues
@@ -82,10 +102,7 @@ public class GitHubRepoCondorizor {
                 .anyMatch(c -> c.getSecond().isRateLimitOccurred());
         if (rateLimitOccurredForComments) {
             log.warn("A rate limit occurred when fetching comments!");
-            final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
-                    = new PartialFetchingResult<>(issueFetchingResult, commentsForTicketResults);
-            return Either.left(PersistenceHelper.persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir));
-            // TODO: this should not be a return! rather merge the different FetchingResults together!
+//            partialFetchingResults.add(new PartialFetchingResult<>(issueFetchingResult, commentsForTicketResults));
         }
 
         // no, then let's unwrap the issues from the FetchingResult objects:
@@ -94,14 +111,20 @@ public class GitHubRepoCondorizor {
                 .map(c -> new Pair<>(c.getFirst(), c.getSecond().getEntities()))
                 .collect(Collectors.toList());
 
-        // fetch all assignees for all tickets:
+        // TODO : fetch all assignees for all tickets:
 //        final List<Pair<Issue, List<User>>> assignees = githubIssues
 //                .parallelStream()
 //                .map(i -> new Pair<>(i, fetcher.fetchAssigneesForTicket(i)))
 //                .collect(Collectors.toList());
 
-        // aggregate all users, map to Condor Actors/Edges and write to CSV files:
-        return Either.right(condorizeIssuesAndUsers(githubIssues, comments, outputDir));
+        if (issueFetchingResult.isRateLimitOccurred() || rateLimitOccurredForComments) {
+            final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
+                    = new PartialFetchingResult<>(issueFetchingResult, commentsForTicketResults);
+            return Either.left(PersistenceHelper.persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir));
+        } else {
+            // aggregate all users, map to Condor Actors/Edges and write to CSV files:
+            return Either.right(condorizeIssuesAndUsers(githubIssues, comments, outputDir));
+        }
     }
 
     private Pair<File, File> condorizeIssuesAndUsers(

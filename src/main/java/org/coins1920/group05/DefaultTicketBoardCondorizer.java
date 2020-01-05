@@ -26,8 +26,9 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
 
             case GITHUB:
                 final boolean paginate = true;
+                final boolean fetchClosedTickets = true;
                 return new GitHubRepoCondorizor(paginate)
-                        .fetchGitHubIssues(owner, board, outputDir)
+                        .fetchGitHubIssues(owner, board, fetchClosedTickets, outputDir)
                         .getOrElseThrow(f -> new RuntimeException(
                                 "Couldn't fetch everything, the partial result is: " + f
                         ));
@@ -36,5 +37,4 @@ public class DefaultTicketBoardCondorizer implements TicketBoardCondorizer {
                 throw new IllegalArgumentException("Ticket board type wasn't recognized!");
         }
     }
-
 }

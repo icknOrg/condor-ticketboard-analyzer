@@ -19,6 +19,7 @@ import org.coins1920.group05.util.TimeFormattingHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
@@ -61,7 +62,8 @@ public class GitHubRepoCondorizor {
                     .readPersistedPartialResult(owner, board, outputDir);
             log.debug("There are partial results!");
             final FetchingResult<Issue> issueFetchingResult = partialFetchingResult.getIssueFetchingResult();
-            final List<Pair<Issue, FetchingResult<Comment>>> commentsFetchingResults = partialFetchingResult.getCommentsFetchingResults();
+            final List<Pair<Issue, FetchingResult<Comment>>> commentsFetchingResults =
+                    partialFetchingResult.getCommentsFetchingResults();
             return fetchEverything(owner, board, fetchClosedTickets, outputDir, issueFetchingResult, commentsFetchingResults);
 
         } else {
@@ -72,18 +74,12 @@ public class GitHubRepoCondorizor {
     private Either<File, Pair<File, File>> fetchEverything(
             String owner, String board, boolean fetchClosedTickets, String outputDir,
             FetchingResult<Issue> formerIssueFetchingResult,
-            List<Pair<Issue, FetchingResult<Comment>>> commentsFetchingResults) throws IOException {
+            List<Pair<Issue, FetchingResult<Comment>>> formerCommentsFetchingResults) throws IOException {
         // first, fetch all issues of the given repo:
-        final FetchingResult<Issue> issueFetchingResult;
-        if (formerIssueFetchingResult != null) {
-            issueFetchingResult = fetcher.fetchTickets(
-                    owner, board, fetchClosedTickets,
-                    formerIssueFetchingResult.getVisitedUrls(), formerIssueFetchingResult.getFailedUrls());
-        } else {
-            issueFetchingResult = fetcher.fetchTickets(
-                    owner, board, fetchClosedTickets,
-                    new LinkedList<>(), new LinkedList<>());
-        }
+        final FetchingResult<Issue> issueFetchingResult = fetcher
+                .fetchTickets(owner, board, fetchClosedTickets,
+                        (formerIssueFetchingResult != null && formerIssueFetchingResult.getVisitedUrls() != null)
+                                ? formerIssueFetchingResult.getVisitedUrls() : new LinkedList<>());
 
         // did we run into a rate limit?
         final boolean rateLimitOccurredForIssues = issueFetchingResult.isRateLimitOccurred();
@@ -100,10 +96,21 @@ public class GitHubRepoCondorizor {
                 issueFetchingResult
         );
 
+        // compute all visited comment-URLs into a single list:
+        final List<String> visitedCommentUrls = (formerCommentsFetchingResults != null)
+                ? formerCommentsFetchingResults
+                .stream()
+                .map(cfr -> cfr
+                        .getSecond()
+                        .getVisitedUrls())
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList())
+                : new LinkedList<>();
+
         // fetch all comments and the corresponding users for all issues:
         final List<Pair<Issue, FetchingResult<Comment>>> commentsForTicketResults = githubIssues
                 .parallelStream()
-                .map(i -> new Pair<>(i, fetcher.fetchCommentsForTicket(i))) // TODO: pass the old comments to the fetchComments() function!
+                .map(i -> new Pair<>(i, fetcher.fetchCommentsForTicket(i, visitedCommentUrls)))
                 .collect(Collectors.toList());
 
         // did we run into a rate limit?
@@ -126,7 +133,27 @@ public class GitHubRepoCondorizor {
 //                .map(i -> new Pair<>(i, fetcher.fetchAssigneesForTicket(i)))
 //                .collect(Collectors.toList());
 
-        // TODO: re-try fetching all the failed URLs (from both issues and comments)!
+
+        // re-try fetching the failed issu URLs:
+        if (formerIssueFetchingResult != null && formerIssueFetchingResult.getFailedUrls() != null) {
+            // combine the old and newly visited URLs:
+            List<String> visitedIssueUrls = io.vavr.collection.List
+                    .ofAll((formerIssueFetchingResult.getVisitedUrls() != null)
+                            ? formerIssueFetchingResult.getVisitedUrls() : new LinkedList<>())
+                    .appendAll(issueFetchingResult.getVisitedUrls())
+                    .toJavaList();
+
+            // retry feetching:
+            final List<FetchingResult<Issue>> retriedIssuesFetchingResults = formerIssueFetchingResult
+                    .getFailedUrls()
+                    .stream()
+                    .map(failedUrl -> fetcher.retryTicketFetching(failedUrl, owner, board, visitedCommentUrls))
+                    // TODO: reduce!
+                    .collect(Collectors.toList());
+        }
+
+        // TODO: re-try fetching all the failed comments URLs!
+
 
         if (rateLimitOccurredForIssues || rateLimitOccurredForComments) {
             // a rate limit occurred, persist the partial result to disc:

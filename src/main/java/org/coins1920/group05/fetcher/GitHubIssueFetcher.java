@@ -14,6 +14,12 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+/**
+ * The actual (ReST-based) fetcher implementation for GitHub's v3 API.
+ *
+ * @author Patrick Preuß (patrickp89)
+ * @author Julian Cornea (buggitheclown)
+ */
 @Slf4j
 public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue, Event, Comment> {
 
@@ -58,8 +64,14 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     @Override
-    public FetchingResult<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls, List<String> failedUrls) {
+    public FetchingResult<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls) {
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
+
+        //############################################################
+        // TODO: erase!
+        log.debug("fetchTickets() - visited URLs:");
+        visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
+        //############################################################
 
         // is this an already (and successfully) visited URL?
         if (!visitedUrls.contains(openTicketsUrl)) {
@@ -84,6 +96,26 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                 // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
                 return FetchingResult.union(openIssues, closedIssues);
             }
+
+        } else {
+            // the URL was already visited!
+            return new FetchingResult<>();
+        }
+    }
+
+    public FetchingResult<Issue> retryTicketFetching(String url, String owner, String board, List<String> visitedUrls) {
+        //############################################################
+        // TODO: erase!
+        log.debug("retryTicketFetching() - visited URLs:");
+        visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
+        //############################################################
+
+        // is this an already (and successfully) visited URL?
+        if (!visitedUrls.contains(url)) {
+            final FetchingResult<Issue> retriedIssues = getAllEntitiesWithPagination((u, e) ->
+                    rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), url);
+            log.debug("I got " + retriedIssues.getEntities().size() + " issues!");
+            return retriedIssues;
 
         } else {
             // the URL was already visited!
@@ -120,7 +152,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public List<User> fetchCommentatorsForTicket(Issue ticket) {
-        return fetchCommentsForTicket(ticket)
+        return fetchCommentsForTicket(ticket, new LinkedList<>())
                 .getEntities()
                 .stream()
                 .filter(Objects::nonNull)
@@ -129,19 +161,33 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     @Override
-    public FetchingResult<Comment> fetchCommentsForTicket(Issue ticket) {
+    public FetchingResult<Comment> fetchCommentsForTicket(Issue ticket, List<String> visitedUrls) {
         if (ticket.getCommentsUrl() == null || ticket.getCommentsUrl().isEmpty()) {
             log.warn("  the issue " + ticket.getId() + " has no comments => no comments URL!");
             return new FetchingResult<>();
         } else {
-            try {
-                final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
-                return getAllEntitiesWithPagination((u, e) ->
-                        rt.exchange(u, HttpMethod.GET, e, Comment[].class), commentsUrl);
 
-            } catch (MalformedURLException e) {
-                log.error("The comments URL ('" + ticket.getCommentsUrl() +
-                        "') for ticket " + ticket.getId() + "was malformed!", e);
+            //############################################################
+            // TODO: erase!
+            log.debug("fetchCommentsForTicket() - visited URLs:");
+            visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
+            //############################################################
+
+            // is this an already (and successfully) visited URL?
+            if (!visitedUrls.contains(ticket.getCommentsUrl())) {
+                try {
+                    final String commentsUrl = new URL(ticket.getCommentsUrl()).getPath();
+                    return getAllEntitiesWithPagination((u, e) ->
+                            rt.exchange(u, HttpMethod.GET, e, Comment[].class), commentsUrl);
+
+                } catch (MalformedURLException e) {
+                    log.error("The comments URL ('" + ticket.getCommentsUrl() +
+                            "') for ticket " + ticket.getId() + "was malformed!", e);
+                    return new FetchingResult<>();
+                }
+
+            } else {
+                // the URL was already visited!
                 return new FetchingResult<>();
             }
         }

@@ -11,6 +11,12 @@ import org.springframework.web.client.RestTemplate;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * The actual fetcher implementation for Trello's Rest API.
+ *
+ * @author Patrick Preuß (patrickp89)
+ * @author Julian Cornea (buggitheclown)
+ */
 public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Card, Action, Comment> {
 
     private static final Logger logger = LoggerFactory.getLogger(TrelloBoardFetcher.class);
@@ -58,7 +64,8 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
     }
 
     @Override
-    public FetchingResult<Card> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls, List<String> failedUrls) {
+    public FetchingResult<Card> fetchTickets(
+            String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls) {
         final String url = assembleUrl("boards/{board}/cards", null);
         final ResponseEntity<Card[]> response = rt.getForEntity(url, Card[].class, board, key, token);
         return new FetchingResult<>(RestClientHelper.nonNullResponseEntities(response));
@@ -92,7 +99,7 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
     }
 
     @Override
-    public FetchingResult<Comment> fetchCommentsForTicket(Card ticket) {
+    public FetchingResult<Comment> fetchCommentsForTicket(Card ticket, List<String> visitedUrls) {
         logger.warn("The operation 'fetchAssigneesForTicket()' is not yet supported and will return an empty list!");
         return new FetchingResult<>();
     }

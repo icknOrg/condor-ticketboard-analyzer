@@ -8,6 +8,7 @@ import org.coins1920.group05.model.general.AbstractTicket;
 import org.coins1920.group05.util.Pair;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 @Data
@@ -18,4 +19,9 @@ public class PartialFetchingResult<T extends AbstractTicket,
 
     private FetchingResult<T> issueFetchingResult;
     private List<Pair<T, FetchingResult<C>>> commentsFetchingResults;
+
+    public PartialFetchingResult() {
+        this.issueFetchingResult = new FetchingResult<>();
+        this.commentsFetchingResults = new LinkedList<>();
+    }
 }

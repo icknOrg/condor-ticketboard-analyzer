@@ -65,8 +65,7 @@ public class GitHubFetcherTest {
     @Test
     public void testFetchIssues() {
         final FetchingResult<Issue> issueFetchingResult = fetcher
-                .fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1,
-                        true, new LinkedList<>(), new LinkedList<>());
+                .fetchTickets(SAMPLE_BOARD_OWNER, SAMPLE_BOARD_NAME1, true, new LinkedList<>());
         final List<Issue> issues = issueFetchingResult.getEntities();
         assertThat(issues, is(not(nullValue())));
         logger.info("There is/are " + issues.size() + " issue(s)!");

@@ -32,7 +32,7 @@ public class TrelloBoardCondorizor {
         // fetch all cards for the given board:
         final boolean fetchClosedTickets = false;
         final FetchingResult<Card> cardsResult = fetcher
-                .fetchTickets(null, boardId, fetchClosedTickets, new LinkedList<>(), new LinkedList<>());
+                .fetchTickets(null, boardId, fetchClosedTickets, new LinkedList<>());
         final Stream<Card> trelloCards = cardsResult
                 .getEntities()
                 .stream()

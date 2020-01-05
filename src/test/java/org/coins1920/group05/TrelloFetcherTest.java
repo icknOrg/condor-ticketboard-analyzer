@@ -110,8 +110,7 @@ public class TrelloFetcherTest {
     @Test
     public void testFetchCards() {
         final FetchingResult<Card> cardFetchingResult = fetcher
-                .fetchTickets(null, SAMPLE_BOARD_SHORTLINK,
-                        false, new LinkedList<>(), new LinkedList<>());
+                .fetchTickets(null, SAMPLE_BOARD_SHORTLINK, false, new LinkedList<>());
         final List<Card> cards = cardFetchingResult.getEntities();
         assertThat(cards, is(not(nullValue())));
         assertThat(cards.size(), is(not(0)));

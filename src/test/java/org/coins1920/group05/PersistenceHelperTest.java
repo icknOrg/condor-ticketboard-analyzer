@@ -23,6 +23,12 @@ import java.util.stream.Collectors;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
+/**
+ * Tests the PersistenceHelper.
+ *
+ * @author Patrick Preuß (patrickp89)
+ * @author Julian Cornea (buggitheclown)
+ */
 public class PersistenceHelperTest {
 
     @Rule
@@ -114,10 +120,24 @@ public class PersistenceHelperTest {
 
         assertThat(partialResult.getIssueFetchingResult(), is(not(nullValue())));
         assertThat(partialResult.getIssueFetchingResult().getEntities(), is(not(nullValue())));
-        assertThat(partialResult.getIssueFetchingResult().getEntities().size(), is(2));
+        assertThat(partialResult.getIssueFetchingResult().getEntities().size(), is(2794));
 
         assertThat(partialResult.getCommentsFetchingResults(), is(not(nullValue())));
-        assertThat(partialResult.getCommentsFetchingResults().size(), is(2));
+        assertThat(partialResult.getCommentsFetchingResults().size(), is(2794));
+
+        assertThat(partialResult.getCommentsFetchingResults().get(0), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(0).getFirst(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(0).getSecond(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(0).getSecond().getEntities(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(0).getSecond().getVisitedUrls(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(0).getSecond().getFailedUrls(), is(not(nullValue())));
+
+        assertThat(partialResult.getCommentsFetchingResults().get(1), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(1).getFirst(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(1).getSecond(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(1).getSecond().getEntities(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(1).getSecond().getVisitedUrls(), is(not(nullValue())));
+        assertThat(partialResult.getCommentsFetchingResults().get(1).getSecond().getFailedUrls(), is(not(nullValue())));
     }
 
 

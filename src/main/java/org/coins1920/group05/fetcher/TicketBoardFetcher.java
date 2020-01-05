@@ -7,6 +7,9 @@ import java.util.List;
 /**
  * A generic ticket board fetcher interface. Abstracts from the actual ticket board
  * product (Trello, Jira, ...).
+ *
+ * @author Patrick Preuß (patrickp89)
+ * @author Julian Cornea (buggitheclown)
  */
 public interface TicketBoardFetcher<B extends AbstractBoard,
         M extends AbstractMember,
@@ -36,7 +39,16 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
      */
     List<M> fetchBoardMembers(String owner, String board);
 
-    FetchingResult<T> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls, List<String> failedUrls);
+    /**
+     * Fetches all issues/tickets for a given repo.
+     *
+     * @param owner              the board/repo owner's name
+     * @param board              the board name or ID
+     * @param fetchClosedTickets whether to fetch closed tickets as well or not
+     * @param visitedUrls        a list of URLs that have already been (successfully) visited before
+     * @return a FetchingResult that contains the fetched entities as well as meta info on URLs visited
+     */
+    FetchingResult<T> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls);
 
     List<A> fetchActionsForTicket(String ticketId);
 
@@ -46,7 +58,7 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
 
     List<M> fetchCommentatorsForTicket(T ticket);
 
-    FetchingResult<C> fetchCommentsForTicket(T ticket);
+    FetchingResult<C> fetchCommentsForTicket(T ticket, List<String> visitedUrls);
 
     M fetchAllInfosForUser(M user);
 }

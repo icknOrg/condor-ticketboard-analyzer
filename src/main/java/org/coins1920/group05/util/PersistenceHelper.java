@@ -1,6 +1,7 @@
 package org.coins1920.group05.util;
 
 import lombok.extern.slf4j.Slf4j;
+import org.coins1920.group05.fetcher.FetchingResult;
 import org.coins1920.group05.fetcher.PartialFetchingResult;
 import org.coins1920.group05.model.github.rest.Comment;
 import org.coins1920.group05.model.github.rest.Issue;
@@ -17,6 +18,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+/**
+ * A helper class for persisting partial fetching results to disc.
+ *
+ * @author Patrick Preuß (patrickp89)
+ * @author Julian Cornea (buggitheclown)
+ */
 @Slf4j
 public class PersistenceHelper {
 
@@ -32,12 +39,34 @@ public class PersistenceHelper {
         final ObjectOutputStream outputStream = new ObjectOutputStream(
                 new FileOutputStream(partialResult)
         );
-        outputStream.writeObject(partialFetchingResult);
+        outputStream.writeObject(nonNullify(partialFetchingResult));
         outputStream.flush();
         outputStream.close();
 
         return partialResult;
     }
+
+
+    /**
+     * Prevents null values to be written to disc.
+     *
+     * @param partialFetchingResult the partial fetching result
+     * @return a PartialFetchingResult without null values
+     */
+    private static PartialFetchingResult<Issue, User, Comment> nonNullify(
+            PartialFetchingResult<Issue, User, Comment> partialFetchingResult) {
+        if (partialFetchingResult == null) {
+            partialFetchingResult = new PartialFetchingResult<>();
+        }
+        if (partialFetchingResult.getIssueFetchingResult() == null) {
+            partialFetchingResult.setIssueFetchingResult(new FetchingResult<>());
+        }
+        if (partialFetchingResult.getCommentsFetchingResults() == null) {
+            partialFetchingResult.setCommentsFetchingResults(new LinkedList<>());
+        }
+        return partialFetchingResult;
+    }
+
 
     public static PartialFetchingResult<Issue, User, Comment> readPersistedPartialResult(
             String owner, String board, String outputDir) throws IOException, ClassNotFoundException {
@@ -55,6 +84,7 @@ public class PersistenceHelper {
         }
     }
 
+
     private static PartialFetchingResult<Issue, User, Comment> pickNewestPartialResultFile(
             List<Path> matchingFiles) throws IOException, ClassNotFoundException {
         matchingFiles.forEach(mf -> log.debug(" " + mf.getFileName()));
@@ -70,6 +100,7 @@ public class PersistenceHelper {
         return deserialize(newestPartial);
     }
 
+
     @SuppressWarnings("unchecked") // TODO: in Java 8, there's no chance to type-safely cast generic wrappers... :(
     public static PartialFetchingResult<Issue, User, Comment> deserialize(Path path) throws IOException, ClassNotFoundException {
         final FileInputStream fileInputStream = new FileInputStream(path.toFile());
@@ -77,6 +108,7 @@ public class PersistenceHelper {
         final Object object = objectInputStream.readObject();
         return (PartialFetchingResult<Issue, User, Comment>) object;
     }
+
 
     public static Long computeTsFromPartialResultFileName(Path path) {
         final String fileName = path.getFileName().toString();
@@ -107,6 +139,7 @@ public class PersistenceHelper {
         }
     }
 
+
     public static boolean checkForPartialResult(String owner, String board, String outputDir) throws IOException {
         final String fileNamePrefix = owner + "-" + board + "-";
 
@@ -116,6 +149,7 @@ public class PersistenceHelper {
         matchingFiles.forEach(f -> log.debug("Found matching file: " + f));
         return matchingFiles.size() > 0;
     }
+
 
     public static List<Path> getMatchingFiles(String fileNamePrefix, String outputDir) throws IOException {
         return Files

@@ -19,11 +19,18 @@ import org.coins1920.group05.util.TimeFormattingHelper;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Does the majority of the heavy lifting regarding GitHub fetching logic.
+ *
+ * @author Patrick Preuß (patrickp89)
+ * @author Julian Cornea (buggitheclown)
+ */
 @Slf4j
 public class GitHubRepoCondorizor {
 
@@ -55,17 +62,17 @@ public class GitHubRepoCondorizor {
             log.debug("There are partial results!");
             final FetchingResult<Issue> issueFetchingResult = partialFetchingResult.getIssueFetchingResult();
             final List<Pair<Issue, FetchingResult<Comment>>> commentsFetchingResults = partialFetchingResult.getCommentsFetchingResults();
-            // TODO: add commentsFetchingResults to method signature below:
-            return fetchEverything(owner, board, fetchClosedTickets, outputDir, issueFetchingResult);
+            return fetchEverything(owner, board, fetchClosedTickets, outputDir, issueFetchingResult, commentsFetchingResults);
 
         } else {
-            return fetchEverything(owner, board, fetchClosedTickets, outputDir, null);
+            return fetchEverything(owner, board, fetchClosedTickets, outputDir, null, null);
         }
     }
 
     private Either<File, Pair<File, File>> fetchEverything(
-            String owner, String board, boolean fetchClosedTickets,
-            String outputDir, FetchingResult<Issue> formerIssueFetchingResult) throws IOException {
+            String owner, String board, boolean fetchClosedTickets, String outputDir,
+            FetchingResult<Issue> formerIssueFetchingResult,
+            List<Pair<Issue, FetchingResult<Comment>>> commentsFetchingResults) throws IOException {
         // first, fetch all issues of the given repo:
         final FetchingResult<Issue> issueFetchingResult;
         if (formerIssueFetchingResult != null) {
@@ -75,25 +82,28 @@ public class GitHubRepoCondorizor {
         } else {
             issueFetchingResult = fetcher.fetchTickets(
                     owner, board, fetchClosedTickets,
-                    null, null);
+                    new LinkedList<>(), new LinkedList<>());
         }
 
         // did we run into a rate limit?
-        if (issueFetchingResult.isRateLimitOccurred()) {
+        final boolean rateLimitOccurredForIssues = issueFetchingResult.isRateLimitOccurred();
+        if (rateLimitOccurredForIssues) {
             log.warn("A rate limit occurred when fetching issues!");
-//            partialFetchingResults.add(new PartialFetchingResult<>(issueFetchingResult, null));
         }
 
         // no, then let's unwrap the issues from the FetchingResult object:
         final List<Issue> githubIssues = issueFetchingResult.getEntities();
 
-        // TODO: old and new issues!
-        // TODO: pass the old comments to the fetchComments() function:
+        // let's combine the old and the newly fetched issues:
+        final FetchingResult<Issue> combinedIssueFetchingResult = FetchingResult.union(
+                formerIssueFetchingResult,
+                issueFetchingResult
+        );
 
         // fetch all comments and the corresponding users for all issues:
         final List<Pair<Issue, FetchingResult<Comment>>> commentsForTicketResults = githubIssues
                 .parallelStream()
-                .map(i -> new Pair<>(i, fetcher.fetchCommentsForTicket(i)))
+                .map(i -> new Pair<>(i, fetcher.fetchCommentsForTicket(i))) // TODO: pass the old comments to the fetchComments() function!
                 .collect(Collectors.toList());
 
         // did we run into a rate limit?
@@ -102,7 +112,6 @@ public class GitHubRepoCondorizor {
                 .anyMatch(c -> c.getSecond().isRateLimitOccurred());
         if (rateLimitOccurredForComments) {
             log.warn("A rate limit occurred when fetching comments!");
-//            partialFetchingResults.add(new PartialFetchingResult<>(issueFetchingResult, commentsForTicketResults));
         }
 
         // no, then let's unwrap the issues from the FetchingResult objects:
@@ -117,9 +126,12 @@ public class GitHubRepoCondorizor {
 //                .map(i -> new Pair<>(i, fetcher.fetchAssigneesForTicket(i)))
 //                .collect(Collectors.toList());
 
-        if (issueFetchingResult.isRateLimitOccurred() || rateLimitOccurredForComments) {
+        // TODO: re-try fetching all the failed URLs (from both issues and comments)!
+
+        if (rateLimitOccurredForIssues || rateLimitOccurredForComments) {
+            // a rate limit occurred, persist the partial result to disc:
             final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
-                    = new PartialFetchingResult<>(issueFetchingResult, commentsForTicketResults);
+                    = new PartialFetchingResult<>(combinedIssueFetchingResult, commentsForTicketResults);
             return Either.left(PersistenceHelper.persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir));
         } else {
             // aggregate all users, map to Condor Actors/Edges and write to CSV files:
@@ -135,7 +147,7 @@ public class GitHubRepoCondorizor {
         // aggregate all users over all issues and their comments:
         final List<User> users = aggregateUsers(issues, comments);
 
-        // fetch additional infos about those users:
+        // fetch additional info about those users:
         final List<User> fullBlownUsers = users
                 .parallelStream()
                 .map(fetcher::fetchAllInfosForUser)

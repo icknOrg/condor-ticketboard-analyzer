@@ -59,27 +59,35 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
     @Override
     public FetchingResult<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls, List<String> failedUrls) {
-        // all open tickets:
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
-        final FetchingResult<Issue> openIssues = getAllEntitiesWithPagination((u, e) ->
-                rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), openTicketsUrl);
-        log.debug("I got " + openIssues.getEntities().size() + " issues!");
 
-        // and all closed ones?
-        if (!fetchClosedTickets) {
-            // no, just the open ones:
-            return openIssues;
+        // is this an already (and successfully) visited URL?
+        if (!visitedUrls.contains(openTicketsUrl)) {
+            // all open tickets:
+            final FetchingResult<Issue> openIssues = getAllEntitiesWithPagination((u, e) ->
+                    rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), openTicketsUrl);
+            log.debug("I got " + openIssues.getEntities().size() + " issues!");
+
+            // and all closed ones?
+            if (!fetchClosedTickets) {
+                // no, just the open ones:
+                return openIssues;
+
+            } else {
+                final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
+                final FetchingResult<Issue> closedIssues = getAllEntitiesWithPagination((u, e) ->
+                        rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
+                log.debug("I got " + closedIssues.getEntities().size() + " closed issues!");
+
+                // filter out all PRs, we only want issues: // TODO: do we??
+                // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
+                // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
+                return FetchingResult.union(openIssues, closedIssues);
+            }
 
         } else {
-            final String closedTicketsUrl = "/repos/{owner}/{board}/issues?state=closed";
-            final FetchingResult<Issue> closedIssues = getAllEntitiesWithPagination((u, e) ->
-                    rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), closedTicketsUrl);
-            log.debug("I got " + closedIssues.getEntities().size() + " closed issues!");
-
-            // filter out all PRs, we only want issues: // TODO: do we??
-            // TODO: .filter(i -> i.getPullRequest() == null || i.getPullRequest().getUrl() == null)
-            // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
-            return FetchingResult.union(openIssues, closedIssues);
+            // the URL was already visited!
+            return new FetchingResult<>();
         }
     }
 

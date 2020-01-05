@@ -14,6 +14,8 @@ import java.util.Objects;
  * all visited URLs (those that worked and those that failed).
  *
  * @param <T> the type of the entities fetched
+ * @author Patrick Preuß (patrickp89)
+ * @author Julian Cornea (buggitheclown)
  */
 @Data
 @AllArgsConstructor
@@ -49,30 +51,38 @@ public class FetchingResult<T> implements Serializable {
      * Combines to given FetchingResults into a single one.
      *
      * @param fetchingResult1 the first FetchingResult
-     * @param fetchingResult2 thhe second FetchingResult
+     * @param fetchingResult2 the second FetchingResult
      * @param <U>             type parameter
      * @return the union FetchingResult
      */
     public static <U> FetchingResult<U> union(FetchingResult<U> fetchingResult1, FetchingResult<U> fetchingResult2) {
         final String m = "The argument must not be null!";
-        final FetchingResult<U> nonNullFetchingResult1 = Objects.requireNonNull(fetchingResult1, m);
-        final FetchingResult<U> nonNullFetchingResult2 = Objects.requireNonNull(fetchingResult2, m);
+        if (fetchingResult1 == null && fetchingResult2 == null) {
+            return new FetchingResult<>();
+        }
+        if (fetchingResult1 == null) {
+            return Objects.requireNonNull(fetchingResult2, m);
+        }
+        if (fetchingResult2 == null) {
+            return Objects.requireNonNull(fetchingResult1, m);
+        }
 
         final List<U> combinedEntities = io.vavr.collection.List
-                .ofAll(nonNullFetchingResult1.getEntities())
-                .appendAll(nonNullFetchingResult2.getEntities())
+                .ofAll(fetchingResult1.getEntities())
+                .appendAll(fetchingResult2.getEntities())
                 .toJavaList();
 
-        boolean combinedRateLimitOccurred = nonNullFetchingResult1.isRateLimitOccurred() || nonNullFetchingResult2.isRateLimitOccurred();
+        boolean combinedRateLimitOccurred =
+                fetchingResult1.isRateLimitOccurred() || fetchingResult2.isRateLimitOccurred();
 
         final List<String> combinedVisitedUrls = io.vavr.collection.List
-                .ofAll(nonNullFetchingResult1.getVisitedUrls())
-                .appendAll(nonNullFetchingResult2.getVisitedUrls())
+                .ofAll(fetchingResult1.getVisitedUrls())
+                .appendAll(fetchingResult2.getVisitedUrls())
                 .toJavaList();
 
         final List<String> combinedFailedUrls = io.vavr.collection.List
-                .ofAll(nonNullFetchingResult1.getFailedUrls())
-                .appendAll(nonNullFetchingResult2.getFailedUrls())
+                .ofAll(fetchingResult1.getFailedUrls())
+                .appendAll(fetchingResult2.getFailedUrls())
                 .toJavaList();
 
         return new FetchingResult<U>(

@@ -36,6 +36,38 @@ public class PersistenceHelperTest {
 
 
     @Test
+    public void testCombineFetchingResults() {
+        final FetchingResult<Object> frUnion1 = FetchingResult.union(new FetchingResult<>(), new FetchingResult<>());
+        assertThat(frUnion1, is(not(nullValue())));
+        assertThat(frUnion1.getEntities(), is(not(nullValue())));
+        assertThat(frUnion1.getVisitedUrls(), is(not(nullValue())));
+        assertThat(frUnion1.getFailedUrls(), is(not(nullValue())));
+        assertThat(frUnion1.isRateLimitOccurred(), is(false));
+
+        final FetchingResult<Object> frUnion2 = FetchingResult.union(null, new FetchingResult<>());
+        assertThat(frUnion2, is(not(nullValue())));
+        assertThat(frUnion2.getEntities(), is(not(nullValue())));
+        assertThat(frUnion2.getVisitedUrls(), is(not(nullValue())));
+        assertThat(frUnion2.getFailedUrls(), is(not(nullValue())));
+        assertThat(frUnion2.isRateLimitOccurred(), is(false));
+
+        final FetchingResult<Object> frUnion3 = FetchingResult.union(new FetchingResult<>(), null);
+        assertThat(frUnion3, is(not(nullValue())));
+        assertThat(frUnion3.getEntities(), is(not(nullValue())));
+        assertThat(frUnion3.getVisitedUrls(), is(not(nullValue())));
+        assertThat(frUnion3.getFailedUrls(), is(not(nullValue())));
+        assertThat(frUnion3.isRateLimitOccurred(), is(false));
+
+        final FetchingResult<Object> frUnion4 = FetchingResult.union(null, null);
+        assertThat(frUnion4, is(not(nullValue())));
+        assertThat(frUnion4.getEntities(), is(not(nullValue())));
+        assertThat(frUnion4.getVisitedUrls(), is(not(nullValue())));
+        assertThat(frUnion4.getFailedUrls(), is(not(nullValue())));
+        assertThat(frUnion4.isRateLimitOccurred(), is(false));
+    }
+
+
+    @Test
     public void testPartialResultDetection() throws IOException {
         final File partialResultFile = TestUtils
                 .getFileFromResourceFolder(resourceFolder + testPartialResultFileName1, PersistenceHelperTest.class);

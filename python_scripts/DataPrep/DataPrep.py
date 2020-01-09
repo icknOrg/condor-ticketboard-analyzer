@@ -79,6 +79,8 @@ def processCSV(dir, df):
     group_activity_increase = round(activity['Activity_Increase'].mean(), 4)
     if math.isnan(group_activity_increase):
         group_activity_increase = 1
+    group_activity = activity.loc[:,0]
+    group_activity = round(group_activity.tail(1).values[0],4)
 
     awvci = pd.read_csv(awvciPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
     awvci['awvci_Increase'] = np.nan
@@ -90,6 +92,8 @@ def processCSV(dir, df):
     group_awvci_increase = round(awvci['awvci_Increase'].mean(), 4)
     if math.isnan(group_awvci_increase):
         group_awvci_increase = 1
+    group_awvci = awvci.loc[:,0]
+    group_awvci = round(group_awvci.tail(1).values[0],4)
 
     betwCentr = pd.read_csv(betwCentrPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
     betwCentr['betwCentr_Increase'] = np.nan
@@ -101,6 +105,8 @@ def processCSV(dir, df):
     group_betwCentr_increase = round(betwCentr['betwCentr_Increase'].mean(), 4)
     if math.isnan(group_betwCentr_increase):
         group_betwCentr_increase = 1
+    group_betw_centr = betwCentr.loc[:,0]
+    group_betw_centr = round(group_betw_centr.tail(1).values[0],4)
 
     betwOsc = pd.read_csv(betwOscPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
     betwOsc['betwOsc_Increase'] = np.nan
@@ -109,10 +115,11 @@ def processCSV(dir, df):
         if index > 0:
             if betwOsc.loc[index - 1, 0] > 0:
                 betwOsc.loc[index, 'betwOsc_Increase'] = betwOsc.loc[index, 0] / betwOsc.loc[index - 1, 0]
-
     group_betwOsc_increase = round(betwOsc['betwOsc_Increase'].mean(), 4)
     if math.isnan(group_betwOsc_increase):
         group_betwOsc_increase = 1
+    group_betw_osc = betwOsc.loc[:,0]
+    group_betw_osc = round(group_betw_osc.tail(1).values[0],4)
 
     density = pd.read_csv(densityPath, sep=',', encoding='utf-8', error_bad_lines=False).T[[0]]
     density['density_Increase'] = np.nan
@@ -121,21 +128,27 @@ def processCSV(dir, df):
         if index > 0:
             if density.loc[index - 1, 0] > 0:
                 density.loc[index, 'density_Increase'] = density.loc[index, 0] / density.loc[index - 1, 0]
-
     group_density_increase = round(density['density_Increase'].mean(), 4)
     if math.isnan(group_density_increase):
         group_density_increase = 1
+    group_density = density.loc[:,0]
+    group_density = round(group_density.tail(1).values[0],4)
 
-    result = df.append({'Group_Avg_Messages_Per_Day': group_messages,
-                        'Group_Avg_Sentiment': group_sentiment,
-                        'Group_Avg_Emotionality': group_emotionality,
-                        'Group_Avg_Complexity': group_complexity,
-                        'Group_Avg_Influence': group_influence,
-                        'Group_Avg_Percentage_Activity_Increase_Monthly': group_activity_increase,
-                        'Group_Avg_Percentage_AWVCI_Increase_Monthly': group_awvci_increase,
-                        'Group_Avg_Percentage_Betweenness_Centrality_Increase_Monthly': group_betwCentr_increase,
-                        'Group_Avg_Percentage_Betweenness_Oscillation_Increase_Monthly': group_betwOsc_increase,
-                        'Group_Avg_Percentage_Density_Increase_Monthly': group_density_increase,
+    result = df.append({'Group_Messages_Per_Day': group_messages,
+                        'Group_Sentiment': group_sentiment,
+                        'Group_Emotionality': group_emotionality,
+                        'Group_Complexity': group_complexity,
+                        'Group_Influence': group_influence,
+                        'Group_Percentage_Activity_Increase_Monthly': group_activity_increase,
+                        'Group_Activity': group_activity,
+                        'Group_Percentage_AWVCI_Increase_Monthly': group_awvci_increase,
+                        'Group_AWVCI':group_awvci,
+                        'Group_Percentage_Betweenness_Centrality_Increase_Monthly': group_betwCentr_increase,
+                        'Group_Betweenness_Centrality':group_betw_centr,
+                        'Group_Percentage_Betweenness_Oscillation_Increase_Monthly': group_betwOsc_increase,
+                        'Group_Betweenness_Oscillation':group_betw_osc,
+                        'Group_Percentage_Density_Increase_Monthly': group_density_increase,
+                        'Group_Density':group_density,
                         'Avg_Degree_Centrality_Top': top_avg_deg_cent,
                         'Avg_Degree_Centrality': avg_deg_cent,
                         'Avg_Betweenness_Osc_Top': top_avg_betw_osc,
@@ -163,16 +176,21 @@ def processCSV(dir, df):
 
 
 # 1: Create DataFrame
-df = pd.DataFrame(columns=['Group_Avg_Messages_Per_Day',
-                           'Group_Avg_Sentiment',
-                           'Group_Avg_Emotionality',
-                           'Group_Avg_Complexity',
-                           'Group_Avg_Influence',
-                           'Group_Avg_Percentage_Activity_Increase_Monthly',
-                           'Group_Avg_Percentage_AWVCI_Increase_Monthly',
-                           'Group_Avg_Percentage_Betweenness_Centrality_Increase_Monthly',
-                           'Group_Avg_Percentage_Betweenness_Oscillation_Increase_Monthly',
-                           'Group_Avg_Percentage_Density_Increase_Monthly',
+df = pd.DataFrame(columns=['Group_Messages_Per_Day',
+                           'Group_Sentiment',
+                           'Group_Emotionality',
+                           'Group_Complexity',
+                           'Group_Influence',
+                           'Group_Percentage_Activity_Increase_Monthly',
+                           'Group_Activity',
+                           'Group_Percentage_AWVCI_Increase_Monthly',
+                           'Group_AWVCI',
+                           'Group_Percentage_Betweenness_Centrality_Increase_Monthly',
+                           'Group_Betweenness_Centrality',
+                           'Group_Percentage_Betweenness_Oscillation_Increase_Monthly',
+                           'Group_Betweenness_Oscillation',
+                           'Group_Percentage_Density_Increase_Monthly',
+                           'Group_Density',
                            'Avg_Degree_Centrality_Top',
                            'Avg_Degree_Centrality',
                            'Avg_Betweenness_Osc_Top',

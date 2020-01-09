@@ -1,6 +1,7 @@
 import pandas as pd
 
 import matplotlib.pyplot as plt
+import seaborn as sn
 
 from sklearn.model_selection import train_test_split
 
@@ -15,16 +16,42 @@ plotFolderPath = './Plots/'
 # read csv
 df = pd.read_csv('input.csv', sep=',', encoding='utf-8').drop('Repository_Name', axis=1)
 
+# Analyze correlation
+sn.heatmap(df.corr(), annot=True)
+# plt.show()
+plt.close()
+
 # columns that possibly decrease prediction quality
-badColumns = ['Group_Avg_Influence',
-              'Avg_Betweenness_Osc_Top',
-              'Avg_Influence_Top',
-              'Avg_Influence',
-              'Avg_Influence_Per_Message_Top',
-              'Avg_Influence_Per_Message',
-              'Avg_Contribution_Index_Top',
-              'Avg_Contribution_Index_Oscil_Top']
-df = df.drop(badColumns, axis=1)
+# badColumns = ['Group_Avg_Influence',
+#               'Avg_Betweenness_Osc_Top',
+#               'Avg_Influence_Top',
+#               'Avg_Influence',
+#               'Avg_Influence_Per_Message_Top',
+#               'Avg_Influence_Per_Message',
+#               'Avg_Contribution_Index_Top',
+#               'Avg_Contribution_Index_Oscil_Top']
+# df = df.drop(badColumns, axis=1)
+
+# columns with correlation over 0.1 or under -0.1 with target
+usefulColumns = ['Group_Influence',
+                 'Group_Percentage_AWVCI_Increase_Monthly',
+                 'Group_AWVCI',
+                 'Group_Percentage_Density_Increase_Monthly',
+                 'Group_Density',
+                 'Percentage_Connected_Actors',
+                 'Gini_Sentiment',
+                 'Gini_Sentiment_Top',
+                 'Gini_complextiy',
+                 'Percentage_Isolated_Actors',
+                 'Percentage_Closed_Issues',
+                 'Percentage_Solo_Issues',
+                 'Target']
+df = df[usefulColumns]
+sn.heatmap(df.corr(), annot=True)
+plt.xticks(rotation=15)
+# plt.show()
+# plt.savefig('Correlation_Matrix.png',dpi=500)
+plt.close()
 
 # scale (ElasticNet supports normalization as a hyperparameter)
 # scaler = MinMaxScaler()

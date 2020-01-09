@@ -2,10 +2,21 @@ import pandas as pd
 import numpy as np
 import math
 import os
+from scipy.special import entr
 
 csvFolderPath = "../../../COIN/4_Repos/Ready_For_Regression/"
 resultPath = '../Regression/input.csv'
 
+
+def giniCalculator(array):
+    x = np.array(array)
+    mad = np.abs(np.subtract.outer(x, x)).mean()
+    # Relative mean absolute difference
+    rmad = mad / np.mean(x)
+    # Gini coefficient
+    g = 0.5 * rmad
+    g = round(g,4)
+    return g
 
 # Function used to extract aggregated metrics from 1 repository
 def processCSV(dir, df):
@@ -25,24 +36,41 @@ def processCSV(dir, df):
     ntop = int(round((actors_rows * 0.05), 0))
 
     actorsTop = actors.sort_values(by='total influence', ascending=False).head(ntop)
+
     top_avg_deg_cent = round(actorsTop['Degree centrality'].mean(), 4)
+    top_gini_deg_cent = giniCalculator(actorsTop['Degree centrality'])
     top_avg_betw_osc = round(actorsTop['Betweenness centrality oscillation'].mean(), 4)
+    top_gini_betw_osc = giniCalculator(actorsTop['Betweenness centrality oscillation'])
     top_avg_sentiment = round(actorsTop['avg sentiment'].mean(), 4)
+    top_gini_sentiment = giniCalculator(actorsTop['avg sentiment'])
     top_avg_complexity = round(actorsTop['avg complexity'].mean(), 4)
+    top_gini_complexity = giniCalculator(actorsTop['avg complexity'])
     top_avg_influence = round(actorsTop['total influence'].mean(), 4)
+    top_gini_influence = giniCalculator(actorsTop['total influence'])
     top_avg_influence_pm = round(actorsTop['average influence per message'].mean(), 4)
+    top_gini_influence_pm = giniCalculator(actorsTop['average influence per message'])
     top_avg_contrib = round(actorsTop['Contribution index'].mean(), 4)
+    top_gini_contrib = giniCalculator(actorsTop['Contribution index'])
     top_avg_contrib_oscil = round(actorsTop['Contribution index oscillation'].mean(), 4)
+    top_gini_contrib_oscil = giniCalculator(actorsTop['Contribution index oscillation'])
 
     actorsConnected = actors.loc[actors['Degree centrality'] > 1]
     avg_deg_cent = round(actorsConnected['Degree centrality'].mean(), 4)
+    gini_deg_cent = giniCalculator(actorsConnected['Degree centrality'])
     avg_betw_osc = round(actorsConnected['Betweenness centrality oscillation'].mean(), 4)
+    gini_betw_osc = giniCalculator(actorsConnected['Betweenness centrality oscillation'])
     avg_influence = round(actorsConnected['total influence'].mean(), 4)
+    gini_influence = giniCalculator(actorsConnected['total influence'])
     avg_influence_pm = round(actorsConnected['average influence per message'].mean(), 4)
+    gini_influence_pm = giniCalculator(actorsConnected['average influence per message'])
     avg_contrib = round(actorsConnected['Contribution index'].mean(), 4)
+    # gini_contrib = giniCalculator(actorsConnected['Contribution index'])
     avg_contrib_oscil = round(actorsConnected['Contribution index oscillation'].mean(), 4)
+    gini_contrib_oscil = giniCalculator(actorsConnected['Contribution index oscillation'])
     avg_sentiment = round(actorsConnected['avg sentiment'].mean(), 4)
+    gini_sentiment = giniCalculator(actorsConnected['avg sentiment'])
     avg_complexity = round(actorsConnected['avg complexity'].mean(), 4)
+    gini_complexity = giniCalculator(actorsConnected['avg complexity'])
 
     perc_connected = round((actors.loc[actors['Degree centrality'] >= ntop].shape[0]) / actors_rows, 4)
     perc_isolated = round((actors.loc[actors['Degree centrality'] == 1].shape[0]) / actors_rows, 4)
@@ -150,22 +178,37 @@ def processCSV(dir, df):
                         'Group_Percentage_Density_Increase_Monthly': group_density_increase,
                         'Group_Density':group_density,
                         'Avg_Degree_Centrality_Top': top_avg_deg_cent,
+                        'Gini_Degree_Centrality_Top': top_gini_deg_cent,
                         'Avg_Degree_Centrality': avg_deg_cent,
+                        'Gini_Degree_Centrality': gini_deg_cent,
                         'Avg_Betweenness_Osc_Top': top_avg_betw_osc,
+                        'Gini_Betweenness_Osc_Top': top_gini_betw_osc,
                         'Avg_Betweenness_Osc': avg_betw_osc,
+                        'Gini_Betweenness_Osc': gini_betw_osc,
                         'Percentage_Connected_Actors': perc_connected,
                         'Avg_Sentiment': avg_sentiment,
+                        'Gini_Sentiment': gini_sentiment,
                         'Avg_Sentiment_Top': top_avg_sentiment,
+                        'Gini_Sentiment_Top': top_gini_sentiment,
                         'Avg_complextiy': avg_complexity,
+                        'Gini_complextiy': gini_complexity,
                         'Avg_complexity_Top': top_avg_complexity,
+                        'Gini_complexity_Top': top_gini_complexity,
                         'Avg_Influence_Top': top_avg_influence,
+                        'Gini_Influence_Top': top_gini_influence,
                         'Avg_Influence': avg_influence,
+                        'Gini_Influence': gini_influence,
                         'Avg_Influence_Per_Message_Top': top_avg_influence_pm,
+                        'Gini_Influence_Per_Message_Top': top_gini_influence_pm,
                         'Avg_Influence_Per_Message': avg_influence_pm,
+                        'Gini_Influence_Per_Message': gini_influence_pm,
                         'Avg_Contribution_Index_Top': top_avg_contrib,
+                        'Gini_Contribution_Index_Top': top_gini_contrib,
                         'Avg_Contribution_Index': avg_contrib,
                         'Avg_Contribution_Index_Oscil_Top': top_avg_contrib_oscil,
+                        'Gini_Contribution_Index_Oscil_Top': top_gini_contrib_oscil,
                         'Avg_Contribution_Index_Oscil': avg_contrib_oscil,
+                        'Gini_Contribution_Index_Oscil': gini_contrib_oscil,
                         'Percentage_Closed_Issues': perc_closed_issues,
                         'Percentage_Creations': perc_creation,
                         'Percentage_Isolated_Actors': perc_isolated,
@@ -192,22 +235,37 @@ df = pd.DataFrame(columns=['Group_Messages_Per_Day',
                            'Group_Percentage_Density_Increase_Monthly',
                            'Group_Density',
                            'Avg_Degree_Centrality_Top',
+                           'Gini_Degree_Centrality_Top',
                            'Avg_Degree_Centrality',
+                           'Gini_Degree_Centrality',
                            'Avg_Betweenness_Osc_Top',
+                           'Gini_Betweenness_Osc_Top',
                            'Avg_Betweenness_Osc',
+                           'Gini_Betweenness_Osc',
                            'Percentage_Connected_Actors',
                            'Avg_Sentiment',
+                           'Gini_Sentiment',
                            'Avg_Sentiment_Top',
+                           'Gini_Sentiment_Top',
                            'Avg_complextiy',
+                           'Gini_complextiy',
                            'Avg_complexity_Top',
+                           'Gini_complexity_Top',
                            'Avg_Influence_Top',
+                           'Gini_Influence_Top',
                            'Avg_Influence',
+                           'Gini_Influence',
                            'Avg_Influence_Per_Message_Top',
+                           'Gini_Influence_Per_Message_Top',
                            'Avg_Influence_Per_Message',
+                           'Gini_Influence_Per_Message',
                            'Avg_Contribution_Index_Top',
+                           'Gini_Contribution_Index_Top',
                            'Avg_Contribution_Index',
                            'Avg_Contribution_Index_Oscil_Top',
+                           'Gini_Contribution_Index_Oscil_Top',
                            'Avg_Contribution_Index_Oscil',
+                           'Gini_Contribution_Index_Oscil',
                            'Percentage_Isolated_Actors',
                            'Percentage_Hirable_Actors',
                            'Percentage_Closed_Issues',
@@ -222,6 +280,10 @@ for dirs in os.listdir(csvFolderPath):
     print(dirs)
     df = processCSV(dirs, df)
 df = df.sort_values(by='Repository_Name', ascending=True)
+# drop columns with null values
+df = df.dropna(axis=1)
+# drop columns which contain the string Avg in the header
+df = df[df.columns.drop(list(df.filter(regex='Avg')))]
 df.to_csv(resultPath, sep=',', encoding='utf-8', index=False)
 
 print(1)

@@ -10,6 +10,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * The actual fetcher implementation for Trello's Rest API.
@@ -105,9 +106,9 @@ public class TrelloBoardFetcher implements TicketBoardFetcher<Board, Member, Car
     }
 
     @Override
-    public Member fetchAllInfosForUser(Member user) {
+    public Optional<Member> fetchAllInfoForUser(Member user) {
         logger.warn("The operation 'fetchAllInfosForUser()' is not yet supported!");
-        return null;
+        return Optional.empty();
     }
 
     private String assembleUrl(String resourcePart, String urlParameters) {

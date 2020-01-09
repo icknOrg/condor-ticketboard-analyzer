@@ -19,10 +19,8 @@ import org.coins1920.group05.util.TimeFormattingHelper;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -134,22 +132,21 @@ public class GitHubRepoCondorizor {
 //                .collect(Collectors.toList());
 
 
-        // re-try fetching the failed issu URLs:
+        // re-try fetching the failed issue URLs:
         if (formerIssueFetchingResult != null && formerIssueFetchingResult.getFailedUrls() != null) {
             // combine the old and newly visited URLs:
-            List<String> visitedIssueUrls = io.vavr.collection.List
+            final List<String> visitedIssueUrls = io.vavr.collection.List
                     .ofAll((formerIssueFetchingResult.getVisitedUrls() != null)
                             ? formerIssueFetchingResult.getVisitedUrls() : new LinkedList<>())
                     .appendAll(issueFetchingResult.getVisitedUrls())
                     .toJavaList();
 
-            // retry feetching:
-            final List<FetchingResult<Issue>> retriedIssuesFetchingResults = formerIssueFetchingResult
+            // retry fetching all failed issue URLs:
+            final FetchingResult<Issue> retriedIssuesFetchingResult = formerIssueFetchingResult
                     .getFailedUrls()
                     .stream()
-                    .map(failedUrl -> fetcher.retryTicketFetching(failedUrl, owner, board, visitedCommentUrls))
-                    // TODO: reduce!
-                    .collect(Collectors.toList());
+                    .map(failedUrl -> fetcher.retryTicketFetching(failedUrl, owner, board, visitedIssueUrls))
+                    .reduce(new FetchingResult<>(), (acc, i) -> FetchingResult.union(i, acc));
         }
 
         // TODO: re-try fetching all the failed comments URLs!
@@ -177,7 +174,9 @@ public class GitHubRepoCondorizor {
         // fetch additional info about those users:
         final List<User> fullBlownUsers = users
                 .parallelStream()
-                .map(fetcher::fetchAllInfosForUser)
+                .map(fetcher::fetchAllInfoForUser)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
                 // we need at least an ID to prevent duplicates:
                 .filter(u -> u.getId() != null && !u.getId().trim().isEmpty())
                 .collect(Collectors.toList());
@@ -277,41 +276,43 @@ public class GitHubRepoCondorizor {
     private List<Edge> githubIssuesToCondorEdges(List<Pair<Issue, Interaction<User, Comment>>> ticketInteractions) {
         final String fallbackStartTime = TimeFormattingHelper.unixEpoch();
 
+        final Function<Pair<Issue, Interaction<User, Comment>>, Edge> toEdge = i -> {
+            final Issue issue = i.getFirst();
+            final User ticketAuthor = issue.getUser(); // the original ticket author
+            final String startTime = computeTimestamp(issue.getCreatedAt(), fallbackStartTime);
+            final String endTime = computeTimestamp(issue.getClosedAt(), null);
+
+            final Edge edge = new Edge(
+                    issue.getTitle(), UUID.randomUUID().toString(),
+                    null, ticketAuthor.getId(),
+                    startTime, endTime,
+                    "", "",
+                    issue.getState(), "",
+                    issue.getComments(), "",
+                    i.getSecond().getEdgeType()
+                    // TODO: add an attribute "original_ID" that holds issue.getId() !
+            );
+
+            if (i.getSecond().getEdgeType() == EdgeType.CREATION) {
+                edge.setSource(ticketAuthor.getId());
+            }
+
+            if (i.getSecond().getEdgeType() == EdgeType.COMMENT) {
+                final Comment comment = i.getSecond().getComment();
+                final User commentator = i.getSecond().getComment().getUser();
+                final String escapedCommentBody = StringEscapeUtils
+                        .escapeHtml4(comment.getBody())
+                        .replaceAll("\r\n", " ")
+                        .replaceAll("\n", " ");
+                edge.setCommentBody(escapedCommentBody);
+                edge.setSource(commentator.getId());
+            }
+            return edge;
+        };
+
         return ticketInteractions
                 .parallelStream()
-                .map(i -> {
-                    final Issue issue = i.getFirst();
-                    final User ticketAuthor = issue.getUser(); // the original ticket author
-                    final String startTime = computeTimestamp(issue.getCreatedAt(), fallbackStartTime);
-                    final String endTime = computeTimestamp(issue.getClosedAt(), null);
-
-                    final Edge edge = new Edge(
-                            issue.getTitle(), UUID.randomUUID().toString(),
-                            null, ticketAuthor.getId(),
-                            startTime, endTime,
-                            "", "",
-                            issue.getState(), "",
-                            issue.getComments(), "",
-                            i.getSecond().getEdgeType()
-                            // TODO: add an attribute "original_ID" that holds issue.getId() !
-                    );
-
-                    if (i.getSecond().getEdgeType() == EdgeType.CREATION) {
-                        edge.setSource(ticketAuthor.getId());
-                    }
-
-                    if (i.getSecond().getEdgeType() == EdgeType.COMMENT) {
-                        final Comment comment = i.getSecond().getComment();
-                        final User commentator = i.getSecond().getComment().getUser();
-                        final String escapedCommentBody = StringEscapeUtils
-                                .escapeHtml4(comment.getBody())
-                                .replaceAll("\r\n", " ")
-                                .replaceAll("\n", " ");
-                        edge.setCommentBody(escapedCommentBody);
-                        edge.setSource(commentator.getId());
-                    }
-                    return edge;
-                })
+                .map(toEdge)
                 .collect(Collectors.toList());
     }
 

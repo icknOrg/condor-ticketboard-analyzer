@@ -69,7 +69,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
         //############################################################
         // TODO: erase!
-        log.debug("fetchTickets() - visited URLs:");
+        log.debug("fetchTickets() - visited URLs (" + visitedUrls.size() + "):");
         visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
         //############################################################
 
@@ -106,7 +106,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     public FetchingResult<Issue> retryTicketFetching(String url, String owner, String board, List<String> visitedUrls) {
         //############################################################
         // TODO: erase!
-        log.debug("retryTicketFetching() - visited URLs:");
+        log.debug("retryTicketFetching() - visited URLs(" + visitedUrls.size() + "):");
         visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
         //############################################################
 
@@ -169,7 +169,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
 
             //############################################################
             // TODO: erase!
-            log.debug("fetchCommentsForTicket() - visited URLs:");
+            log.debug("fetchCommentsForTicket() - visited URLs(" + visitedUrls.size() + "):");
             visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
             //############################################################
 
@@ -194,26 +194,26 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     @Override
-    public User fetchAllInfosForUser(User user) {
+    public Optional<User> fetchAllInfoForUser(User user) {
         try {
             final ResponseEntity<User> responseEntity = rt
                     .exchange(user.getUrl(), HttpMethod.GET, httpEntityWithDefaultHeaders(), User.class);
-            if (responseEntity.getStatusCode() == HttpStatus.OK) {
-                return responseEntity.getBody();
+            if (responseEntity.getStatusCode() == HttpStatus.OK
+                    && responseEntity.getBody() != null) {
+                return Optional.of(responseEntity.getBody());
             } else {
                 log.warn("I couldn't fetch the user for URL: " + user.getUrl());
-                return null;
+                return Optional.empty();
             }
 
         } catch (Exception e) {
             log.warn("Something went wrong: ", e);
-            return null;
+            return Optional.empty();
         }
     }
 
     private <U> FetchingResult<U> getAllEntitiesWithPagination(BiFunction<String, HttpEntity<?>, ResponseEntity<U[]>> f, String url) {
         final HttpEntity<?> entity = httpEntityWithDefaultHeaders();
-
         try {
             final ResponseEntity<U[]> response = f.apply(url, entity);
             final List<U> responseEntities = RestClientHelper.nonNullResponseEntities(response);
@@ -232,8 +232,8 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                         final FetchingResult<U> fetchingResult = new FetchingResult<>(
                                 responseEntities,
                                 false,
-                                new LinkedList<>(),
-                                io.vavr.collection.List.of(url).toJavaList()
+                                io.vavr.collection.List.of(url).toJavaList(),
+                                new LinkedList<>()
                         );
                         return FetchingResult.union(
                                 fetchingResult,
@@ -255,8 +255,8 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                     return new FetchingResult<>(
                             responseEntities,
                             false,
-                            new LinkedList<>(), // TODO: URL list?
-                            io.vavr.collection.List.of(url).toJavaList() // TODO: URL list?
+                            io.vavr.collection.List.of(url).toJavaList(),
+                            new LinkedList<>()
                     );
                 }
             } else {
@@ -264,21 +264,22 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                 return new FetchingResult<>(
                         responseEntities,
                         false,
-                        new LinkedList<>(), // TODO: URL list?
-                        io.vavr.collection.List.of(url).toJavaList() // TODO: URL list?
+                        io.vavr.collection.List.of(url).toJavaList(),
+                        new LinkedList<>()
                 );
             }
 
+            // catch 403 Forbidden exception:
         } catch (HttpClientErrorException eo) {
             return new FetchingResult<U>(
                     new LinkedList<>(),
                     true,
-                    new LinkedList<>(), // TODO: URL list?
+                    new LinkedList<>(), // TODO: append URL list?
                     io.vavr.collection.List.of(url).toJavaList()
             );
         }
-
     }
+
 
     private HttpEntity<?> httpEntityWithDefaultHeaders() {
         final HttpHeaders headers = new HttpHeaders();

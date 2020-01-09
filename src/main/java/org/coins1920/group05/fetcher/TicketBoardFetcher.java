@@ -3,6 +3,7 @@ package org.coins1920.group05.fetcher;
 import org.coins1920.group05.model.general.*;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A generic ticket board fetcher interface. Abstracts from the actual ticket board
@@ -60,5 +61,5 @@ public interface TicketBoardFetcher<B extends AbstractBoard,
 
     FetchingResult<C> fetchCommentsForTicket(T ticket, List<String> visitedUrls);
 
-    M fetchAllInfosForUser(M user);
+    Optional<M> fetchAllInfoForUser(M user);
 }

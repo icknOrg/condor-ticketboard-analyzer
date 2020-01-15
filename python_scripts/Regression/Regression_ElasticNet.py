@@ -22,17 +22,6 @@ sn.heatmap(df.corr(), annot=True)
 # plt.show()
 plt.close()
 
-# columns that possibly decrease prediction quality
-# badColumns = ['Group_Avg_Influence',
-#               'Avg_Betweenness_Osc_Top',
-#               'Avg_Influence_Top',
-#               'Avg_Influence',
-#               'Avg_Influence_Per_Message_Top',
-#               'Avg_Influence_Per_Message',
-#               'Avg_Contribution_Index_Top',
-#               'Avg_Contribution_Index_Oscil_Top']
-# df = df.drop(badColumns, axis=1)
-
 # columns with correlation over 0.1 or under -0.1 with target
 usefulColumns = ['Group_Influence',
                  'Group_Percentage_AWVCI_Increase_Monthly',
@@ -65,7 +54,7 @@ plt.close()
 # )
 
 if not createPlots:
-    n_runs = 20
+    n_runs = 100
     performance = pd.DataFrame(columns=['Run', 'MSE', 'R2','alpha','l1_ratio'])
 
     for i in range(n_runs):
@@ -91,10 +80,8 @@ if not createPlots:
         r2 = r2_score(y_test, y_pred)
         performance = performance.append({'Run': i, 'MSE': mse, 'R2': r2, 'alpha': regr.best_estimator_.alpha,
                                           'l1_ratio': regr.best_estimator_.l1_ratio}, ignore_index=True)
-
-    performance.to_csv('regression_performance.csv', sep=',', encoding='utf-8', index=False)
-
-if createPlots:
+        performance.to_csv('regression_performance.csv', sep=',', encoding='utf-8', index=False)
+else:
     # train test split
     train, test = train_test_split(df, test_size=0.1)
     X_train = train.drop('Target', axis=1)
@@ -131,12 +118,4 @@ if createPlots:
         ax.set_title('Predictions')
         plt.savefig(fname=plotFolderPath + column + '_scatter.png')
         plt.close()
-
-
-
-# print('Best score:', regr.best_score_)
-# print('Evaluation MSE: ' + str(mse))
-# print('Evaluation R2: ' + str(r2))
-# print('Coefficients: ')
-# print(regr.best_estimator_.coef_)
 

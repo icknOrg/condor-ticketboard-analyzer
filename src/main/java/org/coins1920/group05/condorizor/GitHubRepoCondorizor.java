@@ -20,6 +20,7 @@ import org.coins1920.group05.util.TimeFormattingHelper;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -88,12 +89,6 @@ public class GitHubRepoCondorizor {
         // no, then let's unwrap the issues from the FetchingResult object:
         final List<Issue> githubIssues = issueFetchingResult.getEntities();
 
-        // let's combine the old and the newly fetched issues:
-        final FetchingResult<Issue> combinedIssueFetchingResult = FetchingResult.union(
-                formerIssueFetchingResult,
-                issueFetchingResult
-        );
-
         // compute all visited comment-URLs into a single list:
         final List<String> visitedCommentUrls = (formerCommentsFetchingResults != null)
                 ? formerCommentsFetchingResults
@@ -133,33 +128,75 @@ public class GitHubRepoCondorizor {
 
 
         // re-try fetching the failed issue URLs:
-        if (formerIssueFetchingResult != null && formerIssueFetchingResult.getFailedUrls() != null) {
-            // combine the old and newly visited URLs:
-            final List<String> visitedIssueUrls = io.vavr.collection.List
-                    .ofAll((formerIssueFetchingResult.getVisitedUrls() != null)
-                            ? formerIssueFetchingResult.getVisitedUrls() : new LinkedList<>())
-                    .appendAll(issueFetchingResult.getVisitedUrls())
-                    .toJavaList();
+        final BiFunction<String, List<String>, FetchingResult<Issue>> issueFetcherFunction
+                = (u, visitedUrlsList) -> fetcher.retryTicketFetching(u, owner, board, visitedUrlsList);
+        final FetchingResult<Issue> retriedIssuesFetchingResult = retryFetching(
+                issueFetcherFunction, formerIssueFetchingResult, issueFetchingResult);
 
-            // retry fetching all failed issue URLs:
-            final FetchingResult<Issue> retriedIssuesFetchingResult = formerIssueFetchingResult
-                    .getFailedUrls()
-                    .stream()
-                    .map(failedUrl -> fetcher.retryTicketFetching(failedUrl, owner, board, visitedIssueUrls))
-                    .reduce(new FetchingResult<>(), (acc, i) -> FetchingResult.union(i, acc));
-        }
+        // ...and the failed comment URLs:
+        // TODO: ...
+//        final BiFunction<String, List<String>, FetchingResult<Comment>> commentFetcherFunction
+//                = (u, visitedUrlsList) -> fetcher.retryCommentFetching(u, owner, board, visitedUrlsList);
+//        final FetchingResult<Comment> retriedCommentsFetchingResult = retryFetching(
+//                commentFetcherFunction, formerComments..., comments...);
 
-        // TODO: re-try fetching all the failed comments URLs!
+        // combine everything! first, the issues:
+        final FetchingResult<Issue> combinedIssueFetchingResult = CondorizorUtils
+                .combineIssueFetchingResults(
+                        formerIssueFetchingResult,
+                        issueFetchingResult,
+                        retriedIssuesFetchingResult
+                );
 
+        // then the comments:
+        final List<Pair<Issue, FetchingResult<Comment>>> combinedCommentsFetchingResult = CondorizorUtils
+                .combineCommentsFetchingResults(formerCommentsFetchingResults, commentsForTicketResults);
 
         if (rateLimitOccurredForIssues || rateLimitOccurredForComments) {
             // a rate limit occurred, persist the partial result to disc:
             final PartialFetchingResult<Issue, User, Comment> partialFetchingResult
-                    = new PartialFetchingResult<>(combinedIssueFetchingResult, commentsForTicketResults);
+                    = new PartialFetchingResult<>(combinedIssueFetchingResult, combinedCommentsFetchingResult);
             return Either.left(PersistenceHelper.persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir));
         } else {
             // aggregate all users, map to Condor Actors/Edges and write to CSV files:
             return Either.right(condorizeIssuesAndUsers(githubIssues, comments, outputDir));
+        }
+    }
+
+    /**
+     * Re-tries to fetch failed URLs from the run(s) before this one. Ensures that no URLs
+     * are visited that we _have_ seen during this run.
+     *
+     * @param fetcherFunction      a function that does the actual fetching
+     * @param formerFetchingResult the result from the former run
+     * @param newFetchingResult    the results we've seen so far during this run
+     * @param <T>                  the type of the wrapped entities
+     * @return the new results
+     */
+    private <T> FetchingResult<T> retryFetching(
+            BiFunction<String, List<String>, FetchingResult<T>> fetcherFunction,
+            FetchingResult<T> formerFetchingResult, FetchingResult<T> newFetchingResult) {
+        if (formerFetchingResult != null && formerFetchingResult.getFailedUrls() != null) {
+            // combine the old and newly visited URLs:
+            final List<String> visitedIssueUrls = io.vavr.collection.List
+                    .ofAll((formerFetchingResult.getVisitedUrls() != null)
+                            ? formerFetchingResult.getVisitedUrls() : new LinkedList<>())
+                    .appendAll(newFetchingResult.getVisitedUrls())
+                    .toJavaList();
+
+            // retry fetching all failed issue URLs:
+            log.debug("Trying to re-fetch formerly failed URLs...");
+            final FetchingResult<T> retriedIssuesFetchingResult = formerFetchingResult
+                    .getFailedUrls()
+                    .stream()
+                    .map(failedUrl -> fetcherFunction.apply(failedUrl, visitedIssueUrls))
+                    .reduce(new FetchingResult<>(), (acc, i) -> FetchingResult.union(i, acc));
+
+            log.debug("I ran into into a rate limt " + retriedIssuesFetchingResult.getFailedUrls().size() + "x times!");
+            return retriedIssuesFetchingResult;
+
+        } else {
+            return new FetchingResult<>();
         }
     }
 

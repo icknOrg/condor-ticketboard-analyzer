@@ -67,12 +67,6 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     public FetchingResult<Issue> fetchTickets(String owner, String board, boolean fetchClosedTickets, List<String> visitedUrls) {
         final String openTicketsUrl = "/repos/{owner}/{board}/issues";
 
-        //############################################################
-        // TODO: erase!
-        log.debug("fetchTickets() - visited URLs (" + visitedUrls.size() + "):");
-        visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
-        //############################################################
-
         // is this an already (and successfully) visited URL?
         if (!visitedUrls.contains(openTicketsUrl)) {
             // all open tickets:
@@ -96,26 +90,6 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                 // TODO: the "pull_request" object in the JSON response is not the right property to distinguish issues from PRs!
                 return FetchingResult.union(openIssues, closedIssues);
             }
-
-        } else {
-            // the URL was already visited!
-            return new FetchingResult<>();
-        }
-    }
-
-    public FetchingResult<Issue> retryTicketFetching(String url, String owner, String board, List<String> visitedUrls) {
-        //############################################################
-        // TODO: erase!
-        log.debug("retryTicketFetching() - visited URLs(" + visitedUrls.size() + "):");
-        visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
-        //############################################################
-
-        // is this an already (and successfully) visited URL?
-        if (!visitedUrls.contains(url)) {
-            final FetchingResult<Issue> retriedIssues = getAllEntitiesWithPagination((u, e) ->
-                    rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), url);
-            log.debug("I got " + retriedIssues.getEntities().size() + " issues!");
-            return retriedIssues;
 
         } else {
             // the URL was already visited!
@@ -167,12 +141,6 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
             return new FetchingResult<>();
         } else {
 
-            //############################################################
-            // TODO: erase!
-            log.debug("fetchCommentsForTicket() - visited URLs(" + visitedUrls.size() + "):");
-            visitedUrls.forEach(u -> log.debug("  ~~~> " + u));
-            //############################################################
-
             // is this an already (and successfully) visited URL?
             if (!visitedUrls.contains(ticket.getCommentsUrl())) {
                 try {
@@ -212,6 +180,44 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
         }
     }
 
+    public FetchingResult<Issue> retryTicketFetching(String url, String owner, String board, List<String> visitedUrls) {
+        // is this an already (and successfully) visited URL?
+        if (!visitedUrls.contains(url)) {
+            final FetchingResult<Issue> retriedIssues = getAllEntitiesWithPagination((u, e) ->
+                    rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), url);
+            log.debug("I got " + retriedIssues.getEntities().size() + " issues!");
+            return retriedIssues;
+
+        } else {
+            // the URL was already visited!
+            return new FetchingResult<>();
+        }
+    }
+
+    public FetchingResult<Comment> retryCommentFetching(String url, String owner, String board, List<String> visitedUrls) {
+        // is this an already (and successfully) visited URL?
+        if (!visitedUrls.contains(url)) {
+            // TODO: this is not correct!
+            final FetchingResult<Comment> retriedIssues = getAllEntitiesWithPagination((u, e) ->
+                    rt.exchange(u, HttpMethod.GET, e, Comment[].class, owner, board), url);
+            log.debug("I got " + retriedIssues.getEntities().size() + " issues!");
+            return retriedIssues;
+
+        } else {
+            // the URL was already visited!
+            return new FetchingResult<>();
+        }
+    }
+
+    /**
+     * This is the magic method that does all the hard work: querying GitHub's API, dealing with
+     * pagination (recursion to the rescue!) and turning rate limits into empty results.
+     *
+     * @param f   the RestTemplate method to use
+     * @param url the URL to query
+     * @param <U> type parameter for the entities
+     * @return the FetchingResult
+     */
     private <U> FetchingResult<U> getAllEntitiesWithPagination(BiFunction<String, HttpEntity<?>, ResponseEntity<U[]>> f, String url) {
         final HttpEntity<?> entity = httpEntityWithDefaultHeaders();
         try {
@@ -245,8 +251,8 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
                         return new FetchingResult<>(
                                 responseEntities,
                                 true,
-                                new LinkedList<>(), // TODO: URL list?
-                                io.vavr.collection.List.of(url).toJavaList() // TODO: URL list?
+                                new LinkedList<>(),
+                                io.vavr.collection.List.of(url).toJavaList()
                         );
                     }
 
@@ -274,7 +280,7 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
             return new FetchingResult<U>(
                     new LinkedList<>(),
                     true,
-                    new LinkedList<>(), // TODO: append URL list?
+                    new LinkedList<>(),
                     io.vavr.collection.List.of(url).toJavaList()
             );
         }

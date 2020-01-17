@@ -27,6 +27,14 @@ import java.util.stream.Stream;
  */
 public class CondorizorUtils {
 
+    /**
+     * Combines to Comments fetching result lists into a single one by
+     * looking up the issues in both lists.
+     *
+     * @param fr1 the first comments fetching result list
+     * @param fr2 the second comments fetching result list
+     * @return the combined one
+     */
     public static List<Pair<Issue, FetchingResult<Comment>>> combineCommentsFetchingResults(
             List<Pair<Issue, FetchingResult<Comment>>> fr1,
             List<Pair<Issue, FetchingResult<Comment>>> fr2) {
@@ -42,48 +50,12 @@ public class CondorizorUtils {
                 .map(Pair::getFirst)
                 .collect(Collectors.toList());
 
-        return allIssues.stream()
+        return allIssues
+                .stream()
                 .map(i -> matchingIssueResultPairsForIssue(i, fetchingResults1, fetchingResults2))
                 .flatMap(CondorizorUtils::foldMatchingResults)
                 .collect(Collectors.toList());
     }
-
-    private static List<Pair<Issue, FetchingResult<Comment>>> matchingIssueResultPairsForIssue(
-            Issue i,
-            List<Pair<Issue, FetchingResult<Comment>>> l1,
-            List<Pair<Issue, FetchingResult<Comment>>> l2) {
-        final List<Pair<Issue, FetchingResult<Comment>>> rl1 = l1
-                .stream()
-                .filter(fr -> fr.getFirst() == i)
-                .collect(Collectors.toList());
-
-        final List<Pair<Issue, FetchingResult<Comment>>> rl2 = l2
-                .stream()
-                .filter(fr -> fr.getFirst() == i)
-                .collect(Collectors.toList());
-
-        return io.vavr.collection.List
-                .ofAll(rl1)
-                .appendAll(rl2)
-                .toJavaList();
-    }
-
-    private static Stream<Pair<Issue, FetchingResult<Comment>>> foldMatchingResults(
-            List<Pair<Issue, FetchingResult<Comment>>> matches) {
-        final Issue i = matches
-                .get(0)
-                .getFirst();
-
-        final FetchingResult<Comment> combinedFetchingResult = matches
-                .stream()
-                .map(Pair::getSecond)
-                .reduce(new FetchingResult<>(), (acc, c) -> FetchingResult.union(c, acc));
-
-        return Stream.of(
-                new Pair<>(i, combinedFetchingResult)
-        );
-    }
-
 
     /**
      * Combines n Issue FetchingResults into a single one.
@@ -98,6 +70,27 @@ public class CondorizorUtils {
                 .reduce(new FetchingResult<>(), (acc, i) -> FetchingResult.union(i, acc));
     }
 
+    public static List<Pair<Issue, List<Comment>>> combineIssueCommentsPairs(
+            List<Pair<Issue, List<Comment>>> oldComments,
+            List<Pair<Issue, List<Comment>>> newComments) {
+        final List<Pair<Issue, List<Comment>>> comments1
+                = (oldComments != null) ? oldComments : new LinkedList<>();
+        final List<Pair<Issue, List<Comment>>> comments2
+                = (newComments != null) ? newComments : new LinkedList<>();
+
+        final List<Issue> allIssues = io.vavr.collection.List
+                .ofAll(comments1)
+                .appendAll(comments2)
+                .toJavaStream()
+                .map(Pair::getFirst)
+                .collect(Collectors.toList());
+
+        return allIssues
+                .stream()
+                .map(i -> matchingIssueResultPairsForIssue(i, comments1, comments2))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
 
     /**
      * Maps tickets and board members to edges and actors. Writes them to the two CSV files.
@@ -126,7 +119,6 @@ public class CondorizorUtils {
         return condorCsvMarshaller.write(actors, edges, outputDir);
     }
 
-
     @Deprecated // TODO: this is the "old" method used for Trello. The type parameters differ! -> get rid of it!
     public static <M extends AbstractMember, T extends AbstractTicket> Pair<File, File> mapAndWriteToCsvFilez(
             List<M> boardMembers,
@@ -140,5 +132,41 @@ public class CondorizorUtils {
         // write the CSV files to disc:
         final CondorCsvMarshaller condorCsvMarshaller = new DefaultCondorCsvMarshaller();
         return condorCsvMarshaller.write(actors, edges, outputDir);
+    }
+
+    private static <U> List<Pair<Issue, U>> matchingIssueResultPairsForIssue(
+            Issue i,
+            List<Pair<Issue, U>> l1,
+            List<Pair<Issue, U>> l2) {
+        final List<Pair<Issue, U>> rl1 = l1
+                .stream()
+                .filter(fr -> fr.getFirst() == i)
+                .collect(Collectors.toList());
+
+        final List<Pair<Issue, U>> rl2 = l2
+                .stream()
+                .filter(fr -> fr.getFirst() == i)
+                .collect(Collectors.toList());
+
+        return io.vavr.collection.List
+                .ofAll(rl1)
+                .appendAll(rl2)
+                .toJavaList();
+    }
+
+    private static Stream<Pair<Issue, FetchingResult<Comment>>> foldMatchingResults(
+            List<Pair<Issue, FetchingResult<Comment>>> matches) {
+        final Issue i = matches
+                .get(0)
+                .getFirst();
+
+        final FetchingResult<Comment> combinedFetchingResult = matches
+                .stream()
+                .map(Pair::getSecond)
+                .reduce(new FetchingResult<>(), (acc, c) -> FetchingResult.union(c, acc));
+
+        return Stream.of(
+                new Pair<>(i, combinedFetchingResult)
+        );
     }
 }

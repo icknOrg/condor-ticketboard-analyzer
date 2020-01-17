@@ -181,26 +181,21 @@ public class GitHubIssueFetcher implements TicketBoardFetcher<Repo, User, Issue,
     }
 
     public FetchingResult<Issue> retryTicketFetching(String url, String owner, String board, List<String> visitedUrls) {
-        // is this an already (and successfully) visited URL?
-        if (!visitedUrls.contains(url)) {
-            final FetchingResult<Issue> retriedIssues = getAllEntitiesWithPagination((u, e) ->
-                    rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board), url);
-            log.debug("I got " + retriedIssues.getEntities().size() + " issues!");
-            return retriedIssues;
-
-        } else {
-            // the URL was already visited!
-            return new FetchingResult<>();
-        }
+        return retryFetching(url, owner, board, visitedUrls, (u, e) ->
+                rt.exchange(u, HttpMethod.GET, e, Issue[].class, owner, board));
     }
 
     public FetchingResult<Comment> retryCommentFetching(String url, String owner, String board, List<String> visitedUrls) {
+        return retryFetching(url, owner, board, visitedUrls, (u, e) ->
+                rt.exchange(u, HttpMethod.GET, e, Comment[].class, owner, board));
+    }
+
+    private <U> FetchingResult<U> retryFetching(String url, String owner, String board, List<String> visitedUrls,
+                                                BiFunction<String, HttpEntity<?>, ResponseEntity<U[]>> f) {
         // is this an already (and successfully) visited URL?
         if (!visitedUrls.contains(url)) {
-            // TODO: this is not correct!
-            final FetchingResult<Comment> retriedIssues = getAllEntitiesWithPagination((u, e) ->
-                    rt.exchange(u, HttpMethod.GET, e, Comment[].class, owner, board), url);
-            log.debug("I got " + retriedIssues.getEntities().size() + " issues!");
+            final FetchingResult<U> retriedIssues = getAllEntitiesWithPagination(f, url);
+            log.debug("I got " + retriedIssues.getEntities().size() + " entities!");
             return retriedIssues;
 
         } else {

@@ -114,7 +114,7 @@ public class GitHubRepoCondorizor {
             log.warn("A rate limit occurred when fetching comments!");
         }
 
-        // no, then let's unwrap the issues from the FetchingResult objects:
+        // no, then let's unwrap the comments from the FetchingResult objects:
         final List<Pair<Issue, List<Comment>>> comments = commentsForTicketResults
                 .stream()
                 .map(c -> new Pair<>(c.getFirst(), c.getSecond().getEntities()))
@@ -130,15 +130,14 @@ public class GitHubRepoCondorizor {
         // re-try fetching the failed issue URLs:
         final BiFunction<String, List<String>, FetchingResult<Issue>> issueFetcherFunction
                 = (u, visitedUrlsList) -> fetcher.retryTicketFetching(u, owner, board, visitedUrlsList);
-        final FetchingResult<Issue> retriedIssuesFetchingResult = retryFetching(
+        final FetchingResult<Issue> retriedIssuesFetchingResult = retryIssueFetching(
                 issueFetcherFunction, formerIssueFetchingResult, issueFetchingResult);
 
         // ...and the failed comment URLs:
-        // TODO: ...
-//        final BiFunction<String, List<String>, FetchingResult<Comment>> commentFetcherFunction
-//                = (u, visitedUrlsList) -> fetcher.retryCommentFetching(u, owner, board, visitedUrlsList);
-//        final FetchingResult<Comment> retriedCommentsFetchingResult = retryFetching(
-//                commentFetcherFunction, formerComments..., comments...);
+        final BiFunction<String, List<String>, FetchingResult<Comment>> commentFetcherFunction
+                = (u, visitedUrlsList) -> fetcher.retryCommentFetching(u, owner, board, visitedUrlsList);
+        final List<Pair<Issue, FetchingResult<Comment>>> retriedCommentsFetchingResult = retryCommentsFetching(
+                commentFetcherFunction, formerCommentsFetchingResults, commentsForTicketResults);
 
         // combine everything! first, the issues:
         final FetchingResult<Issue> combinedIssueFetchingResult = CondorizorUtils
@@ -150,7 +149,10 @@ public class GitHubRepoCondorizor {
 
         // then the comments:
         final List<Pair<Issue, FetchingResult<Comment>>> combinedCommentsFetchingResult = CondorizorUtils
-                .combineCommentsFetchingResults(formerCommentsFetchingResults, commentsForTicketResults);
+                .combineCommentsFetchingResults(
+                        CondorizorUtils.combineCommentsFetchingResults(
+                                formerCommentsFetchingResults, commentsForTicketResults),
+                        retriedCommentsFetchingResult);
 
         if (rateLimitOccurredForIssues || rateLimitOccurredForComments) {
             // a rate limit occurred, persist the partial result to disc:
@@ -158,24 +160,41 @@ public class GitHubRepoCondorizor {
                     = new PartialFetchingResult<>(combinedIssueFetchingResult, combinedCommentsFetchingResult);
             return Either.left(PersistenceHelper.persistPartialResultsToDisk(partialFetchingResult, owner, board, outputDir));
         } else {
+            // combine everything:
+            final List<Issue> allIssues = io.vavr.collection.List
+                    .ofAll(githubIssues)
+                    .appendAll(combinedIssueFetchingResult.getEntities())
+                    .toJavaList();
+
+            final List<Pair<Issue, List<Comment>>> newComments = combinedCommentsFetchingResult
+                    .stream()
+                    .map(p -> new Pair<>(p.getFirst(), p.getSecond().getEntities()))
+                    .collect(Collectors.toList());
+
+            final List<Pair<Issue, List<Comment>>> allComments = io.vavr.collection.List
+                    .ofAll(comments)
+                    .appendAll(CondorizorUtils.combineIssueCommentsPairs(comments, newComments))
+                    .toJavaList();
+
             // aggregate all users, map to Condor Actors/Edges and write to CSV files:
-            return Either.right(condorizeIssuesAndUsers(githubIssues, comments, outputDir));
+            return Either.right(condorizeIssuesAndUsers(allIssues, allComments, outputDir
+            ));
         }
     }
 
     /**
-     * Re-tries to fetch failed URLs from the run(s) before this one. Ensures that no URLs
+     * Re-tries to fetch failed Issue URLs from the run(s) before this one. Ensures that no URLs
      * are visited that we _have_ seen during this run.
      *
      * @param fetcherFunction      a function that does the actual fetching
      * @param formerFetchingResult the result from the former run
      * @param newFetchingResult    the results we've seen so far during this run
-     * @param <T>                  the type of the wrapped entities
      * @return the new results
      */
-    private <T> FetchingResult<T> retryFetching(
-            BiFunction<String, List<String>, FetchingResult<T>> fetcherFunction,
-            FetchingResult<T> formerFetchingResult, FetchingResult<T> newFetchingResult) {
+    private FetchingResult<Issue> retryIssueFetching(
+            BiFunction<String, List<String>, FetchingResult<Issue>> fetcherFunction,
+            FetchingResult<Issue> formerFetchingResult, FetchingResult<Issue> newFetchingResult) {
+        // are there any former results at all?
         if (formerFetchingResult != null && formerFetchingResult.getFailedUrls() != null) {
             // combine the old and newly visited URLs:
             final List<String> visitedIssueUrls = io.vavr.collection.List
@@ -186,17 +205,71 @@ public class GitHubRepoCondorizor {
 
             // retry fetching all failed issue URLs:
             log.debug("Trying to re-fetch formerly failed URLs...");
-            final FetchingResult<T> retriedIssuesFetchingResult = formerFetchingResult
+            return formerFetchingResult
                     .getFailedUrls()
                     .stream()
                     .map(failedUrl -> fetcherFunction.apply(failedUrl, visitedIssueUrls))
                     .reduce(new FetchingResult<>(), (acc, i) -> FetchingResult.union(i, acc));
 
-            log.debug("I ran into into a rate limt " + retriedIssuesFetchingResult.getFailedUrls().size() + "x times!");
-            return retriedIssuesFetchingResult;
-
         } else {
             return new FetchingResult<>();
+        }
+    }
+
+    /**
+     * Re-tries to fetch failed Comment URLs from the run(s) before this one. Ensures that no URLs
+     * are visited that we _have_ seen during this run.
+     *
+     * @param fetcherFunction      a function that does the actual fetching
+     * @param formerFetchingResult the result from the former run
+     * @param newFetchingResult    the results we've seen so far during this run
+     * @return the new results
+     */
+    private List<Pair<Issue, FetchingResult<Comment>>> retryCommentsFetching(
+            BiFunction<String, List<String>, FetchingResult<Comment>> fetcherFunction,
+            List<Pair<Issue, FetchingResult<Comment>>> formerFetchingResult,
+            List<Pair<Issue, FetchingResult<Comment>>> newFetchingResult) {
+        if (formerFetchingResult != null) {
+            // get all the formerly visited URLs:
+            final List<String> formerlyVisitedUrls = formerFetchingResult
+                    .stream()
+                    .map(p -> p.getSecond().getVisitedUrls())
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+
+            // get all the newly visited URLs:
+            final List<String> newlyVisitedUrls = (newFetchingResult == null)
+                    ? new LinkedList<>()
+                    : newFetchingResult
+                    .stream()
+                    .map(p -> p.getSecond().getVisitedUrls())
+                    .flatMap(List::stream)
+                    .collect(Collectors.toList());
+
+            // combine the old and newly visited URLs:
+            final List<String> visitedCommentUrls = io.vavr.collection.List
+                    .ofAll(formerlyVisitedUrls)
+                    .appendAll(newlyVisitedUrls)
+                    .toJavaList();
+
+            // retry fetching all failed issue URLs:
+            log.debug("Trying to re-fetch formerly failed URLs...");
+            return formerFetchingResult
+                    .stream()
+                    .map(p -> {
+                        final Issue issue = p.getFirst();
+                        final FetchingResult<Comment> fetchingResultsForSingleIssue = p
+                                .getSecond()
+                                .getFailedUrls()
+                                .stream()
+                                .map(failedUrl -> fetcherFunction.apply(failedUrl, visitedCommentUrls))
+                                .reduce(new FetchingResult<>(), (acc, i) -> FetchingResult.union(i, acc));
+                        return new Pair<>(issue, fetchingResultsForSingleIssue);
+                    })
+                    .collect(Collectors.toList());
+
+        } else {
+            return new LinkedList<>();
         }
     }
 

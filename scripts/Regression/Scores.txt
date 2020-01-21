@@ -1,0 +1,54 @@
+Regression 1:
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.4613 -0.5730 -0.2108  0.2963  3.9783 
+
+Coefficients:
+                                          Estimate Std. Error t value Pr(>|t|)
+(Intercept)                                -24.637     23.646  -1.042    0.305
+Group_Influence                            -30.795     92.813  -0.332    0.742
+Group_Percentage_AWVCI_Increase_Monthly     29.730     22.003   1.351    0.186
+Group_AWVCI                                 -5.120      8.405  -0.609    0.547
+Group_Percentage_Density_Increase_Monthly    1.072      5.298   0.202    0.841
+Group_Density                               16.067     39.102   0.411    0.684
+Percentage_Connected_Actors                 -1.137      1.325  -0.858    0.397
+Gini_Sentiment                              -5.615      5.256  -1.068    0.293
+Gini_Sentiment_Top                          -1.802      2.253  -0.800    0.430
+Gini_complextiy                              4.332      2.682   1.615    0.116
+Percentage_Isolated_Actors                   0.276      2.489   0.111    0.912
+Percentage_Closed_Issues                    -3.094      1.974  -1.568    0.127
+Percentage_Solo_Issues                      -2.706      2.944  -0.919    0.365
+
+Residual standard error: 1.146 on 33 degrees of freedom
+Multiple R-squared:  0.3942,	Adjusted R-squared:  0.1739 
+F-statistic:  1.79 on 12 and 33 DF,  p-value: 0.09184
+
+
+
+Regression 2:
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-1.2781 -0.6152 -0.2891  0.4039  4.0825 
+
+Coefficients:
+                                        Estimate Std. Error t value Pr(>|t|)   
+(Intercept)                              -27.721     16.233  -1.708  0.09507 . 
+Group_Percentage_AWVCI_Increase_Monthly   29.586     16.232   1.823  0.07547 . 
+Gini_complextiy                            5.208      1.823   2.857  0.00663 **
+Percentage_Closed_Issues                  -3.323      1.189  -2.795  0.00779 **
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 1.058 on 42 degrees of freedom
+Multiple R-squared:  0.3437,	Adjusted R-squared:  0.2968 
+F-statistic:  7.33 on 3 and 42 DF,  p-value: 0.0004642
+
+
+
+ElasticNet:
+Median MSE: 0.485905806093976
+Median R2: -0.143337480097902
+Alpha: 0.1
+l1_ratio: 0

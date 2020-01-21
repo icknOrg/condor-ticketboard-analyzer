@@ -11,8 +11,8 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.linear_model import ElasticNet
 
-createPlots = False
-plotFolderPath = './Plots/'
+createPlots = True
+plotFolderPath = './Plots_ElasticNet/'
 
 # read csv
 df = pd.read_csv('input.csv', sep=',', encoding='utf-8').drop('Repository_Name', axis=1)
@@ -20,21 +20,13 @@ df = pd.read_csv('input.csv', sep=',', encoding='utf-8').drop('Repository_Name',
 # Analyze correlation
 sn.heatmap(df.corr(), annot=True)
 # plt.show()
-plt.close()
+# plt.close()
+plt.savefig('Correlation_Matrix_Full.png',dpi=500)
 
 # columns with correlation over 0.1 or under -0.1 with target
-usefulColumns = ['Group_Influence',
-                 'Group_Percentage_AWVCI_Increase_Monthly',
-                 'Group_AWVCI',
-                 'Group_Percentage_Density_Increase_Monthly',
-                 'Group_Density',
-                 'Percentage_Connected_Actors',
-                 'Gini_Sentiment',
-                 'Gini_Sentiment_Top',
-                 'Gini_complextiy',
-                 'Percentage_Isolated_Actors',
+usefulColumns = ['Group_Percentage_AWVCI_Increase_Monthly',
+                 'Gini_complexity',
                  'Percentage_Closed_Issues',
-                 'Percentage_Solo_Issues',
                  'Target']
 df = df[usefulColumns]
 sn.heatmap(df.corr(), annot=True)
@@ -55,7 +47,8 @@ plt.close()
 
 if not createPlots:
     n_runs = 100
-    performance = pd.DataFrame(columns=['Run', 'MSE', 'R2','alpha','l1_ratio'])
+    # performance = pd.DataFrame(columns=['Run', 'MSE', 'R2','alpha','l1_ratio'])
+    performance = pd.read_csv('regression_performance_ElasticNet.csv', sep=',', encoding='utf-8')
 
     for i in range(n_runs):
         # train test split
@@ -80,7 +73,7 @@ if not createPlots:
         r2 = r2_score(y_test, y_pred)
         performance = performance.append({'Run': i, 'MSE': mse, 'R2': r2, 'alpha': regr.best_estimator_.alpha,
                                           'l1_ratio': regr.best_estimator_.l1_ratio}, ignore_index=True)
-        performance.to_csv('regression_performance.csv', sep=',', encoding='utf-8', index=False)
+        performance.to_csv('regression_performance_ElasticNet.csv', sep=',', encoding='utf-8', index=False)
 else:
     # train test split
     train, test = train_test_split(df, test_size=0.1)

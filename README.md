@@ -1,4 +1,4 @@
-# coins1920-group5-code
+# condor-ticketboard-analyzer
 A ticket board fetcher for Condor.
 
 ## How to build it

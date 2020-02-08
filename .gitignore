@@ -27,3 +27,7 @@ hs_err_pid*
 
 # Maven's target folder
 target/
+.Rproj.user
+*.RData
+*.Rhistory
+*.Rproj

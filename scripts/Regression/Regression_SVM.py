@@ -10,34 +10,23 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, r2_score
 from sklearn.svm import SVR
 
-createPlots = False
+createPlots = True
 plotFolderPath = './Plots_SVM/'
 
 # read csv
 df = pd.read_csv('input.csv', sep=',', encoding='utf-8').drop('Repository_Name', axis=1)
 
 # columns with correlation over 0.1 or under -0.1 with target
-usefulColumns = ['Group_Influence',
-                 'Group_Percentage_AWVCI_Increase_Monthly',
-                 'Group_AWVCI',
-                 'Group_Percentage_Density_Increase_Monthly',
-                 'Group_Density',
-                 'Percentage_Connected_Actors',
-                 'Gini_Sentiment',
-                 'Gini_Sentiment_Top',
-                 'Gini_complextiy',
-                 'Percentage_Isolated_Actors',
+usefulColumns = ['Group_Percentage_AWVCI_Increase_Monthly',
+                 'Gini_complexity',
                  'Percentage_Closed_Issues',
-                 'Percentage_Solo_Issues',
                  'Target']
 df = df[usefulColumns]
 
 # scale
 scaler = MinMaxScaler()
-df[['Group_Percentage_AWVCI_Increase_Monthly',
-    'Group_Percentage_Density_Increase_Monthly']] = scaler.fit_transform(
-df[['Group_Percentage_AWVCI_Increase_Monthly',
-    'Group_Percentage_Density_Increase_Monthly']]
+df[['Group_Percentage_AWVCI_Increase_Monthly']] = scaler.fit_transform(
+df[['Group_Percentage_AWVCI_Increase_Monthly']]
 )
 
 if not createPlots:
